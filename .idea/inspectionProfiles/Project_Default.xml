@@ -6,5 +6,6 @@
         <language minSize="192" name="Kotlin" />
       </Languages>
     </inspection_tool>
+    <inspection_tool class="HtmlDeprecatedTag" enabled="false" level="WARNING" enabled_by_default="false" />
   </profile>
 </component>
