@@ -1,6 +1,6 @@
 package com.xiaoyv404.mirai.service.bilibili
 
-import com.xiaoyv404.mirai.databace.BiliBili
+import com.xiaoyv404.mirai.databace.Bilibili
 import com.xiaoyv404.mirai.service.getUserInformation
 import com.xiaoyv404.mirai.service.groupDataRead
 import com.xiaoyv404.mirai.service.tool.downloadImage
@@ -15,7 +15,6 @@ import net.mamoe.mirai.event.subscribeGroupMessages
 import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
 
 val format = Json { ignoreUnknownKeys = true }
-val regular = BiliBili()
 
 fun biliVideoEntrance() {
     GlobalEventChannel.subscribeGroupMessages {
@@ -31,7 +30,7 @@ fun biliVideoEntrance() {
                     val pJson = format.decodeFromString<VideoDataJson>(uJsonVideo)
                     group.sendMessage(
                         downloadImage(pJson.data.pic)!!
-                            .uploadAsImage(group, "jpg")
+                            .uploadAsImage(group, "png")
                             .plus(parsingVideoDataString(pJson))
                     )
                 } catch (e: SerializationException) {
@@ -46,39 +45,43 @@ fun biliVideoEntrance() {
             }
             //检测消息中是否含有(Av|Bv)
             when {
-                regular.biliBvFind.containsMatchIn(message.contentToString()) -> {
+                Bilibili.biliBvFind.containsMatchIn(message.contentToString()) -> {
                     //检测是否开启BiliBili解析功能
-                    if (groupDataRead(group.id) == true) {
-                        //检测sender.id是否等于机器人id
-                        if (getUserInformation(sender.id).bot != true) {
-                            uJsonVideo(
-                                videoDataGet(
-                                    regular.biliBvFind.find(message.contentToString())!!
-                                        .value,
-                                    "bvid"
+                    when (groupDataRead(group.id)[0].biliStatus) {
+                        1    -> {//检测sender.id是否等于机器人id
+                            if (getUserInformation(sender.id).bot != true) {
+                                uJsonVideo(
+                                    videoDataGet(
+                                        Bilibili.biliBvFind.find(it)!!
+                                            .value,
+                                        "bvid"
+                                    )
                                 )
-                            )
+                            }
                         }
-                    } else {
-                        group.sendMessage("喵, 好像没开启BiliBili解析功能哦")
+                        -1   -> {
+                        }
+                        else -> group.sendMessage("喵, 好像没开启BiliBili解析功能哦")
                     }
                 }
-                regular.biliAvFind.containsMatchIn(message.contentToString()) -> {
+                Bilibili.biliAvFind.containsMatchIn(it)                        -> {
                     //检测是否开启BiliBili解析功能
-                    if (groupDataRead(group.id) == true) {
-                        //检测sender.id是否等于机器人id
-                        if (getUserInformation(sender.id).bot != true) {
-                            uJsonVideo(
-                                videoDataGet(
-                                    regular.biliAvFind.find(message.contentToString())!!
-                                        .value
-                                        .replace(Regex("(av|AV)"), ""),
-                                    "aid"
+                    when (groupDataRead(group.id)[0].biliStatus) {
+                        1    -> {//检测sender.id是否等于机器人id
+                            if (getUserInformation(sender.id).bot != true) {
+                                uJsonVideo(
+                                    videoDataGet(
+                                        Bilibili.biliAvFind.find(message.contentToString())!!
+                                            .value
+                                            .replace(Regex("(av|AV)"), ""),
+                                        "aid"
+                                    )
                                 )
-                            )
+                            }
                         }
-                    } else {
-                        group.sendMessage("喵, 好像没开启BiliBili解析功能哦")
+                        -1   -> {
+                        }
+                        else -> group.sendMessage("喵, 好像没开启BiliBili解析功能哦")
                     }
                 }
             }
@@ -93,5 +96,5 @@ fun biliVideoEntrance() {
  * PS:因为mode是String类型的输入，所以对输入有极高的要求，如果出现-400可以先检查一下这个
  **/
 suspend fun videoDataGet(id: String, mode: String): String {
-    return HttpClient().use { clien -> clien.get("http://api.bilibili.com/x/web-interface/view?$mode=$id") }
+    return HttpClient().use { clien -> clien.get("https://api.bilibili.com/x/web-interface/view?$mode=$id") }
 }

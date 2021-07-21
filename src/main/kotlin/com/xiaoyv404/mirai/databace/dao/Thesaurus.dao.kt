@@ -12,6 +12,7 @@ interface Thesauru : Entity<Thesauru> {
     val question: String
     val reply: String
     val creator: Long
+    val weight: Int
 }
 
 object Thesaurus : Table<Thesauru>("Thesaurus") {
@@ -19,5 +20,6 @@ object Thesaurus : Table<Thesauru>("Thesaurus") {
     val question = varchar("question").primaryKey()
     val reply = varchar("reply")
     val creator = long("creator").primaryKey()
+    val weight = int("weight")
 }
     

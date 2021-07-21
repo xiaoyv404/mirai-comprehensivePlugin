@@ -1,4 +1,4 @@
-package com.xiaoyv404.mirai.databace.dao
+package com.xiaoyv404.mirai.databace.dao.gallery
 
 import org.ktorm.entity.Entity
 import org.ktorm.schema.Table
@@ -11,7 +11,7 @@ interface Gallery : Entity<Gallery> {
     val picturesMun: Int
     val title: String
     val tags: String
-    val userId: String
+    val userId: Long
     val userName: String
     val creator: Long
 }

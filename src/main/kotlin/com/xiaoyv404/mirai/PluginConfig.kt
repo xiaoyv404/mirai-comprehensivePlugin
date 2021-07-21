@@ -38,5 +38,7 @@ data class DatabaseConfig(
     @Comment("本地代理端口")
     val ProxyPort: Int = 404,
     @Comment("聊天记录历史保存位置")
-    var SaveHistory: String = "/history/"
+    val SaveHistory: String = "/history/",
+    @Comment("SauceNAOAPIKEY")
+    val sauceNaoApiKey: String = ""
 )

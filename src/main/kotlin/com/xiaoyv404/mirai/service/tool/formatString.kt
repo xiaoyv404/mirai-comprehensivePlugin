@@ -1,7 +1,6 @@
 package com.xiaoyv404.mirai.service.tool
 
 import com.xiaoyv404.mirai.service.bilibili.VideoDataJson
-import com.xiaoyv404.mirai.service.bilibili.regular
 import com.xiaoyv404.mirai.service.bilibili.tID
 
 //格式化视频信息
@@ -11,7 +10,7 @@ fun parsingVideoDataString(pJson: VideoDataJson): String {
         "\n${data.pic}" +
             "\n\n标题: ${data.title}" +
             "\n视频分区: ${tID[data.tid]}" +
-            "\n\n视频简介: ${data.desc.replace(regular.deleteEnter, "\n")}" +
+            "\n\n视频简介: ${data.desc}" +
             "\n\n${data.stat.view}播放, ${data.videos}分p, ${data.stat.danmaku}弹幕, ${data.stat.reply}评论" +
             "\n${data.stat.favorite}收藏, ${data.stat.share}分享, ${data.stat.coin}投币, ${data.stat.like}点赞" +
             "\n\nUP: ${data.owner.name}  UID: ${data.owner.mid}" +

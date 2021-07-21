@@ -3,11 +3,17 @@ package com.xiaoyv404.mirai.service.history
 import com.xiaoyv404.mirai.PluginConfig
 import com.xiaoyv404.mirai.service.getUserInformation
 import com.xiaoyv404.mirai.service.tool.FileUtils.saveFileFromString
+import kotlinx.serialization.SerializationException
 import net.mamoe.mirai.event.GlobalEventChannel
 import net.mamoe.mirai.event.subscribeGroupMessages
+import net.mamoe.mirai.message.data.MessageChain.Companion.serializeToJsonString
+import net.mamoe.mirai.message.data.ids
+import net.mamoe.mirai.message.data.time
+import net.mamoe.mirai.utils.MiraiExperimentalApi
 import java.io.File
 
-fun save() {
+@MiraiExperimentalApi
+fun historyEntrance() {
     GlobalEventChannel.subscribeGroupMessages {
         always {
             if (getUserInformation(sender.id).bot != true) {
@@ -15,6 +21,19 @@ fun save() {
                     message.contentToString() + "\n",
                     File("${PluginConfig.database.SaveHistory}${group.id}.txt")
                 )
+            }
+            try {
+                insertMessage(
+                    message.time,
+                    "msg",
+                    group.id,
+                    group.name,
+                    sender.id,
+                    sender.nameCard,
+                    message.ids[0].toLong(),
+                    message.serializeToJsonString()
+                )
+            } catch (e: SerializationException) {
             }
         }
     }

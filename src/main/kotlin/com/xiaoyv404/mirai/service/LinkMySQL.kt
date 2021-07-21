@@ -8,24 +8,38 @@ import org.ktorm.dsl.*
 
 data class User(
     val id: Long?,
+    val admin: Boolean?,
     val bot: Boolean?,
     val setu: Boolean?,
 )
 
+data class Group(
+    val id: Long?,
+    val biliStatus: Int?,
+    val eroStatus: Int?,
+    val thesaurusStatus: Int?
+)
+
+data class Thesauru(
+    val id: Int?,
+    val question: String?,
+    val reply: String?,
+    val creator: Long?,
+    val weight: Int?
+)
+
 //Read
-fun groupDataRead(id: Long): Boolean? {
+fun groupDataRead(id: Long): List<Group> {
     //执行操作并解析参数
-    var data: Boolean? = null
-    Database.db
+    return Database.db
         .from(Groups)
         .select()
         .where { (Groups.id eq id) }
-        .forEach { row -> data = row[Groups.biliStatus] }
-    return data
+        .map { row -> Group(0, row[Groups.biliStatus], row[Groups.eroStatus], row[Groups.thesaurusStatus]) }
 }
 
 //Update
-fun groupDataUpdate(id: Long, biliStatus: Boolean) {
+fun groupDataUpdate(id: Long, biliStatus: Int) {
     Database.db
         .update(Groups) {
             set(it.biliStatus, biliStatus)
@@ -40,18 +54,16 @@ fun groupDataCreate(id: Long) {
     Database.db
         .insert(Groups) {
             set(it.id, id)
-            set(it.biliStatus, true)
+            set(it.biliStatus, 1)
         }
 }
 
-fun queryTerm(question: String): String {
-    var data = ""
-    Database.db
+fun queryTerm(question: String): List<Thesauru> {
+    return Database.db
         .from(Thesaurus)
         .select()
-        .where { (Thesaurus.question eq question) }
-        .forEach { row -> data = row[Thesaurus.reply].toString() }
-    return data
+        .where { Thesaurus.question eq question }
+        .map { row -> Thesauru(null, null, row[Thesaurus.reply], null, row[Thesaurus.weight]) }
 }
 
 
@@ -60,22 +72,23 @@ fun getUserInformation(id: Long): User {
         Database.db
             .from(Users)
             .select().where { (Users.id eq id) }
-            .map { row -> User(row[Users.id], row[Users.bot], row[Users.setu]) }[0]
+            .map { row -> User(row[Users.id], row[Users.admin], row[Users.bot], row[Users.setu]) }[0]
     } catch (e: IndexOutOfBoundsException) {
-        User(null, null, null)
+        User(null, null, null, null)
     }
 }
 
-fun createUserInformation(id: Long, bot: Boolean, setu: Boolean) {
+fun createUserInformation(id: Long, admin: Boolean, bot: Boolean, setu: Boolean) {
     Database.db
         .insert(Users) {
             set(it.id, id)
+            set(it.admin, admin)
             set(it.bot, bot)
             set(it.setu, setu)
         }
 }
 
-fun updateUserSetu(id: Long, status: Boolean) {
+fun updateUserBot(id: Long, status: Boolean) {
     Database.db
         .update(Users) {
             set(it.setu, status)

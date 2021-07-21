@@ -8,7 +8,7 @@ group = "com.xiaoyv404"
 version = "0.3.0"
 
 val ktorm = "3.3.0"
-val ktorVersion = "1.5.1"
+val ktor = "1.5.1"
 val yamlKtVersion = "0.7.5"
 val httpcomponents = "4.5.4"
 
@@ -29,14 +29,18 @@ dependencies {
     implementation("com.zaxxer:HikariCP:4.0.2")
 
 
+    implementation("com.alibaba:fastjson:1.2.76")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0")
     implementation("org.slf4j:slf4j-log4j12:2.0.0-alpha1")
     implementation("net.mamoe.yamlkt:yamlkt-jvm:$yamlKtVersion")
 
 
-    implementation("io.ktor:ktor-client-cio:$ktorVersion")
+    implementation("io.ktor:ktor-client-cio:$ktor")
+    implementation("io.ktor:ktor-server-netty:$ktor")
 
     implementation("org.apache.httpcomponents:httpclient:$httpcomponents")
     implementation("org.apache.httpcomponents:fluent-hc:$httpcomponents")
     implementation("org.apache.httpcomponents:httpmime:$httpcomponents")
+
+    implementation("redis.clients:jedis:3.6.0")
 }

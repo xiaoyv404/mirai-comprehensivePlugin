@@ -1,5 +1,6 @@
 package com.xiaoyv404.mirai.service.bilibili
 
+import com.xiaoyv404.mirai.databace.Bilibili
 import com.xiaoyv404.mirai.service.groupDataRead
 import com.xiaoyv404.mirai.service.tool.downloadImage
 import com.xiaoyv404.mirai.service.tool.parsingVideoDataString
@@ -13,7 +14,7 @@ import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
 
 fun b23ShortLinkEntrance() {
     GlobalEventChannel.subscribeGroupMessages {
-        matching(regular.b23Find).invoke {
+        finding(Bilibili.b23Find).invoke {
             suspend fun uJsonVideo(uJsonVideo: String) {
                 val pJson = format.decodeFromString<VideoDataJson>(uJsonVideo)
                 group.sendMessage(
@@ -22,19 +23,22 @@ fun b23ShortLinkEntrance() {
                         .plus(parsingVideoDataString(pJson))
                 )
             }
-            if (groupDataRead(group.id) == true) {
-                val b23Data = b23DataGet(regular.b23Find.find(message.contentToString())!!.value)
-                when {
-                    regular.biliBvFind.containsMatchIn(b23Data) -> uJsonVideo(
-                        videoDataGet(
-                            regular.biliBvFind.find(b23Data)!!
-                                .value,
-                            "bvid"
+            when (groupDataRead(group.id)[0].biliStatus) {
+                1    -> {
+                    val b23Data = b23DataGet(Bilibili.b23Find.find(it)!!.value)
+                    when {
+                        Bilibili.biliBvFind.containsMatchIn(b23Data) -> uJsonVideo(
+                            videoDataGet(
+                                Bilibili.biliBvFind.find(b23Data)!!
+                                    .value,
+                                "bvid"
+                            )
                         )
-                    )
+                    }
                 }
-            } else {
-                group.sendMessage("喵, 好像没开启BiliBili解析功能哦")
+                -1   -> {
+                }
+                else -> group.sendMessage("喵, 好像没开启BiliBili解析功能哦")
             }
         }
     }

@@ -1,4 +1,4 @@
-package com.xiaoyv404.mirai.service.setu
+package com.xiaoyv404.mirai.service.ero.localGallery
 
 import kotlinx.serialization.Serializable
 
@@ -6,16 +6,16 @@ fun sequenceInformation(ii: ImageInfo): String =
     "作品ID: ${ii.id}\n" +
         "标题: ${ii.title}\n" +
         "标签: ${ii.tags}\n" +
-        "图片数: ${ii.picturesMun}\n" +
+        "图片数: ${ii.picturesNum}\n" +
         "作者名称: ${ii.userName}\n" +
         "作者ID: ${ii.userId}"
 
 data class ImageInfo(
     val id: Long,
-    val picturesMun: Int,
+    val picturesNum: Int,
     val title: String,
     val tags: String,
-    val userId: String,
+    val userId: Long,
     val userName: String,
 )
 

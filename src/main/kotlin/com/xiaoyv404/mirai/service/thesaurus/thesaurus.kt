@@ -3,38 +3,18 @@ package com.xiaoyv404.mirai.service.thesaurus
 import com.xiaoyv404.mirai.databace.Database
 import com.xiaoyv404.mirai.databace.dao.Thesaurus
 import net.mamoe.mirai.event.GlobalEventChannel
-import net.mamoe.mirai.event.subscribeGroupMessages
+import net.mamoe.mirai.event.subscribeMessages
+import net.mamoe.mirai.message.nextMessage
 import org.ktorm.dsl.insert
 
-
-var senderId: Long = 0
-var SendFrequency: Int = 0
-
-var question: String = ""
-var reply: String = ""
-
 fun thesaurusEntrance() {
-    GlobalEventChannel.subscribeGroupMessages {
-        always {
-            if (senderId == sender.id) {
-                if (SendFrequency == 2) {
-                    reply = message.serializeToMiraiCode()
-                    SendFrequency = 0
-                    increaseEntry(question, reply, senderId)
-                    group.sendMessage("success")
-                }
-                if (SendFrequency == 1) {
-                    question = message.serializeToMiraiCode()
-                    group.sendMessage("请发送reply")
-                    SendFrequency++
-                }
-            }
-            if (message.contentToString() == "!!创建词条") {
-                SendFrequency = 0
-                senderId = sender.id
-                group.sendMessage("请发送question")
-                SendFrequency++
-            }
+    GlobalEventChannel.subscribeMessages {
+        finding(Regex("^(!!创建词条)\$")) {
+            subject.sendMessage("请发送question")
+            val question = nextMessage().serializeToMiraiCode()
+            subject.sendMessage("请发送reply")
+            val reply = nextMessage().serializeToMiraiCode()
+            increaseEntry(question, reply, sender.id)
         }
     }
 }
