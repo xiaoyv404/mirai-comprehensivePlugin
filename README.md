@@ -1,4 +1,4 @@
-<div style="text-align: center;">
+<div align="center">
    <img width="157" src="doc/mirai-157x157.png" alt="logo">
    <br>
    <img width="95" src="doc/mirai.svg" alt="title">
