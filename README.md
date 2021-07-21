@@ -1,5 +1,5 @@
 <div align="center">
-   <img width="1139" src="doc/mirai.png" alt="logo"></br>
+   <img width="160" src="doc/mirai.png" alt="logo"></br>
 
    <img width="95" src="doc/mirai.svg" alt="title">
 
