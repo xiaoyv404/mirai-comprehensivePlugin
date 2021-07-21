@@ -13,7 +13,7 @@ object PluginConfig : AutoSavePluginConfig("404.404ComprehensiveBotConfig") {
 data class DatabaseConfig(
     @Comment(
         """
-        数据库地址，支持MariaDB和MySQL数据库.
+        数据库地址，支持MySQL数据库.
         默认值：localhost
     """
     )

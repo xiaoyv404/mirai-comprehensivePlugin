@@ -3,3 +3,4 @@
 /run/
 /src/test/
 /build/
+/gradle.properties
