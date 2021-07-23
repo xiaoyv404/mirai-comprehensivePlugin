@@ -1,28 +1,39 @@
 plugins {
-    kotlin("jvm") version "1.4.30-M1"
-    kotlin("plugin.serialization") version "1.4.0"
-    id("net.mamoe.mirai-console") version "2.5.0"
+    val kotlinVersion = "1.5.10"
+    kotlin("jvm") version kotlinVersion
+    kotlin("plugin.serialization") version kotlinVersion
+
+    id("net.mamoe.mirai-console") version "2.6.7"
 }
 
 group = "com.xiaoyv404"
 version = "0.3.0"
 
 val ktorm = "3.3.0"
-val ktor = "1.5.1"
+val ktor = "1.6.1"
 val yamlKtVersion = "0.7.5"
 val httpcomponents = "4.5.4"
 
 repositories {
-    //国内镜像源
-    maven { url = uri("https://mirrors.huaweicloud.com/repository/maven") }
-    maven { url = uri("https://maven.aliyun.com/nexus/content/repositories/jcenter") }
-    maven { url = uri("https://dl.bintray.com/kotlin/kotlin-eap") }
     mavenLocal()
+
+    // 阿里云云效仓库：https://maven.aliyun.com/mvn/guide
+    maven("https://maven.aliyun.com/repository/public")
+    maven("https://maven.aliyun.com/repository/google")
+    maven("https://maven.aliyun.com/repository/gradle-plugin")
+    // 华为开源镜像：https://mirrors.huaweicloud.com
+    maven("https://repo.huaweicloud.com/repository/maven")
+    // JitPack 远程仓库：https://jitpack.io
+    maven("https://jitpack.io")
+
+    // MavenCentral 远程仓库：https://mvnrepository.com
     mavenCentral()
+    gradlePluginPortal()
+    google()
     jcenter()
 }
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.30-M1")
+    compileOnly("net.mamoe.yamlkt:yamlkt-jvm:$yamlKtVersion")
 
     implementation("mysql:mysql-connector-java:8.0.19")
     implementation("org.ktorm:ktorm-core:$ktorm")
@@ -30,13 +41,11 @@ dependencies {
 
 
     implementation("com.alibaba:fastjson:1.2.76")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0")
     implementation("org.slf4j:slf4j-log4j12:2.0.0-alpha1")
-    implementation("net.mamoe.yamlkt:yamlkt-jvm:$yamlKtVersion")
-
 
     implementation("io.ktor:ktor-client-cio:$ktor")
     implementation("io.ktor:ktor-server-netty:$ktor")
+
 
     implementation("org.apache.httpcomponents:httpclient:$httpcomponents")
     implementation("org.apache.httpcomponents:fluent-hc:$httpcomponents")

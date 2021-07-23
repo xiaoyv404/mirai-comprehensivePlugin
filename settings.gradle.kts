@@ -1,11 +1,14 @@
 pluginManagement {
     repositories {
         mavenLocal()
-        gradlePluginPortal()
+        maven( "https://maven.aliyun.com/repository/releases")
+        maven( "https://maven.aliyun.com/repository/public")
         mavenCentral()
         jcenter()
-        maven("https://dl.bintray.com/kotlin/kotlin-eap")
+        maven( "https://maven.aliyun.com/repository/gradle-plugin")
+        gradlePluginPortal()
     }
 }
-//这里改生成的插件名称
+
+
 rootProject.name = "ComprehensivePlugin"

@@ -14,7 +14,7 @@ data class ServerInformation(
 data class ServerInformationFormat(
     val description: String,
     val host: String,
-    val icon: String,
+    val icon: String? = null,
     val motd: Motd,
     val players: Players,
     val port: Int,

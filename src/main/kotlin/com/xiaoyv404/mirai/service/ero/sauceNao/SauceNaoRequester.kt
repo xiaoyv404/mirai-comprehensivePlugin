@@ -4,7 +4,6 @@ import com.xiaoyv404.mirai.PluginConfig
 import com.xiaoyv404.mirai.PluginMain
 import com.xiaoyv404.mirai.service.tool.KtorUtils
 import io.ktor.client.request.*
-import io.ktor.util.*
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import net.mamoe.mirai.contact.Contact
@@ -26,7 +25,6 @@ class SauceNaoRequester(private val subject: Contact) {
     }
     private var result: SauceNaoResponse.Result? = null
 
-    @KtorExperimentalAPI
     suspend fun search(image: Image) {
         try {
             val json: String =
@@ -57,7 +55,6 @@ class SauceNaoRequester(private val subject: Contact) {
         result = res.results[0]
     }
 
-    @KtorExperimentalAPI
     suspend fun sendResult(message: MessageChain) {
         val image = KtorUtils.normalClient.get<InputStream>(result!!.header.thumbnail).uploadAsImage(subject)
         val msg = when (result!!.header.index_id) {

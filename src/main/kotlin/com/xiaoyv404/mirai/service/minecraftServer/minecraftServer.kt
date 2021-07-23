@@ -3,6 +3,7 @@ package com.xiaoyv404.mirai.service.minecraftServer
 import com.xiaoyv404.mirai.databace.Command
 import io.ktor.client.features.*
 import io.netty.channel.ConnectTimeoutException
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.decodeFromString
@@ -11,6 +12,7 @@ import net.mamoe.mirai.event.subscribeGroupMessages
 import net.mamoe.mirai.message.data.buildForwardMessage
 import java.util.*
 
+@DelicateCoroutinesApi
 fun minecraftServerEntrance() {
     Timer().schedule(object : TimerTask() {
         override fun run() {

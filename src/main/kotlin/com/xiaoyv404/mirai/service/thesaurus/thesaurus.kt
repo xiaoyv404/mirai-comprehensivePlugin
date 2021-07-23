@@ -15,6 +15,7 @@ fun thesaurusEntrance() {
             subject.sendMessage("Çë·¢ËÍreply")
             val reply = nextMessage().serializeToMiraiCode()
             increaseEntry(question, reply, sender.id)
+            subject.sendMessage("success")
         }
     }
 }
