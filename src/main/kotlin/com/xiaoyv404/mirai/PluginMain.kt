@@ -11,7 +11,7 @@ import com.xiaoyv404.mirai.service.minecraftServer.minecraftServerEntrance
 import com.xiaoyv404.mirai.service.someThinkEntrance
 import com.xiaoyv404.mirai.service.thesaurus.thesaurusEntrance
 import com.xiaoyv404.mirai.service.webAPI.webAPIEntrance
-import kotlinx.coroutines.DelicateCoroutinesApi
+import io.ktor.util.*
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescription
 import net.mamoe.mirai.console.plugin.jvm.KotlinPlugin
 import net.mamoe.mirai.console.plugin.version
@@ -32,7 +32,7 @@ object PluginMain : KotlinPlugin(
         version = Version.PLUGINVERSION
     )
 ) {
-    @DelicateCoroutinesApi
+    @KtorExperimentalAPI
     @MiraiExperimentalApi
     @MiraiInternalApi
     override fun onEnable() {

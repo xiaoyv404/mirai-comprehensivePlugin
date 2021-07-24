@@ -14,8 +14,14 @@ fun thesaurusEntrance() {
             val question = nextMessage().serializeToMiraiCode()
             subject.sendMessage("请发送reply")
             val reply = nextMessage().serializeToMiraiCode()
-            increaseEntry(question, reply, sender.id)
-            subject.sendMessage("success")
+            subject.sendMessage(
+                "question: $question\n" +
+                    "reply: $reply\n"
+                    + "请输入[y]以确认"
+            )
+            if (nextMessage().contentToString() == "y")
+                increaseEntry(question, reply, sender.id)
+            subject.sendMessage ("success")
         }
     }
 }

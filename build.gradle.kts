@@ -10,7 +10,7 @@ group = "com.xiaoyv404"
 version = "0.3.0"
 
 val ktorm = "3.3.0"
-val ktor = "1.6.1"
+val ktor = "1.5.1"
 val yamlKtVersion = "0.7.5"
 val httpcomponents = "4.5.4"
 

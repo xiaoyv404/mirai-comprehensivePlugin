@@ -4,6 +4,7 @@ import com.xiaoyv404.mirai.PluginConfig
 import com.xiaoyv404.mirai.PluginMain
 import com.xiaoyv404.mirai.service.tool.KtorUtils
 import io.ktor.client.request.*
+import io.ktor.util.*
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import net.mamoe.mirai.contact.Contact
@@ -16,7 +17,7 @@ import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
 import java.io.InputStream
 import java.net.URLDecoder
 
-
+@KtorExperimentalAPI
 @Suppress("BlockingMethodInNonBlockingContext")
 class SauceNaoRequester(private val subject: Contact) {
     private val jsonBuild = Json {

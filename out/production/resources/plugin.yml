@@ -1,0 +1,6 @@
+name: "ComprehensivePlugin"
+author: "xiaoyv404"
+version: "0.3.0"
+main: "com.xiaoyv404.ComprehensivePlugin"
+info: "A Comprehensive Plugin!"
+depends: [ ]
