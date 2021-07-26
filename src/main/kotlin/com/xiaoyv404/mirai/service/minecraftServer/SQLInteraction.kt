@@ -4,19 +4,13 @@ import com.xiaoyv404.mirai.databace.Database
 import com.xiaoyv404.mirai.databace.dao.MinecraftServerMaps
 import com.xiaoyv404.mirai.databace.dao.MinecraftServers
 import io.ktor.util.*
-import net.mamoe.mirai.Bot
-import net.mamoe.mirai.contact.Contact
 import org.ktorm.dsl.*
 
 @KtorExperimentalAPI
 suspend fun serverStatusProcess() {
     val sIL = getServerInformation()
     sIL.forEach {
-        val groups = mutableListOf<Contact>()
-        getServerMapByServerID(it.id).forEach { gid ->
-            groups.add(Bot.getInstance(2079373402).getGroup(gid!!)!!)
-        }
-        MinecraftServerStatusRequester(groups).check(it)
+        MinecraftServerStatusRequester().check(it)
     }
 }
 

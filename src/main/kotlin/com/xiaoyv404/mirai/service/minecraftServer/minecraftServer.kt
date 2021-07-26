@@ -10,6 +10,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
+import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.event.GlobalEventChannel
 import net.mamoe.mirai.event.subscribeGroupMessages
@@ -37,7 +38,7 @@ fun minecraftServerEntrance() {
             } else {
                 getServerMapByGroupID(group.id).forEach { si ->
                     getServerInformationByServerID(si!!).forEach { sv ->
-                        MinecraftServerStatusRequester(listOf(group)).check(
+                        MinecraftServerStatusRequester(group).check(
                             sv,
                             if (rd[10]?.value == "-p")
                                 2U
@@ -51,69 +52,92 @@ fun minecraftServerEntrance() {
     }
 }
 
-class MinecraftServerStatusRequester(private val group: List<Contact>) {
+class MinecraftServerStatusRequester(private var group: Contact? = null) {
     @KtorExperimentalAPI
-    suspend fun check(si: ServerInformation, control: UInt? = 0U) {
-        if (si.status != -1) {
+    suspend fun check(si: ServerInformation, control: UInt = 0U) {
+        if (si.status != -2) {
             try {
-                val pJ = getServerInfo(si.host, si.port)
-                updateServerInformation(si.id, 1)
-                if (si.status == 0 || control != 0U) {
-                    group.forEach { g ->
-                        g.sendMessage(
-                            "服务器${si.name} is Online\n" +
-                                "IP: ${si.host}:${si.port}\n" +
-                                "人数: ${pJ.players.online}/${pJ.players.max}"
-
-                        )// todo 建议回答已经被吃掉了（离线）/熟了（极卡）/快熟了（有点卡）/ 还没熟（不咋卡）
+                val information = getServerInfo(si.host, si.port)
+                val pJ = information.serverInformationFormat
+                val groups = mutableListOf<Contact>()
+                if ((si.status != information.status.toInt()) && si.status != -1) {
+                    getServerMapByServerID(si.id).forEach { gid ->
+                        groups.add(Bot.getInstance(2079373402).getGroup(gid!!)!!)
                     }
-                    if (control == 2U) {
-                        group[0].let {
-                            it.sendMessage(
-                                buildForwardMessage(it) {
-                                    pJ.players.players.forEach { player ->
-                                        it.bot.says(
-                                            "name: ${player.name}\n" +
-                                                "id: ${player.id}"
-                                        )
-                                    }
-                                }
-                            )
+                } else {
+                    group?.let { groups.add(it) }
+                }
+                when (information.status) {
+                    1U -> {
+                        groups.forEach { g ->
+                            g.sendMessage(
+                                "服务器${si.name} is Online\n" +
+                                    "IP: ${si.host}:${si.port}\n" +
+                                    "人数: ${pJ!!.players.online}/${pJ.players.max}"
+                            )// todo 建议回答已经被吃掉了（离线）/熟了（极卡）/快熟了（有点卡）/ 还没熟（不咋卡）
+                        }
+                        if (control == 2U) {
+                            sendPlayerList(pJ!!.players.players)
+                        }
+                        if (si.status != 1) {
+                            updateServerInformation(si.id, 1)
                         }
                     }
-                }
-            } catch (e: ServerResponseException) {
-                when {
-                    (si.status == 1 && control == 0U) ->
-                        updateServerInformation(si.id, -2)
-                    (si.status == -1 || control != 0U) -> {
-                        updateServerInformation(si.id, 0)
-                        group.forEach { g ->
+                    0U -> {
+                        groups.forEach { g ->
                             g.sendMessage(
                                 ":(\n" +
                                     "${si.name} is Offline\n" +
                                     "IP: ${si.host}:${si.port}"
                             )
                         }
+                        when (si.status) {
+                            1 -> updateServerInformation(
+                                    si.id,
+                                    if (control == 0U)
+                                        -1
+                                    else
+                                        0
+                                )
+                            -1 -> updateServerInformation(si.id, 0)
+                        }
                     }
-
                 }
             } catch (e: ConnectTimeoutException) {
-                group.forEach { g ->
-                    g.sendMessage("无法连接到分析服务器")
-                }
+                group?.sendMessage("无法连接到分析服务器")
             }
         }
     }
+
+    private suspend fun sendPlayerList(players: List<Player>) {
+        group!!.sendMessage(
+            buildForwardMessage(group!!) {
+                players.forEach { player ->
+                    group!!.bot.says(
+                        "name: ${player.name}\n" +
+                            "id: ${player.id}"
+                    )
+                }
+            }
+        )
+    }
 }
 
+
 @KtorExperimentalAPI
-suspend fun getServerInfo(host: String, port: Int): ServerInformationFormat {
-    return Json.decodeFromString<ServerInformationFormat>(
-        KtorUtils.normalClient.get(
-            "http://127.0.0.1:8080/server?" +
-                "host=$host&" +
-                "port=$port"
+suspend fun getServerInfo(host: String, port: Int): ServerInformationFormatAndStatus {
+    val pJ = ServerInformationFormatAndStatus()
+    return try {
+        pJ.serverInformationFormat = Json.decodeFromString(
+            KtorUtils.normalClient.get(
+                "http://127.0.0.1:8080/server?" +
+                    "host=$host&" +
+                    "port=$port"
+            )
         )
-    )
+        pJ
+    } catch (e: ServerResponseException) {
+        pJ.status = 0U
+        pJ
+    }
 }

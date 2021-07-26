@@ -185,10 +185,13 @@ fun someThinkEntrance() {
                                 val entryMassage = message.serializeToMiraiCode()
                                 if (entryMassage != "") {
                                     bot.groups.forEach {
-                                        bot.getGroup(it.id)
-                                            ?.sendMessage(
-                                                MiraiCode.deserializeMiraiCode(entryMassage)
-                                            )
+                                        if (getAllBroadcastBlacklist(it.id) != 1){
+                                            bot.getGroup(it.id)
+                                                ?.sendMessage(
+                                                    MiraiCode.deserializeMiraiCode(entryMassage)
+                                                )
+                                        }
+
                                     }
                                 }
                             }

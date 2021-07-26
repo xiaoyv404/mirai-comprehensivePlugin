@@ -97,3 +97,14 @@ fun updateUserBot(id: Long, status: Boolean) {
             }
         }
 }
+
+fun getAllBroadcastBlacklist(id: Long): Int {
+    var status = 0
+
+    Database.db
+        .from(Groups)
+        .select().where { Groups.id eq id }
+        .forEach { row -> status = row[Groups.allBroadcastBlacklist]!! }
+
+    return status
+}

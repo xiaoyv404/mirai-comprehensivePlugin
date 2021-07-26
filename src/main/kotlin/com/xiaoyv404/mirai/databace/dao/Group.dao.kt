@@ -10,6 +10,7 @@ interface Group : Entity<Group> {
     val biliStatus: Int
     val eroStatus: Int
     val thesaurusStatus: Int
+    val allBroadcastBlacklist: Int
 }
 
 object Groups : Table<Group>("Groups") {
@@ -17,4 +18,5 @@ object Groups : Table<Group>("Groups") {
     val biliStatus = int("biliStatus")
     val eroStatus = int("eroStatus")
     val thesaurusStatus = int("thesaurusStatus")
+    val allBroadcastBlacklist = int("allBroadcastBlacklist")
 }

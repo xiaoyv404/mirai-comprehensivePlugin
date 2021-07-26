@@ -10,6 +10,11 @@ data class ServerInformation(
     val name: String
 )
 
+data class ServerInformationFormatAndStatus(
+    var serverInformationFormat: ServerInformationFormat? = null,
+    var status: UInt = 1U
+)
+
 @Serializable
 data class ServerInformationFormat(
     val description: String,
@@ -19,7 +24,7 @@ data class ServerInformationFormat(
     val players: Players,
     val port: Int,
     val protocolVersion: Int,
-    val version: String
+    val version: String,
 )
 
 @Serializable
