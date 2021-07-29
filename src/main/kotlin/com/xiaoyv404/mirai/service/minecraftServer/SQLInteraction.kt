@@ -3,16 +3,7 @@ package com.xiaoyv404.mirai.service.minecraftServer
 import com.xiaoyv404.mirai.databace.Database
 import com.xiaoyv404.mirai.databace.dao.MinecraftServerMaps
 import com.xiaoyv404.mirai.databace.dao.MinecraftServers
-import io.ktor.util.*
 import org.ktorm.dsl.*
-
-@KtorExperimentalAPI
-suspend fun serverStatusProcess() {
-    val sIL = getServerInformation()
-    sIL.forEach {
-        MinecraftServerStatusRequester().check(it)
-    }
-}
 
 fun getServerInformation(): List<ServerInformation> {
     return Database.db

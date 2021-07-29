@@ -1,12 +1,12 @@
 package com.xiaoyv404.mirai.service.minecraftServer
 
+import com.xiaoyv404.mirai.PluginMain
 import com.xiaoyv404.mirai.databace.Command
 import com.xiaoyv404.mirai.service.tool.KtorUtils
 import io.ktor.client.features.*
 import io.ktor.client.request.*
 import io.ktor.util.*
 import io.netty.channel.ConnectTimeoutException
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
@@ -21,8 +21,12 @@ import java.util.*
 fun minecraftServerEntrance() {
     Timer().schedule(object : TimerTask() {
         override fun run() {
-            GlobalScope.launch {
-                serverStatusProcess()
+            PluginMain.launch {
+                getServerInformation().forEach {
+                    PluginMain.launch {
+                        MinecraftServerStatusRequester().check(it)
+                    }
+                }
             }
         }
     }, Date(), 60000)
@@ -55,31 +59,36 @@ fun minecraftServerEntrance() {
 class MinecraftServerStatusRequester(private var group: Contact? = null) {
     @KtorExperimentalAPI
     suspend fun check(si: ServerInformation, control: UInt = 0U) {
-        if (si.status != -2) {
+        val dStatus = si.status
+
+        if (dStatus != -2) {
             try {
                 val information = getServerInfo(si.host, si.port)
-                val pJ = information.serverInformationFormat
+                val players = information.serverInformationFormat!!.players
                 val groups = mutableListOf<Contact>()
-                if ((si.status != information.status.toInt()) && si.status != -1) {
+                val status = information.status
+
+                if (dStatus != status.toInt() && dStatus != 1 && !((dStatus == -1) && (status == 1U))) {
                     getServerMapByServerID(si.id).forEach { gid ->
                         groups.add(Bot.getInstance(2079373402).getGroup(gid!!)!!)
                     }
                 } else {
                     group?.let { groups.add(it) }
                 }
-                when (information.status) {
+                when (status) {
                     1U -> {
                         groups.forEach { g ->
                             g.sendMessage(
                                 "服务器${si.name} is Online\n" +
                                     "IP: ${si.host}:${si.port}\n" +
-                                    "人数: ${pJ!!.players.online}/${pJ.players.max}"
+                                    "人数: ${players.online}/${players.max}"
                             )// todo 建议回答已经被吃掉了（离线）/熟了（极卡）/快熟了（有点卡）/ 还没熟（不咋卡）
                         }
+
                         if (control == 2U) {
-                            sendPlayerList(pJ!!.players.players)
+                            sendPlayerList(players.players)
                         }
-                        if (si.status != 1) {
+                        if (dStatus != 1) {
                             updateServerInformation(si.id, 1)
                         }
                     }
@@ -91,14 +100,14 @@ class MinecraftServerStatusRequester(private var group: Contact? = null) {
                                     "IP: ${si.host}:${si.port}"
                             )
                         }
-                        when (si.status) {
+                        when (dStatus) {
                             1 -> updateServerInformation(
-                                    si.id,
-                                    if (control == 0U)
-                                        -1
-                                    else
-                                        0
-                                )
+                                si.id,
+                                if (control == 0U)
+                                    -1
+                                else
+                                    0
+                            )
                             -1 -> updateServerInformation(si.id, 0)
                         }
                     }

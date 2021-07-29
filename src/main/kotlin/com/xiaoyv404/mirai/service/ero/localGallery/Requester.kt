@@ -6,9 +6,9 @@ import com.xiaoyv404.mirai.databace.Pixiv
 import com.xiaoyv404.mirai.service.ero.increaseEntry
 import com.xiaoyv404.mirai.service.tool.FileUtils
 import com.xiaoyv404.mirai.service.tool.KtorUtils
-import com.xiaoyv404.mirai.service.tool.dataGet
 import com.xiaoyv404.mirai.service.tool.downloadImage
 import io.ktor.client.request.*
+import io.ktor.util.*
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import java.io.File
@@ -17,6 +17,7 @@ import java.sql.SQLIntegrityConstraintViolationException
 
 val format = Json { ignoreUnknownKeys = true }
 
+@KtorExperimentalAPI
 suspend fun unformat(id: String, senderId: Long): ImageInfo {
     var num = 1
     val formatInfo: String
@@ -45,7 +46,7 @@ suspend fun unformat(id: String, senderId: Long): ImageInfo {
 
         FileUtils.saveFileFromStream(`in`, File("${PluginConfig.database.SaveAddress}$id.png"))
     } catch (e: Exception) {
-        num = Pixiv.worksNumberFind.find(dataGet("https://pixiv.cat/$id.png"))!!.value.toInt()
+        num = Pixiv.worksNumberFind.find(KtorUtils.proxyClient.get("https://pixiv.cat/$id.png"))!!.value.toInt()
 
         for (i in 1..num) {
             val `in`: InputStream = downloadImage("https://pixiv.cat/$id-$i.png")!!

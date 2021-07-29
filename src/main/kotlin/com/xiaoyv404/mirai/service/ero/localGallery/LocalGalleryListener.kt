@@ -6,6 +6,7 @@ import com.xiaoyv404.mirai.service.ero.*
 import com.xiaoyv404.mirai.service.getUserInformation
 import com.xiaoyv404.mirai.service.groupDataRead
 import com.xiaoyv404.mirai.service.tool.downloadImage
+import io.ktor.util.*
 import net.mamoe.mirai.contact.Contact.Companion.sendImage
 import net.mamoe.mirai.event.GlobalEventChannel
 import net.mamoe.mirai.event.subscribeMessages
@@ -13,6 +14,7 @@ import net.mamoe.mirai.message.data.buildForwardMessage
 import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
 import java.io.File
 
+@KtorExperimentalAPI
 fun localGalleryListener() {
     GlobalEventChannel.subscribeMessages {
         finding(Command.ero) {

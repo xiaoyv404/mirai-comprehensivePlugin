@@ -12,9 +12,3 @@ suspend fun downloadImage(url: String): InputStream? {
         null
     }
 }
-
-suspend fun dataGet(url: String): String {
-    return HttpClient() {
-        expectSuccess = false
-    }.use { clien -> clien.get(url) }
-}
