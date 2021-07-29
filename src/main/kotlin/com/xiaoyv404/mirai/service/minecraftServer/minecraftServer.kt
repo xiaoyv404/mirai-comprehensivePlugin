@@ -64,7 +64,7 @@ class MinecraftServerStatusRequester(private var group: Contact? = null) {
         if (dStatus != -2) {
             try {
                 val information = getServerInfo(si.host, si.port)
-                val players = information.serverInformationFormat!!.players
+                val players = information.serverInformationFormat?.players
                 val groups = mutableListOf<Contact>()
                 val status = information.status
 
@@ -81,12 +81,12 @@ class MinecraftServerStatusRequester(private var group: Contact? = null) {
                             g.sendMessage(
                                 "服务器${si.name} is Online\n" +
                                     "IP: ${si.host}:${si.port}\n" +
-                                    "人数: ${players.online}/${players.max}"
+                                    "人数: ${players!!.online}/${players.max}"
                             )// todo 建议回答已经被吃掉了（离线）/熟了（极卡）/快熟了（有点卡）/ 还没熟（不咋卡）
                         }
 
                         if (control == 2U) {
-                            sendPlayerList(players.players)
+                            sendPlayerList(players!!.players)
                         }
                         if (dStatus != 1) {
                             updateServerInformation(si.id, 1)
