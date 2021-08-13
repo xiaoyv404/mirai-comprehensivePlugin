@@ -16,7 +16,7 @@ object Database {
         object DISCONNECTED : ConnectionStatus()
     }
 
-//    lateinit var rdb: JedisPool
+//lateinit var rdb: JedisPool
 lateinit var db: Database
     private var connectionStatus: ConnectionStatus = ConnectionStatus.DISCONNECTED
 

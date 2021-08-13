@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataSource name="mirai-404@localhost">
-  <database-model serializer="dbm" dbms="MYSQL" family-id="MYSQL" format-version="4.20">
+  <database-model serializer="dbm" dbms="MYSQL" family-id="MYSQL" format-version="4.23">
     <root id="1">
       <ServerVersion>8.0.23</ServerVersion>
       <DefaultEngine>InnoDB</DefaultEngine>
@@ -882,34 +882,18 @@
     </collation>
     <user id="279" parent="1" name="404">
       <Host>localhost</Host>
-      <ObjectGrants>SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,RELOAD,SHUTDOWN,PROCESS,FILE,REFERENCES,INDEX,ALTER,SHOW DATABASES,SUPER,CREATE TEMPORARY TABLES,LOCK TABLES,EXECUTE,REPLICATION SLAVE,REPLICATION CLIENT,CREATE VIEW,SHOW VIEW,CREATE ROUTINE,ALTER ROUTINE,CREATE USER,EVENT,TRIGGER,CREATE TABLESPACE,CREATE ROLE,DROP ROLE
-</ObjectGrants>
     </user>
     <user id="280" parent="1" name="mysql.infoschema">
       <Host>localhost</Host>
-      <ObjectGrants>SELECT
-SYSTEM_USER
-</ObjectGrants>
     </user>
     <user id="281" parent="1" name="mysql.session">
       <Host>localhost</Host>
-      <ObjectGrants>SHUTDOWN,SUPER
-BACKUP_ADMIN,CLONE_ADMIN,CONNECTION_ADMIN,PERSIST_RO_VARIABLES_ADMIN,SESSION_VARIABLES_ADMIN,SYSTEM_USER,SYSTEM_VARIABLES_ADMIN
-SELECT|performance_schema
-SELECT|mysql.user
-</ObjectGrants>
     </user>
     <user id="282" parent="1" name="mysql.sys">
       <Host>localhost</Host>
-      <ObjectGrants>SYSTEM_USER
-TRIGGER|sys
-SELECT|sys.sys_config
-</ObjectGrants>
     </user>
     <user id="283" parent="1" name="root">
       <Host>localhost</Host>
-      <ObjectGrants>SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,RELOAD,SHUTDOWN,PROCESS,FILE,REFERENCES,INDEX,ALTER,SHOW DATABASES,SUPER,CREATE TEMPORARY TABLES,LOCK TABLES,EXECUTE,REPLICATION SLAVE,REPLICATION CLIENT,CREATE VIEW,SHOW VIEW,CREATE ROUTINE,ALTER ROUTINE,CREATE USER,EVENT,TRIGGER,CREATE TABLESPACE,CREATE ROLE,DROP ROLE!
-</ObjectGrants>
     </user>
     <table id="284" parent="3" name="gallerys">
       <Collation>utf8mb4_0900_ai_ci</Collation>

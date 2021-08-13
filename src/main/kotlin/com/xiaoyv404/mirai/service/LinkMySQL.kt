@@ -21,11 +21,11 @@ data class Group(
 )
 
 data class Thesauru(
-    val id: Int?,
-    val question: String?,
-    val reply: String?,
-    val creator: Long?,
-    val weight: Int?
+    val id: Long,
+    val question: String,
+    val reply: String,
+    val creator: Long,
+    val weight: Int
 )
 
 //Read
@@ -63,7 +63,7 @@ fun queryTerm(question: String): List<Thesauru> {
         .from(Thesaurus)
         .select()
         .where { Thesaurus.question eq question }
-        .map { row -> Thesauru(null, null, row[Thesaurus.reply], null, row[Thesaurus.weight]) }
+        .map { row -> Thesauru(row[Thesaurus.id]!!, row[Thesaurus.question]!!, row[Thesaurus.reply]!!, row[Thesaurus.creator]!!, row[Thesaurus.weight]!!) }
 }
 
 

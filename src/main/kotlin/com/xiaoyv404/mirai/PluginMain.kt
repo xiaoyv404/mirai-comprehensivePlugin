@@ -5,11 +5,12 @@ import com.xiaoyv404.mirai.service.bilibili.b23ShortLinkEntrance
 import com.xiaoyv404.mirai.service.bilibili.biliVideoEntrance
 import com.xiaoyv404.mirai.service.bilibili.informationEntrance
 import com.xiaoyv404.mirai.service.ero.eroEntrance
-import com.xiaoyv404.mirai.service.helper.helperMainEntrance
+import com.xiaoyv404.mirai.service.helper.bugReporterEntrance
 import com.xiaoyv404.mirai.service.history.historyEntrance
 import com.xiaoyv404.mirai.service.minecraftServer.minecraftServerEntrance
 import com.xiaoyv404.mirai.service.someThinkEntrance
 import com.xiaoyv404.mirai.service.thesaurus.thesaurusEntrance
+import com.xiaoyv404.mirai.service.tool.KtorUtils
 import com.xiaoyv404.mirai.service.webAPI.webAPIEntrance
 import io.ktor.util.*
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescription
@@ -46,7 +47,7 @@ object PluginMain : KotlinPlugin(
         biliVideoEntrance()
         informationEntrance()
 
-        helperMainEntrance()
+        bugReporterEntrance()
         eroEntrance()
 
         thesaurusEntrance()
@@ -57,5 +58,11 @@ object PluginMain : KotlinPlugin(
         minecraftServerEntrance()
 
         webAPIEntrance()
+    }
+
+    @KtorExperimentalAPI
+    override fun onDisable() {
+        // 关闭ktor客户端, 防止堵塞线程无法关闭
+        KtorUtils.closeClient()
     }
 }

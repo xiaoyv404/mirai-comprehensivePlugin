@@ -37,7 +37,7 @@ fun localGalleryListener() {
                     subject.sendMessage("少女祈祷中...")
 
                 for (i in 1..num) {
-                    val im = downloadImage(setuAPIurl)
+                    val im = downloadImage(setuAPIUrl)
                     if (im != null)
                         subject.sendImage(im)
                     else
@@ -78,7 +78,7 @@ fun localGalleryListener() {
                                     }
                                 )
                             }
-                        }
+                        }   
                     } catch (e: Exception) {
                         subject.sendMessage("出错啦(详见控制台)")
                     }

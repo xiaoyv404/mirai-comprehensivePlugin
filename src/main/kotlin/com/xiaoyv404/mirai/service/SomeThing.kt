@@ -32,16 +32,16 @@ fun someThinkEntrance() {
                 if (entryMassages.isNotEmpty()) {
                     var total = 0
                     entryMassages.forEach {
-                        total += it.weight!!
+                        total += it.weight
                     }
                     val rad = (1..total).random()
                     var curTotal = 0
                     var res = ""
                     run {
                         entryMassages.forEach {
-                            curTotal += it.weight!!
+                            curTotal += it.weight
                             if (rad <= curTotal) {
-                                res = it.reply!!
+                                res = it.reply
                                 return@run
                             }
                         }
@@ -135,6 +135,7 @@ fun someThinkEntrance() {
         }
     }
     GlobalEventChannel.subscribeFriendMessages {
+
         matching(Command.ban) {
             if (getUserInformation(sender.id).admin == true) {
                 val rd = it.groups

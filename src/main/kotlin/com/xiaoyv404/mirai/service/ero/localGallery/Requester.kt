@@ -6,7 +6,6 @@ import com.xiaoyv404.mirai.databace.Pixiv
 import com.xiaoyv404.mirai.service.ero.increaseEntry
 import com.xiaoyv404.mirai.service.tool.FileUtils
 import com.xiaoyv404.mirai.service.tool.KtorUtils
-import com.xiaoyv404.mirai.service.tool.downloadImage
 import io.ktor.client.request.*
 import io.ktor.util.*
 import kotlinx.serialization.decodeFromString
@@ -19,7 +18,6 @@ val format = Json { ignoreUnknownKeys = true }
 
 @KtorExperimentalAPI
 suspend fun unformat(id: String, senderId: Long): ImageInfo {
-    var num = 1
     val formatInfo: String
     try {
         formatInfo = KtorUtils.proxyClient.get(
@@ -41,22 +39,37 @@ suspend fun unformat(id: String, senderId: Long): ImageInfo {
         tags += it.tag + ","
     }
     tags.subSequence(0, tags.length - 1)
-    try {
-        val `in`: InputStream = downloadImage("https://pixiv.cat/$id.png")!!
 
-        FileUtils.saveFileFromStream(`in`, File("${PluginConfig.database.SaveAddress}$id.png"))
-    } catch (e: Exception) {
-        num = Pixiv.worksNumberFind.find(KtorUtils.proxyClient.get("https://pixiv.cat/$id.png"))!!.value.toInt()
+    var num: Int
+    try{
+        num = Pixiv.worksNumberFind.find(KtorUtils.normalClient.config {
+            expectSuccess = false
+        }.get<String>("https://pixiv.cat/$id.png"))?.value?.toInt() ?: 0
+    }catch (e: Exception){
+        num = 0
+    }
 
+    if (num != 0) {
+        println("含有$num 张图片")
         for (i in 1..num) {
-            val `in`: InputStream = downloadImage("https://pixiv.cat/$id-$i.png")!!
+            val `in` = KtorUtils.normalClient.get<InputStream>("https://pixiv.cat/$id-$i.png")
             FileUtils.saveFileFromStream(`in`, File("${PluginConfig.database.SaveAddress}$id-$i.png"))
         }
-    } finally {
-        try {
-            increaseEntry(id.toLong(), 1, pJ.title, tags, pJ.userId.toLong(), pJ.userName, senderId, pJ.tags.tags)
-        } catch (e: SQLIntegrityConstraintViolationException) {
+    } else {
+        println("含有1 张图片")
+        num = try {
+            val `in` = KtorUtils.normalClient.get<InputStream>("https://pixiv.cat/$id.png")
+            FileUtils.saveFileFromStream(`in`, File("${PluginConfig.database.SaveAddress}$id.png"))
+            1
+        } catch (e: Exception) {
+            println(e)
+            0
         }
+    }
+    try {
+        increaseEntry(id.toLong(), num, pJ.title, tags, pJ.userId.toLong(), pJ.userName, senderId, pJ.tags.tags)
+    } catch (e: SQLIntegrityConstraintViolationException) {
+        PluginMain.logger.info("数据库已经保存pid: $id")
     }
 
     return ImageInfo(id.toLong(), num, pJ.title, tags, pJ.userId.toLong(), pJ.userName)

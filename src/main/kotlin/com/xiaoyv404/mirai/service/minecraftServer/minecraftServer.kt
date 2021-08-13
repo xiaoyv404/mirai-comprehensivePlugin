@@ -23,9 +23,7 @@ fun minecraftServerEntrance() {
         override fun run() {
             PluginMain.launch {
                 getServerInformation().forEach {
-                    PluginMain.launch {
-                        MinecraftServerStatusRequester().check(it)
-                    }
+                    MinecraftServerStatusRequester().check(it)
                 }
             }
         }
@@ -59,61 +57,63 @@ fun minecraftServerEntrance() {
 class MinecraftServerStatusRequester(private var group: Contact? = null) {
     @KtorExperimentalAPI
     suspend fun check(si: ServerInformation, control: UInt = 0U) {
-        val dStatus = si.status
+        PluginMain.launch {
+            val dStatus = si.status
 
-        if (dStatus != -2) {
-            try {
-                val information = getServerInfo(si.host, si.port)
-                val players = information.serverInformationFormat?.players
-                val groups = mutableListOf<Contact>()
-                val status = information.status
+            if (dStatus != -2) {
+                try {
+                    val information = getServerInfo(si.host, si.port)
+                    val players = information.serverInformationFormat?.players
+                    val groups = mutableListOf<Contact>()
+                    val status = information.status
 
-                if (dStatus != status.toInt() && dStatus != 1 && !((dStatus == -1) && (status == 1U))) {
-                    getServerMapByServerID(si.id).forEach { gid ->
-                        groups.add(Bot.getInstance(2079373402).getGroup(gid!!)!!)
+                    if (dStatus != status.toInt() && dStatus != 1 && !((dStatus == -1) && (status == 1U))) {
+                        getServerMapByServerID(si.id).forEach { gid ->
+                            groups.add(Bot.getInstance(2079373402).getGroup(gid!!)!!)
+                        }
+                    } else {
+                        group?.let { groups.add(it) }
                     }
-                } else {
-                    group?.let { groups.add(it) }
+                    when (status) {
+                        1U -> {
+                            groups.forEach { g ->
+                                g.sendMessage(
+                                    "服务器${si.name} is Online\n" +
+                                        "IP: ${si.host}:${si.port}\n" +
+                                        "人数: ${players!!.online}/${players.max}"
+                                )// todo 建议回答已经被吃掉了（离线）/熟了（极卡）/快熟了（有点卡）/ 还没熟（不咋卡）
+                            }
+
+                            if (control == 2U) {
+                                sendPlayerList(players!!.players)
+                            }
+                            if (dStatus != 1) {
+                                updateServerInformation(si.id, 1)
+                            }
+                        }
+                        0U -> {
+                            groups.forEach { g ->
+                                g.sendMessage(
+                                    ":(\n" +
+                                        "${si.name} is Offline\n" +
+                                        "IP: ${si.host}:${si.port}"
+                                )
+                            }
+                            when (dStatus) {
+                                1 -> updateServerInformation(
+                                    si.id,
+                                    if (control == 0U)
+                                        -1
+                                    else
+                                        0
+                                )
+                                -1 -> updateServerInformation(si.id, 0)
+                            }
+                        }
+                    }
+                } catch (e: ConnectTimeoutException) {
+                    group?.sendMessage("无法连接到分析服务器")
                 }
-                when (status) {
-                    1U -> {
-                        groups.forEach { g ->
-                            g.sendMessage(
-                                "服务器${si.name} is Online\n" +
-                                    "IP: ${si.host}:${si.port}\n" +
-                                    "人数: ${players!!.online}/${players.max}"
-                            )// todo 建议回答已经被吃掉了（离线）/熟了（极卡）/快熟了（有点卡）/ 还没熟（不咋卡）
-                        }
-
-                        if (control == 2U) {
-                            sendPlayerList(players!!.players)
-                        }
-                        if (dStatus != 1) {
-                            updateServerInformation(si.id, 1)
-                        }
-                    }
-                    0U -> {
-                        groups.forEach { g ->
-                            g.sendMessage(
-                                ":(\n" +
-                                    "${si.name} is Offline\n" +
-                                    "IP: ${si.host}:${si.port}"
-                            )
-                        }
-                        when (dStatus) {
-                            1 -> updateServerInformation(
-                                si.id,
-                                if (control == 0U)
-                                    -1
-                                else
-                                    0
-                            )
-                            -1 -> updateServerInformation(si.id, 0)
-                        }
-                    }
-                }
-            } catch (e: ConnectTimeoutException) {
-                group?.sendMessage("无法连接到分析服务器")
             }
         }
     }

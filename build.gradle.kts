@@ -41,7 +41,7 @@ dependencies {
 
 
     implementation("com.alibaba:fastjson:1.2.76")
-    implementation("org.slf4j:slf4j-log4j12:2.0.0-alpha1")
+    implementation("org.slf4j:slf4j-simple:1.7.25")
 
     implementation("io.ktor:ktor-client-cio:$ktor")
     implementation("io.ktor:ktor-server-netty:$ktor")

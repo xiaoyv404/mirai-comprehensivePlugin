@@ -8,7 +8,7 @@ import org.ktorm.schema.varchar
 
 
 interface Thesauru : Entity<Thesauru> {
-    val id: Int
+    val id: Long
     val question: String
     val reply: String
     val creator: Long
@@ -16,7 +16,7 @@ interface Thesauru : Entity<Thesauru> {
 }
 
 object Thesaurus : Table<Thesauru>("Thesaurus") {
-    val id = int("id").primaryKey()
+    val id = long("id").primaryKey()
     val question = varchar("question").primaryKey()
     val reply = varchar("reply")
     val creator = long("creator").primaryKey()

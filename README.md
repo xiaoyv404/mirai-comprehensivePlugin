@@ -18,9 +18,9 @@
    - 插件兼容mirai-console2.0及以上版本。
    - mirai-console需要java环境, 建议使用java11以及以上的版本运行。
 2. 插件下载
-   - 前往本项目的[releases](https://github.com/meaningtree/mirai-setu/releases) 下载插件~~自己Clone下来编译会比releases的版本快那么亿些些~~
+   - 前往本项目的[releases](https://github.com/xiaoyv404/mirai-comprehensivePlugin/releases) 下载插件~~自己Clone下来编译会比releases的版本快那么亿些些~~
 3. 配置数据库
-   - 请下载MySQL8并配置好一系列东西~~(不然就等着满屏红色吧, 欸嘿)~~
+   - 请下载MySQL8并配置好一系列东西~~不然就等着满屏红色吧, 欸嘿~~
 4. 插件运行
    - 将本放入mirai-console的plugins的文件夹然后运行mirai-console。
 
@@ -38,7 +38,8 @@
 
 ## 未来计划
 
-随缘
+1. 插件模块化
+2. AC重构
 
 ## 鸣谢
 
