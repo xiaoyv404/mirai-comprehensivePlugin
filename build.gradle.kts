@@ -3,7 +3,7 @@ plugins {
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.serialization") version kotlinVersion
 
-    id("net.mamoe.mirai-console") version "2.6.7"
+    id("net.mamoe.mirai-console") version "2.7-RC"
 }
 
 group = "com.xiaoyv404"
@@ -30,10 +30,12 @@ repositories {
     mavenCentral()
     gradlePluginPortal()
     google()
-    jcenter()
 }
 dependencies {
     compileOnly("net.mamoe.yamlkt:yamlkt-jvm:$yamlKtVersion")
+    compileOnly("org.ktorm:ktorm-jackson:$ktorm")
+    compileOnly("org.ktorm:ktorm-support-mysql:$ktorm")
+
 
     implementation("mysql:mysql-connector-java:8.0.19")
     implementation("org.ktorm:ktorm-core:$ktorm")

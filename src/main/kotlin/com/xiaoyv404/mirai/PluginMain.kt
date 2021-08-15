@@ -32,7 +32,7 @@ object PluginMain : KotlinPlugin(
         name = Version.NAME,
         version = Version.PLUGINVERSION
     )
-) {
+)       {
     @KtorExperimentalAPI
     @MiraiExperimentalApi
     @MiraiInternalApi
