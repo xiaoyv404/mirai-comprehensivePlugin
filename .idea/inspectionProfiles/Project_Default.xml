@@ -7,5 +7,6 @@
       </Languages>
     </inspection_tool>
     <inspection_tool class="HtmlDeprecatedAttribute" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SqlCallNotationInspection" enabled="false" level="ERROR" enabled_by_default="false" />
   </profile>
 </component>

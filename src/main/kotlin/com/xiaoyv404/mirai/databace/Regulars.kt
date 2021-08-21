@@ -3,7 +3,7 @@ package com.xiaoyv404.mirai.databace
 object Bilibili {
     //视频表达式
     val biliBvFind = "BV1[1-9A-NP-Za-km-z]{9}".toRegex()
-    val biliAvFind = "(av|AV)[1-9]\\d{0,18}".toRegex()
+    val biliAvFind = "(av|AV)([1-9]\\d{0,18})".toRegex()
 
     //b23站短
     val b23Find = Regex("(https?://b23.tv/\\S{6})")

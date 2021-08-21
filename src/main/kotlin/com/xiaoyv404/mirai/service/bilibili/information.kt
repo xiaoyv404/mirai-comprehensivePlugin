@@ -1,6 +1,8 @@
 package com.xiaoyv404.mirai.service.bilibili
 
 import com.xiaoyv404.mirai.databace.Command
+import com.xiaoyv404.mirai.service.getUserInformation
+import com.xiaoyv404.mirai.service.permissionRead
 import com.xiaoyv404.mirai.service.tool.downloadImage
 import io.ktor.client.*
 import io.ktor.client.request.*
@@ -13,34 +15,40 @@ import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
 fun informationEntrance() {
     GlobalEventChannel.subscribeGroupMessages {
         finding(Command.getBiliBiliUpInformation) {
-            val rd = it.groups
-            val uid = when {
-                (rd[4]?.value == null)                               -> {
-                    "437952226"
+            if ((permissionRead(
+                    sender.id,
+                    group.id,
+                    "BiliBiliParsing"
+                )) && (getUserInformation(sender.id).bot != true)
+            ) {
+                val rd = it.groups
+                val uid = when {
+                    (rd[4]?.value == null)                               -> {
+                        "437952226"
+                    }
+                    (rd[5]!!.value == "-h" || rd[5]!!.value == "--help") -> {
+                        group.sendMessage("help")
+                        return@finding
+                    }
+                    else                                                 -> {
+                        rd[5]!!.value
+                    }
                 }
-                (rd[5]!!.value == "-h" || rd[5]!!.value == "--help") -> {
-                    group.sendMessage("help")
-                    return@finding
+                try {
+                    val pD = format.decodeFromString<UserData>(statDataGet(uid)).data
+                    val pUD = format.decodeFromString<UpInformation>(upDataGet(uid)).data
+                    group.sendMessage(
+                        downloadImage(pD.card.face)!!
+                            .uploadAsImage(group, "png")
+                            .plus(
+                                "${pD.card.name}($uid)\n" +
+                                    "粉丝数: ${pD.follower}   关注数: ${pD.card.friend}   稿件数: ${pD.archive_count}\n" +
+                                    "视频播放量: ${pUD.archive.view}    专栏阅读量: ${pUD.article.view}   获赞次数: ${pUD.likes}"
+                            )
+                    )
+                } catch (e: Exception) {
+                    group.sendMessage("他消失在了浩荡的宇宙中")
                 }
-                else                                                 -> {
-                    rd[5]!!.value
-                }
-            }
-            try {
-                val pD = format.decodeFromString<UserData>(statDataGet(uid)).data
-                val pUD = format.decodeFromString<UpInformation>(upDataGet(uid)).data
-                group.sendMessage(
-                    downloadImage(pD.card.face)!!
-                        .uploadAsImage(group, "png")
-                        .plus(
-                            "${pD.card.name}($uid)\n" +
-                                "粉丝数: ${pD.follower}   关注数: ${pD.card.friend}   稿件数: ${pD.archive_count}\n" +
-                                "视频播放量: ${pUD.archive.view}    专栏阅读量: ${pUD.article.view}   获赞次数: ${pUD.likes}"
-                        )
-
-                )
-            } catch (e: Exception) {
-                group.sendMessage("他消失在了浩荡的宇宙中")
             }
         }
     }

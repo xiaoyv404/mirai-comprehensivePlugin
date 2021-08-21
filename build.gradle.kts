@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "com.xiaoyv404"
-version = "0.3.0"
+version = "1.0.0-alpha"
 
 val ktorm = "3.3.0"
 val ktor = "1.5.1"

@@ -1,6 +1,8 @@
 package com.xiaoyv404.mirai.service.ero.sauceNao
 
 import com.xiaoyv404.mirai.databace.Command
+import com.xiaoyv404.mirai.service.getUserInformation
+import com.xiaoyv404.mirai.service.permissionRead
 import io.ktor.util.*
 import net.mamoe.mirai.event.GlobalEventChannel
 import net.mamoe.mirai.event.subscribeMessages
@@ -13,28 +15,34 @@ import net.mamoe.mirai.message.nextMessage
 fun searchListenerRegister() {
     GlobalEventChannel.subscribeMessages {
         finding(Command.SauceNao) {
-            val rd = it.groups
-            if (rd[4]?.value == "-h" || rd[4]?.value == "--help") {
-                subject.sendMessage("help")
-            } else {
-                val sauceNao = SauceNaoRequester(subject)
-                val image = message[Image]
-                if (image == null) {
-                    subject.sendMessage(message.quote() + "没有图片的说,请在60s内发送图片")
-                    val nextMsg = nextMessage()
-                    //判断发送的时间
-                    if (nextMsg.time - time < 60) {
-                        val nextImage = nextMsg[Image]
-                        if (nextImage == null) {
-                            subject.sendMessage(nextMsg.quote() + "没有获取图片")
-                        } else {
-                            sauceNao.search(nextImage)
-                            sauceNao.sendResult(nextMsg)
-                        }
-                    }
+            if ((permissionRead(
+                    sender.id,
+                    subject.id,
+                    "SauceNaoSearch"
+                )) && (getUserInformation(sender.id).bot != true)) {
+                val rd = it.groups
+                if (rd[4]?.value == "-h" || rd[4]?.value == "--help") {
+                    subject.sendMessage("help")
                 } else {
-                    sauceNao.search(image)
-                    sauceNao.sendResult(message)
+                    val sauceNao = SauceNaoRequester(subject)
+                    val image = message[Image]
+                    if (image == null) {
+                        subject.sendMessage(message.quote() + "没有图片的说,请在60s内发送图片")
+                        val nextMsg = nextMessage()
+                        //判断发送的时间
+                        if (nextMsg.time - time < 60) {
+                            val nextImage = nextMsg[Image]
+                            if (nextImage == null) {
+                                subject.sendMessage(nextMsg.quote() + "没有获取图片")
+                            } else {
+                                sauceNao.search(nextImage)
+                                sauceNao.sendResult(nextMsg)
+                            }
+                        }
+                    } else {
+                        sauceNao.search(image)
+                        sauceNao.sendResult(message)
+                    }
                 }
             }
         }

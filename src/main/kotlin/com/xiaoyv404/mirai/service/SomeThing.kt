@@ -27,7 +27,12 @@ fun someThinkEntrance() {
 
     GlobalEventChannel.subscribeGroupMessages {
         always {
-            if ((getUserInformation(sender.id).bot != true) && (groupDataRead(group.id)[0].thesaurusStatus != -1)) {
+            if ((getUserInformation(sender.id).bot != true) && permissionRead(
+                    sender.id,
+                    group.id,
+                    "ThesaurusResponse"
+                )
+            ) {
                 val entryMassages = queryTerm(message.serializeToMiraiCode())
                 if (entryMassages.isNotEmpty()) {
                     var total = 0
@@ -59,35 +64,31 @@ fun someThinkEntrance() {
         case("BiliBili解析功能") {
             group.sendMessage(
                 "w, BiliBili解析功能现在是" +
-                    when (groupDataRead(group.id)[0].biliStatus) {
-                        1    -> "开"
-                        0    -> "关"
-                        -1   -> "黑名单中"
-                        null -> "关"
-                        else -> "???"
-                    }
-                    + "的哦"
+                    if (permissionRead(0L, group.id, "BiliBiliParsing"))
+                        "开"
+                    else "关"
+                        + "的哦"
             )
         }
 
-        case("开关BiliBili解析功能") {
-            when (groupDataRead(group.id)[0].biliStatus) {
-                0    -> groupDataUpdate(group.id, 1)
-                1    -> groupDataUpdate(group.id, 0)
-                null -> groupDataCreate(group.id)
-            }
-            group.sendMessage(
-                "w, BiliBili解析功能现在是" +
-                    when (groupDataRead(group.id)[0].biliStatus) {
-                        1    -> "开"
-                        0    -> "关"
-                        -1   -> "黑名单中"
-                        null -> "关"
-                        else -> "???"
-                    }
-                    + "的哦"
-            )
-        }
+//        case("开关BiliBili解析功能") {
+//            when (groupDataRead(group.id)[0].biliStatus) {
+//                0    -> groupDataUpdate(group.id, 1)
+//                1    -> groupDataUpdate(group.id, 0)
+//                null -> groupDataCreate(group.id)
+//            }
+//            group.sendMessage(
+//                "w, BiliBili解析功能现在是" +
+//                    when (groupDataRead(group.id)[0].biliStatus) {
+//                        1    -> "开"
+//                        0    -> "关"
+//                        -1   -> "黑名单中"
+//                        null -> "关"
+//                        else -> "???"
+//                    }
+//                    + "的哦"
+//            )
+//        }
         finding(Command.addBot) {
             val rd = it.groups
             if (rd[3]!!.value == "-h" || rd[3]!!.value == "--help") {
@@ -103,7 +104,6 @@ fun someThinkEntrance() {
                 group.sendMessage("Done")
             }
         }
-
         at(2083664136L).invoke {
             var chain = buildMessageChain {
                 +PlainText("${sender.nick}(${sender.id})在${group.name}(${group.id})中对主人说：\n")
@@ -135,7 +135,6 @@ fun someThinkEntrance() {
         }
     }
     GlobalEventChannel.subscribeFriendMessages {
-
         matching(Command.ban) {
             if (getUserInformation(sender.id).admin == true) {
                 val rd = it.groups
@@ -164,9 +163,7 @@ fun someThinkEntrance() {
                 }
             }
         }
-        matching(Command.join) {
-        }
-
+        matching(Command.join) {}
         always {
             if (getUserInformation(sender.id).admin == true) {
                 when (message.contentToString()) {
@@ -186,13 +183,12 @@ fun someThinkEntrance() {
                                 val entryMassage = message.serializeToMiraiCode()
                                 if (entryMassage != "") {
                                     bot.groups.forEach {
-                                        if (getAllBroadcastBlacklist(it.id) != 1){
+                                        if (groupNoticeSwitchRead(it.id,"AdminBroadcast")){
                                             bot.getGroup(it.id)
                                                 ?.sendMessage(
                                                     MiraiCode.deserializeMiraiCode(entryMassage)
                                                 )
                                         }
-
                                     }
                                 }
                             }

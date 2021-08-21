@@ -1,44 +1,38 @@
 package com.xiaoyv404.mirai.service.bilibili
 
 import com.xiaoyv404.mirai.databace.Bilibili
-import com.xiaoyv404.mirai.service.groupDataRead
-import com.xiaoyv404.mirai.service.tool.downloadImage
-import com.xiaoyv404.mirai.service.tool.parsingVideoDataString
+import com.xiaoyv404.mirai.service.getUserInformation
+import com.xiaoyv404.mirai.service.permissionRead
+import com.xiaoyv404.mirai.service.tool.KtorUtils
 import io.ktor.client.*
 import io.ktor.client.request.*
-import kotlinx.serialization.decodeFromString
+import io.ktor.util.*
 import net.mamoe.mirai.event.GlobalEventChannel
 import net.mamoe.mirai.event.subscribeGroupMessages
-import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
 
 
+@KtorExperimentalAPI
 fun b23ShortLinkEntrance() {
     GlobalEventChannel.subscribeGroupMessages {
-        finding(Bilibili.b23Find).invoke {
-            suspend fun uJsonVideo(uJsonVideo: String) {
-                val pJson = format.decodeFromString<VideoDataJson>(uJsonVideo)
-                group.sendMessage(
-                    downloadImage(pJson.data.pic)!!
-                        .uploadAsImage(group, "jpg")
-                        .plus(parsingVideoDataString(pJson))
-                )
-            }
-            when (groupDataRead(group.id)[0].biliStatus) {
-                1    -> {
-                    val b23Data = b23DataGet(Bilibili.b23Find.find(it)!!.value)
-                    when {
-                        Bilibili.biliBvFind.containsMatchIn(b23Data) -> uJsonVideo(
-                            videoDataGet(
-                                Bilibili.biliBvFind.find(b23Data)!!
-                                    .value,
-                                "bvid"
-                            )
+        finding(Bilibili.b23Find) {
+            if ((permissionRead(
+                    sender.id,
+                    group.id,
+                    "BiliBiliParsing"
+                )) && (getUserInformation(sender.id).bot != true)
+            ) {
+                val b23 = it.value
+                val b23Data = b23DataGet(b23)
+                when {
+                    Bilibili.biliBvFind.containsMatchIn(b23Data) -> {
+                        val bv = Bilibili.biliBvFind.find(b23Data)!!.value
+                        uJsonVideo(
+                            KtorUtils.normalClient.get(
+                                "https://api.bilibili.com/x/web-interface/view?bvid=$bv"
+                            ), group
                         )
                     }
                 }
-                -1   -> {
-                }
-                else -> group.sendMessage("喵, 好像没开启BiliBili解析功能哦")
             }
         }
     }

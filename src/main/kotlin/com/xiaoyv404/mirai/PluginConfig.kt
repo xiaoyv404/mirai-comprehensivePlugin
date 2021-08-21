@@ -29,7 +29,7 @@ data class DatabaseConfig(
     val password: String = "",
     @Comment("数据库表单，表示要将数据存储在这个表单里")
     var table: String = "",
-    @Comment("SQL连接的附加参数，记得以问号开头")
+    @Comment("SQL连接的附加参数，记得以&开头")
     val AdditionalParameters: String = "",
     @Comment("最大连接数，也许是连接池的大小？？？")
     var maximumPoolSize: Int? = 10,

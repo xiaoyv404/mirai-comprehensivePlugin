@@ -5,6 +5,7 @@ import com.xiaoyv404.mirai.databace.Database
 import com.xiaoyv404.mirai.databace.dao.Thesaurus
 import com.xiaoyv404.mirai.service.Thesauru
 import com.xiaoyv404.mirai.service.getUserInformation
+import com.xiaoyv404.mirai.service.permissionRead
 import com.xiaoyv404.mirai.service.queryTerm
 import net.mamoe.mirai.event.GlobalEventChannel
 import net.mamoe.mirai.event.subscribeMessages
@@ -17,18 +18,20 @@ import org.ktorm.dsl.insert
 fun thesaurusEntrance() {
     GlobalEventChannel.subscribeMessages {
         finding(Regex("^(!!创建词条)\$")) {
-            subject.sendMessage("请发送question")
-            val question = nextMessage().serializeToMiraiCode()
-            subject.sendMessage("请发送reply")
-            val reply = nextMessage().serializeToMiraiCode()
-            subject.sendMessage(
-                "question: $question\n" +
-                    "reply: $reply\n"
-                    + "请输入[y]以确认"
-            )
-            if (nextMessage().contentToString() == "y")
-                increaseEntry(question, reply, sender.id)
-            subject.sendMessage("success")
+            if (permissionRead(sender.id, subject.id, "ThesaurusAdd")) {
+                subject.sendMessage("请发送question")
+                val question = nextMessage().serializeToMiraiCode()
+                subject.sendMessage("请发送reply")
+                val reply = nextMessage().serializeToMiraiCode()
+                subject.sendMessage(
+                    "question: $question\n" +
+                        "reply: $reply\n"
+                        + "请输入[y]以确认"
+                )
+                if (nextMessage().contentToString() == "y")
+                    increaseEntry(question, reply, sender.id)
+                subject.sendMessage("success")
+            }
         }
 
         finding(Command.thesaurusRemove) {
@@ -55,16 +58,16 @@ fun thesaurusEntrance() {
                         subject.sendMessage("已取消")
                         return@finding
                     }
-                   val subscriptI = subscript.toInt()
+                    val subscriptI = subscript.toInt()
                     subject.sendMessage(
                         "确定要删除: \n" +
                             "${thesaurusRemoveMsg(entryMassages[subscriptI])}\n" +
                             "输入[y]以确认    输入[n]以取消"
                     )
-                    if (nextMessage().contentToString() == "y"){
+                    if (nextMessage().contentToString() == "y") {
                         thesaurusRemove(entryMassages[subscriptI].id)
                         subject.sendMessage("success")
-                    }else{
+                    } else {
                         subject.sendMessage("取消")
                     }
                 }
@@ -80,9 +83,9 @@ fun thesaurusRemoveMsg(da: Thesauru): String {
         "   creator id: ${da.creator}"
 }
 
-fun thesaurusRemove(id: Long){
+fun thesaurusRemove(id: Long) {
     Database.db
-        .delete(Thesaurus){ it.id eq id }
+        .delete(Thesaurus) { it.id eq id }
 }
 
 fun increaseEntry(question: String, reply: String, creator: Long) {

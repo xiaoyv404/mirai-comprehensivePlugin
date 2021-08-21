@@ -1,6 +1,7 @@
 package com.xiaoyv404.mirai.service.ero
 
 import com.xiaoyv404.mirai.service.ero.localGallery.localGalleryListener
+import com.xiaoyv404.mirai.service.ero.sauceNao.searchListenerRegister
 import io.ktor.util.*
 
 const val setuAPIUrl = "https://api.ixiaowai.cn/api/api.php"
@@ -10,5 +11,5 @@ const val setuAPIUrl = "https://api.ixiaowai.cn/api/api.php"
 @KtorExperimentalAPI
 fun eroEntrance() {
     localGalleryListener()
-//    searchListenerRegister()
+    searchListenerRegister()
 }

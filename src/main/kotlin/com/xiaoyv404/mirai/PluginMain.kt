@@ -5,7 +5,6 @@ import com.xiaoyv404.mirai.service.bilibili.b23ShortLinkEntrance
 import com.xiaoyv404.mirai.service.bilibili.biliVideoEntrance
 import com.xiaoyv404.mirai.service.bilibili.informationEntrance
 import com.xiaoyv404.mirai.service.ero.eroEntrance
-import com.xiaoyv404.mirai.service.helper.bugReporterEntrance
 import com.xiaoyv404.mirai.service.history.historyEntrance
 import com.xiaoyv404.mirai.service.minecraftServer.minecraftServerEntrance
 import com.xiaoyv404.mirai.service.someThinkEntrance
@@ -47,7 +46,6 @@ object PluginMain : KotlinPlugin(
         biliVideoEntrance()
         informationEntrance()
 
-        bugReporterEntrance()
         eroEntrance()
 
         thesaurusEntrance()
