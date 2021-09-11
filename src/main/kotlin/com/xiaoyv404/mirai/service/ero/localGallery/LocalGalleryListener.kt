@@ -4,7 +4,7 @@ import com.xiaoyv404.mirai.PluginConfig
 import com.xiaoyv404.mirai.databace.Command
 import com.xiaoyv404.mirai.service.ero.*
 import com.xiaoyv404.mirai.service.getUserInformation
-import com.xiaoyv404.mirai.service.permissionRead
+import com.xiaoyv404.mirai.service.authorityIdentification
 import com.xiaoyv404.mirai.service.tool.downloadImage
 import io.ktor.util.*
 import net.mamoe.mirai.contact.Contact.Companion.sendImage
@@ -18,7 +18,7 @@ import java.io.File
 fun localGalleryListener() {
     GlobalEventChannel.subscribeMessages {
         finding(Command.ero) {
-            if ((permissionRead(
+            if ((authorityIdentification(
                     sender.id,
                     subject.id,
                     "NetworkEro"
@@ -50,7 +50,7 @@ fun localGalleryListener() {
             }
         }
         finding(Command.eroAdd) {
-            if ((permissionRead(
+            if ((authorityIdentification(
                     sender.id,
                     subject.id,
                     "LocalGallery"
@@ -94,7 +94,7 @@ fun localGalleryListener() {
             }
         }
         finding(Command.eroSearch) {
-            if ((permissionRead(
+            if ((authorityIdentification(
                     sender.id,
                     subject.id,
                     "LocalGallery"

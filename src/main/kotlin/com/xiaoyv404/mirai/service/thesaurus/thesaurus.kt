@@ -5,7 +5,7 @@ import com.xiaoyv404.mirai.databace.Database
 import com.xiaoyv404.mirai.databace.dao.Thesaurus
 import com.xiaoyv404.mirai.service.Thesauru
 import com.xiaoyv404.mirai.service.getUserInformation
-import com.xiaoyv404.mirai.service.permissionRead
+import com.xiaoyv404.mirai.service.authorityIdentification
 import com.xiaoyv404.mirai.service.queryTerm
 import net.mamoe.mirai.event.GlobalEventChannel
 import net.mamoe.mirai.event.subscribeMessages
@@ -18,7 +18,7 @@ import org.ktorm.dsl.insert
 fun thesaurusEntrance() {
     GlobalEventChannel.subscribeMessages {
         finding(Regex("^(!!创建词条)\$")) {
-            if (permissionRead(sender.id, subject.id, "ThesaurusAdd")) {
+            if (authorityIdentification(sender.id, subject.id, "ThesaurusAdd")) {
                 subject.sendMessage("请发送question")
                 val question = nextMessage().serializeToMiraiCode()
                 subject.sendMessage("请发送reply")

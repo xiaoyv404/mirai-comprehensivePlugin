@@ -2,7 +2,7 @@ package com.xiaoyv404.mirai.service.bilibili
 
 import com.xiaoyv404.mirai.databace.Bilibili
 import com.xiaoyv404.mirai.service.getUserInformation
-import com.xiaoyv404.mirai.service.permissionRead
+import com.xiaoyv404.mirai.service.authorityIdentification
 import com.xiaoyv404.mirai.service.tool.KtorUtils
 import io.ktor.client.*
 import io.ktor.client.request.*
@@ -15,7 +15,7 @@ import net.mamoe.mirai.event.subscribeGroupMessages
 fun b23ShortLinkEntrance() {
     GlobalEventChannel.subscribeGroupMessages {
         finding(Bilibili.b23Find) {
-            if ((permissionRead(
+            if ((authorityIdentification(
                     sender.id,
                     group.id,
                     "BiliBiliParsing"

@@ -2,7 +2,7 @@ package com.xiaoyv404.mirai.service.bilibili
 
 import com.xiaoyv404.mirai.databace.Bilibili
 import com.xiaoyv404.mirai.service.getUserInformation
-import com.xiaoyv404.mirai.service.permissionRead
+import com.xiaoyv404.mirai.service.authorityIdentification
 import com.xiaoyv404.mirai.service.tool.KtorUtils
 import com.xiaoyv404.mirai.service.tool.downloadImage
 import com.xiaoyv404.mirai.service.tool.parsingVideoDataString
@@ -23,7 +23,7 @@ fun biliVideoEntrance() {
     GlobalEventChannel.subscribeGroupMessages {
         finding(Bilibili.biliBvFind){
             val bv = it.value
-            if ((permissionRead(
+            if ((authorityIdentification(
                     sender.id,
                     group.id,
                     "BiliBiliParsing"
@@ -38,7 +38,7 @@ fun biliVideoEntrance() {
         }
         finding(Bilibili.biliAvFind) {
             val av = it.groups[2]!!.value
-            if ((permissionRead(
+            if ((authorityIdentification(
                     sender.id,
                     group.id,
                     "BiliBiliParsing"

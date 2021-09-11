@@ -2,7 +2,7 @@ package com.xiaoyv404.mirai.service.bilibili
 
 import com.xiaoyv404.mirai.databace.Command
 import com.xiaoyv404.mirai.service.getUserInformation
-import com.xiaoyv404.mirai.service.permissionRead
+import com.xiaoyv404.mirai.service.authorityIdentification
 import com.xiaoyv404.mirai.service.tool.downloadImage
 import io.ktor.client.*
 import io.ktor.client.request.*
@@ -15,7 +15,7 @@ import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
 fun informationEntrance() {
     GlobalEventChannel.subscribeGroupMessages {
         finding(Command.getBiliBiliUpInformation) {
-            if ((permissionRead(
+            if ((authorityIdentification(
                     sender.id,
                     group.id,
                     "BiliBiliParsing"

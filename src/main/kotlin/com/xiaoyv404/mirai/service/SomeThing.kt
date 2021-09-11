@@ -1,6 +1,7 @@
 package com.xiaoyv404.mirai.service
 
 import com.xiaoyv404.mirai.databace.Command
+import com.xiaoyv404.mirai.service.accessControl.authorityIdentification
 import net.mamoe.mirai.event.GlobalEventChannel
 import net.mamoe.mirai.event.events.BotInvitedJoinGroupRequestEvent
 import net.mamoe.mirai.event.subscribeFriendMessages
@@ -27,7 +28,7 @@ fun someThinkEntrance() {
 
     GlobalEventChannel.subscribeGroupMessages {
         always {
-            if ((getUserInformation(sender.id).bot != true) && permissionRead(
+            if ((getUserInformation(sender.id).bot != true) && authorityIdentification(
                     sender.id,
                     group.id,
                     "ThesaurusResponse"
@@ -64,7 +65,7 @@ fun someThinkEntrance() {
         case("BiliBili解析功能") {
             group.sendMessage(
                 "w, BiliBili解析功能现在是" +
-                    if (permissionRead(0L, group.id, "BiliBiliParsing"))
+                    if (authorityIdentification(0L, group.id, "BiliBiliParsing"))
                         "开"
                     else "关"
                         + "的哦"

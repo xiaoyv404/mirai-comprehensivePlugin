@@ -2,7 +2,7 @@ package com.xiaoyv404.mirai.service.ero.sauceNao
 
 import com.xiaoyv404.mirai.databace.Command
 import com.xiaoyv404.mirai.service.getUserInformation
-import com.xiaoyv404.mirai.service.permissionRead
+import com.xiaoyv404.mirai.service.authorityIdentification
 import io.ktor.util.*
 import net.mamoe.mirai.event.GlobalEventChannel
 import net.mamoe.mirai.event.subscribeMessages
@@ -15,7 +15,7 @@ import net.mamoe.mirai.message.nextMessage
 fun searchListenerRegister() {
     GlobalEventChannel.subscribeMessages {
         finding(Command.SauceNao) {
-            if ((permissionRead(
+            if ((authorityIdentification(
                     sender.id,
                     subject.id,
                     "SauceNaoSearch"
