@@ -10,6 +10,8 @@ import io.ktor.client.request.*
 import io.ktor.util.*
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
+import org.apache.tika.Tika
+import java.io.BufferedInputStream
 import java.io.File
 import java.io.InputStream
 import java.sql.SQLIntegrityConstraintViolationException
@@ -40,37 +42,47 @@ suspend fun unformat(id: String, senderId: Long): ImageInfo {
     }
     tags.subSequence(0, tags.length - 1)
 
-    var num: Int
-    try{
-        num = Pixiv.worksNumberFind.find(KtorUtils.normalClient.config {
+    val num: Int = try {
+        Pixiv.worksNumberFind.find(KtorUtils.normalClient.config {
             expectSuccess = false
-        }.get<String>("https://pixiv.cat/$id.png"))?.value?.toInt() ?: 0
-    }catch (e: Exception){
-        num = 0
+        }.get<String>("https://pixiv.cat/$id.png"))?.value?.toInt() ?: 1
+    } catch (e: Exception) {
+        1
     }
 
-    if (num != 0) {
-        println("含有$num 张图片")
+    var fe = ""
+    if (num != 1) {
+        PluginMain.logger.info("含有$num 张图片")
         for (i in 1..num) {
             val `in` = KtorUtils.normalClient.get<InputStream>("https://pixiv.cat/$id-$i.png")
-            FileUtils.saveFileFromStream(`in`, File("${PluginConfig.database.SaveAddress}$id-$i.png"))
+            fe = verifyExtensionAndSaveFile(`in`, "${PluginConfig.database.SaveAddress}$id-$i")
         }
     } else {
-        println("含有1 张图片")
-        num = try {
-            val `in` = KtorUtils.normalClient.get<InputStream>("https://pixiv.cat/$id.png")
-            FileUtils.saveFileFromStream(`in`, File("${PluginConfig.database.SaveAddress}$id.png"))
-            1
-        } catch (e: Exception) {
-            println(e)
-            0
-        }
+        PluginMain.logger.info("含有1 张图片")
+        val `in` = KtorUtils.normalClient.get<InputStream>("https://pixiv.cat/$id.png")
+        fe = verifyExtensionAndSaveFile(`in`, "${PluginConfig.database.SaveAddress}$id")
     }
+
     try {
-        increaseEntry(id.toLong(), num, pJ.title, tags, pJ.userId.toLong(), pJ.userName, senderId, pJ.tags.tags)
+        increaseEntry(id.toLong(), num, pJ.title, tags, pJ.userId.toLong(), pJ.userName, senderId, pJ.tags.tags, fe)
     } catch (e: SQLIntegrityConstraintViolationException) {
         PluginMain.logger.info("数据库已经保存pid: $id")
     }
 
-    return ImageInfo(id.toLong(), num, pJ.title, tags, pJ.userId.toLong(), pJ.userName)
+    return ImageInfo(id.toLong(), num, pJ.title, tags, pJ.userId.toLong(), pJ.userName, fe)
+}
+
+fun verifyExtensionAndSaveFile(src: InputStream, dst: String): String {
+    val bSrc = BufferedInputStream(src)
+    bSrc.mark(0)
+    var fe = Tika().detect(bSrc)
+    PluginMain.logger.info("文件格式: $fe")
+    fe = when (fe) {
+        "image/png"  -> "png"
+        "image/jpeg" -> "jpg"
+        else         -> "???"
+    }
+    bSrc.reset()
+    FileUtils.saveFileFromStream(bSrc, File("$dst.$fe"))
+    return fe
 }

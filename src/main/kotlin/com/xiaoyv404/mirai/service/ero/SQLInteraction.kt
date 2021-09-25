@@ -28,7 +28,7 @@ fun queryIdByTagId(tagid: Long): List<Long> {
 }
 
 fun getImgInformationById(id: Long): ImageInfo {
-    var data = ImageInfo(0, 0, "", "", 0, "")
+    var data = ImageInfo(0, 0, "", "", 0, "", "")
     Database.db
         .from(Gallerys)
         .select()
@@ -40,7 +40,8 @@ fun getImgInformationById(id: Long): ImageInfo {
                 row[Gallerys.title]!!,
                 row[Gallerys.tags]!!,
                 row[Gallerys.userId]!!,
-                row[Gallerys.userName]!!
+                row[Gallerys.userName]!!,
+                row[Gallerys.extension]!!
             )
         }
     return data
@@ -90,7 +91,8 @@ fun increaseEntry(
     userId: Long,
     userName: String,
     creator: Long,
-    tagsL: List<Tag>
+    tagsL: List<Tag>,
+    extension: String
 ) {
     Database.db
         .insert(Gallerys) {
@@ -101,6 +103,7 @@ fun increaseEntry(
             set(it.userId, userId)
             set(it.userName, userName)
             set(it.creator, creator)
+            set(it.extension, extension)
         }
     for (i in tagsL.indices) {
         var num: Long? = null

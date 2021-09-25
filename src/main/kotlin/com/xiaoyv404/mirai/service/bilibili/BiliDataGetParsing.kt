@@ -1,10 +1,9 @@
 package com.xiaoyv404.mirai.service.bilibili
 
 import com.xiaoyv404.mirai.databace.Bilibili
+import com.xiaoyv404.mirai.service.accessControl.authorityIdentification
 import com.xiaoyv404.mirai.service.getUserInformation
-import com.xiaoyv404.mirai.service.authorityIdentification
 import com.xiaoyv404.mirai.service.tool.KtorUtils
-import com.xiaoyv404.mirai.service.tool.downloadImage
 import com.xiaoyv404.mirai.service.tool.parsingVideoDataString
 import io.ktor.client.request.*
 import io.ktor.util.*
@@ -15,6 +14,7 @@ import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.event.GlobalEventChannel
 import net.mamoe.mirai.event.subscribeGroupMessages
 import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
+import java.io.InputStream
 
 val format = Json { ignoreUnknownKeys = true }
 
@@ -55,7 +55,8 @@ fun biliVideoEntrance() {
 }
 
 //用于格式化Json并发送
-suspend fun uJsonVideo(uJsonVideo: String,group: Contact) {
+@KtorExperimentalAPI
+suspend fun uJsonVideo(uJsonVideo: String, group: Contact) {
     /**
      * 如果pJson中含有data字段时不会抛出[SerializationException]，不含有则反之
      * 当未抛出[SerializationException]异常时，正常执行，使用[VideoDataJson]格式化并发送
@@ -64,7 +65,7 @@ suspend fun uJsonVideo(uJsonVideo: String,group: Contact) {
     try {
         val pJson = format.decodeFromString<VideoDataJson>(uJsonVideo)
         group.sendMessage(
-            downloadImage(pJson.data.pic)!!
+            KtorUtils.normalClient.get<InputStream>(pJson.data.pic)
                 .uploadAsImage(group, "png")
                 .plus(parsingVideoDataString(pJson))
         )

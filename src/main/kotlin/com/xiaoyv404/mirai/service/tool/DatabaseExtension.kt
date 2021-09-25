@@ -31,3 +31,26 @@ inline fun <reified T : Any> Column<*>.jsonExtractContains(
         sqlType = BooleanSqlType
     )
 }
+
+inline fun <reified T : Any> Column<*>.jsonSearch(
+    oneOrAll: String,
+    searchStr: T,
+    path: String,
+    sqlType: SqlType<T>
+): FunctionExpression<String> {
+    val listSqlType = this.sqlType
+
+    return FunctionExpression(
+        functionName = "json_search",
+        arguments = listOf(
+            ArgumentExpression(oneOrAll, VarcharSqlType),
+            FunctionExpression(
+                functionName = "json_array",
+                arguments = listOf(ArgumentExpression(searchStr, sqlType)),
+                sqlType = listSqlType
+            ),
+            ArgumentExpression(path, VarcharSqlType)
+        ),
+        sqlType = VarcharSqlType
+    )
+}

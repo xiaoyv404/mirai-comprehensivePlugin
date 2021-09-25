@@ -1,11 +1,13 @@
 package com.xiaoyv404.mirai.service.ero.localGallery
 
 import com.xiaoyv404.mirai.PluginConfig
+import com.xiaoyv404.mirai.PluginMain
 import com.xiaoyv404.mirai.databace.Command
+import com.xiaoyv404.mirai.service.accessControl.authorityIdentification
 import com.xiaoyv404.mirai.service.ero.*
 import com.xiaoyv404.mirai.service.getUserInformation
-import com.xiaoyv404.mirai.service.authorityIdentification
-import com.xiaoyv404.mirai.service.tool.downloadImage
+import com.xiaoyv404.mirai.service.tool.KtorUtils.normalClient
+import io.ktor.client.request.*
 import io.ktor.util.*
 import net.mamoe.mirai.contact.Contact.Companion.sendImage
 import net.mamoe.mirai.event.GlobalEventChannel
@@ -13,6 +15,8 @@ import net.mamoe.mirai.event.subscribeMessages
 import net.mamoe.mirai.message.data.buildForwardMessage
 import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
 import java.io.File
+import java.io.InputStream
+
 
 @KtorExperimentalAPI
 fun localGalleryListener() {
@@ -22,11 +26,12 @@ fun localGalleryListener() {
                     sender.id,
                     subject.id,
                     "NetworkEro"
-                )) && (getUserInformation(sender.id).bot != true)) {
+                )) && (getUserInformation(sender.id).bot != true)
+            ) {
                 var num = it.groups[3]!!.value.toInt()
                 when (num) {
-                    0      -> subject.sendMessage("w?你到底想让404干什么呢, 喵")
-                    9      -> subject.sendMessage("9?是这个⑨吗?www")
+                    0 -> subject.sendMessage("w?你到底想让404干什么呢, 喵")
+                    9 -> subject.sendMessage("9?是这个⑨吗?www")
                     114514 -> subject.sendMessage("好臭啊啊啊啊")
                 }
                 if (num > 5 && getUserInformation(sender.id).setu != true) {
@@ -41,7 +46,7 @@ fun localGalleryListener() {
                     subject.sendMessage("少女祈祷中...")
 
                 for (i in 1..num) {
-                    val im = downloadImage(setuAPIUrl)
+                    val im = normalClient.get<InputStream?>(setuAPIUrl)
                     if (im != null)
                         subject.sendImage(im)
                     else
@@ -54,7 +59,8 @@ fun localGalleryListener() {
                     sender.id,
                     subject.id,
                     "LocalGallery"
-                )) && (getUserInformation(sender.id).bot != true)) {
+                )) && (getUserInformation(sender.id).bot != true)
+            ) {
                 val rd = it.groups
                 if (rd[3]!!.value == "-h" || rd[3]!!.value == "--help")
                     subject.sendMessage(
@@ -66,28 +72,26 @@ fun localGalleryListener() {
                 else {
                     try {
                         val ii = unformat(rd[3]!!.value, sender.id)
-
-                        when (ii.picturesNum) {
-                            0    -> subject.sendMessage("出错啦(详见控制台)")
-                            1    -> subject.sendMessage(
-                                File("${PluginConfig.database.SaveAddress}${ii.id}.png")
-                                    .uploadAsImage(subject, "png").plus(sequenceInformation(ii))
+                        if (ii.picturesNum == 1) {
+                            subject.sendMessage(
+                                File("${PluginConfig.database.SaveAddress}${ii.id}.${ii.extension}")
+                                    .uploadAsImage(subject).plus(sequenceInformation(ii))
                             )
-                            else -> {
-                                subject.sendMessage(
-                                    buildForwardMessage {
-                                        bot.says(sequenceInformation(ii))
-                                        for (i in 1..ii.picturesNum) {
-                                            bot.says(
-                                                File("${PluginConfig.database.SaveAddress}${ii.id}-$i.png")
-                                                    .uploadAsImage(subject, "png")
-                                            )
-                                        }
+                        } else {
+                            subject.sendMessage(
+                                buildForwardMessage {
+                                    bot.says(sequenceInformation(ii))
+                                    for (i in 1..ii.picturesNum) {
+                                        bot.says(
+                                            File("${PluginConfig.database.SaveAddress}${ii.id}-$i.${ii.extension}")
+                                                .uploadAsImage(subject)
+                                        )
                                     }
-                                )
-                            }
+                                }
+                            )
                         }
                     } catch (e: Exception) {
+                        PluginMain.logger.error(e)
                         subject.sendMessage("出错啦(详见控制台)")
                     }
                 }
@@ -98,7 +102,8 @@ fun localGalleryListener() {
                     sender.id,
                     subject.id,
                     "LocalGallery"
-                )) && (getUserInformation(sender.id).bot != true)) {
+                )) && (getUserInformation(sender.id).bot != true)
+            ) {
                 val rd = it.groups
 
                 if (rd[3]!!.value == "-h" || rd[3]!!.value == "--help")
@@ -118,8 +123,8 @@ fun localGalleryListener() {
 
                         if (ii.picturesNum == 1)
                             subject.sendMessage(
-                                File("${PluginConfig.database.SaveAddress}${ii.id}.png")
-                                    .uploadAsImage(subject, "png").plus(sequenceInformation(ii))
+                                File("${PluginConfig.database.SaveAddress}${ii.id}.${ii.extension}")
+                                    .uploadAsImage(subject).plus(sequenceInformation(ii))
                             )
                         else {
                             subject.sendMessage(
@@ -127,8 +132,8 @@ fun localGalleryListener() {
                                     bot.says(sequenceInformation(ii))
                                     for (i in 1..ii.picturesNum) {
                                         bot.says(
-                                            File("${PluginConfig.database.SaveAddress}${ii.id}-$i.png")
-                                                .uploadAsImage(subject, "png")
+                                            File("${PluginConfig.database.SaveAddress}${ii.id}-${ii.extension}")
+                                                .uploadAsImage(subject)
                                         )
                                     }
                                 }

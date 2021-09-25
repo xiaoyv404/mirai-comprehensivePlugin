@@ -5,8 +5,8 @@ import com.xiaoyv404.mirai.databace.Command
 import com.xiaoyv404.mirai.service.tool.KtorUtils
 import io.ktor.client.features.*
 import io.ktor.client.request.*
+import io.ktor.network.sockets.*
 import io.ktor.util.*
-import io.netty.channel.ConnectTimeoutException
 import kotlinx.coroutines.launch
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
@@ -111,7 +111,7 @@ class MinecraftServerStatusRequester(private var group: Contact? = null) {
                             }
                         }
                     }
-                } catch (e: ConnectTimeoutException) {
+                } catch (e: SocketTimeoutException) {
                     group?.sendMessage("无法连接到分析服务器")
                 }
             }

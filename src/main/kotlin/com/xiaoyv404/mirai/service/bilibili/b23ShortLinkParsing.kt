@@ -2,7 +2,7 @@ package com.xiaoyv404.mirai.service.bilibili
 
 import com.xiaoyv404.mirai.databace.Bilibili
 import com.xiaoyv404.mirai.service.getUserInformation
-import com.xiaoyv404.mirai.service.authorityIdentification
+import com.xiaoyv404.mirai.service.accessControl.authorityIdentification
 import com.xiaoyv404.mirai.service.tool.KtorUtils
 import io.ktor.client.*
 import io.ktor.client.request.*

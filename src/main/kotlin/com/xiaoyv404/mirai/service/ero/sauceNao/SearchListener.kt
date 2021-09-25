@@ -1,8 +1,8 @@
 package com.xiaoyv404.mirai.service.ero.sauceNao
 
 import com.xiaoyv404.mirai.databace.Command
+import com.xiaoyv404.mirai.service.accessControl.authorityIdentification
 import com.xiaoyv404.mirai.service.getUserInformation
-import com.xiaoyv404.mirai.service.authorityIdentification
 import io.ktor.util.*
 import net.mamoe.mirai.event.GlobalEventChannel
 import net.mamoe.mirai.event.subscribeMessages

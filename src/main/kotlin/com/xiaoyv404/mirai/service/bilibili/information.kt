@@ -1,17 +1,20 @@
 package com.xiaoyv404.mirai.service.bilibili
 
 import com.xiaoyv404.mirai.databace.Command
+import com.xiaoyv404.mirai.service.accessControl.authorityIdentification
 import com.xiaoyv404.mirai.service.getUserInformation
-import com.xiaoyv404.mirai.service.authorityIdentification
-import com.xiaoyv404.mirai.service.tool.downloadImage
+import com.xiaoyv404.mirai.service.tool.KtorUtils
 import io.ktor.client.*
 import io.ktor.client.request.*
+import io.ktor.util.*
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import net.mamoe.mirai.event.GlobalEventChannel
 import net.mamoe.mirai.event.subscribeGroupMessages
 import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
+import java.io.InputStream
 
+@KtorExperimentalAPI
 fun informationEntrance() {
     GlobalEventChannel.subscribeGroupMessages {
         finding(Command.getBiliBiliUpInformation) {
@@ -38,7 +41,7 @@ fun informationEntrance() {
                     val pD = format.decodeFromString<UserData>(statDataGet(uid)).data
                     val pUD = format.decodeFromString<UpInformation>(upDataGet(uid)).data
                     group.sendMessage(
-                        downloadImage(pD.card.face)!!
+                        KtorUtils.normalClient.get<InputStream>(pD.card.face)
                             .uploadAsImage(group, "png")
                             .plus(
                                 "${pD.card.name}($uid)\n" +

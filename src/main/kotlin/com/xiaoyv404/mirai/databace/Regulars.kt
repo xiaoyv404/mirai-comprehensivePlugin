@@ -11,7 +11,7 @@ object Bilibili {
 
 object Pixiv {
     val worksInfoFind = Regex("(?=\\{\"illustId\":\").*?(?=,\"userIllusts\")")
-    val worksNumberFind = Regex("(?<=<p>這個作品ID中有 )[1-9]*(?= 張圖片，需要指定是第幾張圖片才能正確顯示\\(請參考<a href=\"https://pixiv.cat/\">首頁</a>說明\\)。</p>)")
+    val worksNumberFind = Regex("(?<=<p>這個作品ID中有 )[0-9]+(?= 張圖片，需要指定是第幾張圖片才能正確顯示\\(請參考<a href=\"https://pixiv.cat/\">首頁</a>說明\\)。</p>)")
 }
 
 object Command {
@@ -19,7 +19,7 @@ object Command {
 
     val ero = Regex("^((来)([0-9]*)(份涩图))")
     val ban = Regex("^(404 ban ((-h\$|--help\$)|(([0-9]+) ([0-9]+) (([0-9]+)|unban))))\$")
-    val join = Regex("^(404 join ((-h\$|--help\$)|([0-9]+)))\$")
+    val join = Regex("^(404 join ((-h\$|--help\$)|( [0-9]+)))\$")
     val bugReport = Regex("^(404 report bug ((-h\$|--help\$)|((\\w+) ((?:.|\\n)+))))\$")
     val eroAdd = Regex("^((404 ero add|添加涩图) ((-h\$|--help\$)|([0-9]+)))\$")
     val eroRemove = Regex("^((404 ero remove|删除涩图) ((-h\$|--help\$)|([0-9]+)))\$")
@@ -31,4 +31,3 @@ object Command {
 
     val SauceNao = Regex("^((404 img search|搜图)( (-h\$|--help\$)|(.*))?)\$")
 }
-

@@ -17,6 +17,7 @@ data class ImageInfo(
     val tags: String,
     val userId: Long,
     val userName: String,
+    val extension: String,
 )
 
 @Serializable

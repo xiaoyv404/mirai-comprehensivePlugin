@@ -3,7 +3,7 @@ plugins {
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.serialization") version kotlinVersion
 
-    id("net.mamoe.mirai-console") version "2.7-RC"
+    id("net.mamoe.mirai-console") version "2.8.0-M1"
 }
 
 group = "com.xiaoyv404"
@@ -54,4 +54,7 @@ dependencies {
     implementation("org.apache.httpcomponents:httpmime:$httpcomponents")
 
     implementation("redis.clients:jedis:3.6.0")
+
+    implementation("org.apache.tika:tika-core:2.1.0")
+
 }

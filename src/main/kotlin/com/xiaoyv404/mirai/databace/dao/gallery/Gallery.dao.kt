@@ -14,6 +14,7 @@ interface Gallery : Entity<Gallery> {
     val userId: Long
     val userName: String
     val creator: Long
+    val extension: String
 }
 
 object Gallerys : Table<Gallery>("Gallerys") {
@@ -24,4 +25,5 @@ object Gallerys : Table<Gallery>("Gallerys") {
     val userId = long("userId")
     val userName = varchar("userName")
     val creator = long("creator")
+    val extension = varchar("extension")
 }

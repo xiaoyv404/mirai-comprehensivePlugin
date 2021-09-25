@@ -3,18 +3,20 @@ package com.xiaoyv404.mirai.service.accessControl
 import com.xiaoyv404.mirai.databace.Database
 import com.xiaoyv404.mirai.databace.dao.Groups
 import com.xiaoyv404.mirai.service.tool.jsonExtractContains
+import com.xiaoyv404.mirai.service.tool.jsonSearch
 import org.ktorm.dsl.*
-import org.ktorm.schema.LongSqlType
+import org.ktorm.schema.VarcharSqlType
 import org.ktorm.support.mysql.jsonExtract
 
 fun authorityIdentification(uid: Long, gid: Long, func: String): Boolean {
     val gp = Groups.permission
+    val sUid = uid.toString()
     return Database.db
         .from(Groups)
         .select(
             gp.jsonExtract<Boolean>("$.$func.all"),
-            gp.jsonExtractContains("$.$func.black", uid, LongSqlType),
-            gp.jsonExtractContains("$.$func.white", uid, LongSqlType),
+            gp.jsonExtractContains("$.$func.black", sUid, VarcharSqlType),
+            gp.jsonExtractContains("$.$func.white", sUid, VarcharSqlType),
         )
         .where(Groups.id eq gid)
         .map {
@@ -26,7 +28,20 @@ fun authorityIdentification(uid: Long, gid: Long, func: String): Boolean {
 }
 
 
-fun permissionAllSet(gid: Long, func: String, switch: Boolean) {
+fun permissionSearch(gid: Long, uid: Long, func: String): String? {
+    val sUid = uid.toString()
+    return Database.db
+        .from(Groups)
+        .select(
+            Groups.permission.jsonSearch("one", sUid, "$.$func", VarcharSqlType)
+        )
+        .where { Groups.id eq gid }
+        .map {
+            it.getString(1)
+        }.first()
+}
+
+fun permissionAllSet(gid: Long, func: String, switch: Boolean) {    
     Database.db.useConnection { conn ->
         val sql = """
             UPDATE `groups`
@@ -39,7 +54,8 @@ fun permissionAllSet(gid: Long, func: String, switch: Boolean) {
         }
     }
 }
-fun permissionListAdd(gid: Long,uid: Long, func: String) {
+
+fun permissionListAdd(gid: Long, uid: Long, func: String) {
     Database.db.useConnection { conn ->
         val sql = """
             UPDATE `groups` 
@@ -48,21 +64,27 @@ fun permissionListAdd(gid: Long,uid: Long, func: String) {
         """.trimIndent()
         conn.prepareStatement(sql).use { statement ->
             statement.setString(1, func)
-            statement.setLong(2, uid)
+            statement.setString(2, uid.toString())
             statement.setLong(3, gid)
         }
     }
 }
 
-fun permissionListRemove(gid: Long,uid: Long, func: String){
+fun permissionListRemove(gid: Long, uid: Long, func: String): Int {
+    val path = permissionSearch(gid,uid,func)
+    if (path.isNullOrBlank()){
+        return 0
+    }
     Database.db.useConnection { conn ->
         val sql = """
             UPDATE `groups` 
-            SET `permission` = JSON_REMOVE(JSON_CONTAINS(JSON_EXTRACT(`permission`,CONCAT('${'$'}.','ThesaurusResponse','.black[*]')),JSON_ARRAY(2083664136)))
+            SET `permission` = JSON_REMOVE(`permission`,JSON_UNQUOTE(?))
             WHERE `id` = ?
         """.trimIndent()
         conn.prepareStatement(sql).use { statement ->
-
+            statement.setString(1,path)
+            statement.setLong(2,gid)
         }
     }
-}//todo Î´Íê³É
+    return 1
+}
