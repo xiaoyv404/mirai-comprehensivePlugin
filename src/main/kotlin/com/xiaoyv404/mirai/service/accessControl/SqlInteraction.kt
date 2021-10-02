@@ -79,7 +79,7 @@ fun permissionListRemove(gid: Long, uid: Long, func: String): Int {
         val sql = """
             UPDATE `groups` 
             SET `permission` = JSON_REMOVE(`permission`,JSON_UNQUOTE(?))
-            WHERE `id` = ?
+            WHERE `id` = ?  
         """.trimIndent()
         conn.prepareStatement(sql).use { statement ->
             statement.setString(1,path)

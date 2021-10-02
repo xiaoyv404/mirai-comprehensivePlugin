@@ -2,6 +2,7 @@ package com.xiaoyv404.mirai.service
 
 import com.xiaoyv404.mirai.databace.Command
 import com.xiaoyv404.mirai.service.accessControl.authorityIdentification
+import net.mamoe.mirai.contact.remarkOrNameCardOrNick
 import net.mamoe.mirai.event.GlobalEventChannel
 import net.mamoe.mirai.event.events.BotInvitedJoinGroupRequestEvent
 import net.mamoe.mirai.event.subscribeFriendMessages
@@ -71,7 +72,21 @@ fun someThinkEntrance() {
                         + "的哦"
             )
         }
-
+        matching(Command.debuMe) {
+            if ((getUserInformation(sender.id).bot != true) && authorityIdentification(
+                    sender.id,
+                    group.id,
+                    "DebuMe"
+                )
+            ) {
+                val rd = it.groups
+                val name = if (rd[2]!!.value == "")
+                    sender.remarkOrNameCardOrNick
+                else
+                    rd[2]!!.value
+                group.sendMessage("*${name}坐在地上哭着说道「可怜哒${name}什么时候才有大佬们百分之一厉害呀……」")
+            }
+        }
 //        case("开关BiliBili解析功能") {
 //            when (groupDataRead(group.id)[0].biliStatus) {
 //                0    -> groupDataUpdate(group.id, 1)
@@ -165,6 +180,9 @@ fun someThinkEntrance() {
             }
         }
         matching(Command.join) {}
+
+
+
         always {
             if (getUserInformation(sender.id).admin == true) {
                 when (message.contentToString()) {
@@ -184,7 +202,7 @@ fun someThinkEntrance() {
                                 val entryMassage = message.serializeToMiraiCode()
                                 if (entryMassage != "") {
                                     bot.groups.forEach {
-                                        if (groupNoticeSwitchRead(it.id,"AdminBroadcast")){
+                                        if (groupNoticeSwitchRead(it.id, "AdminBroadcast")) {
                                             bot.getGroup(it.id)
                                                 ?.sendMessage(
                                                     MiraiCode.deserializeMiraiCode(entryMassage)

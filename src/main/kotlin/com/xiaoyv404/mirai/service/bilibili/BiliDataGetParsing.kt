@@ -66,7 +66,7 @@ suspend fun uJsonVideo(uJsonVideo: String, group: Contact) {
         val pJson = format.decodeFromString<VideoDataJson>(uJsonVideo)
         group.sendMessage(
             KtorUtils.normalClient.get<InputStream>(pJson.data.pic)
-                .uploadAsImage(group, "png")
+                .uploadAsImage(group, )
                 .plus(parsingVideoDataString(pJson))
         )
     } catch (e: SerializationException) {

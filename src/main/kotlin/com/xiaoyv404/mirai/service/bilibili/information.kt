@@ -42,7 +42,7 @@ fun informationEntrance() {
                     val pUD = format.decodeFromString<UpInformation>(upDataGet(uid)).data
                     group.sendMessage(
                         KtorUtils.normalClient.get<InputStream>(pD.card.face)
-                            .uploadAsImage(group, "png")
+                            .uploadAsImage(group)
                             .plus(
                                 "${pD.card.name}($uid)\n" +
                                     "粉丝数: ${pD.follower}   关注数: ${pD.card.friend}   稿件数: ${pD.archive_count}\n" +

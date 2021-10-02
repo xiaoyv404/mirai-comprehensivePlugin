@@ -30,4 +30,6 @@ object Command {
     val getBiliBiliUpInformation = Regex("^(404 (?i)(获取up信息|(getUpInformation))( ((-h|--help)|([0-9]+)))?)\$")
 
     val SauceNao = Regex("^((404 img search|搜图)( (-h\$|--help\$)|(.*))?)\$")
+
+    val debuMe= Regex("^(~me(.*))$")
 }
