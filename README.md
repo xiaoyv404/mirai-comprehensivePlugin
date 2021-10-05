@@ -13,6 +13,7 @@
 由于作者学业压力较大, 不能保证插件的及时更新以及bug修复。
 
 ## 使用说明
+[帮助文档](https://www.xiaoyv404.top/archives/bot404.html)
 
 1. 环境配置
    - 插件兼容mirai-console2.0及以上版本。

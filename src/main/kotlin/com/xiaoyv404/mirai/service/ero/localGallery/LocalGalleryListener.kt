@@ -132,7 +132,7 @@ fun localGalleryListener() {
                                     bot.says(sequenceInformation(ii))
                                     for (i in 1..ii.picturesNum) {
                                         bot.says(
-                                            File("${PluginConfig.database.SaveAddress}${ii.id}-${ii.extension}")
+                                            File("${PluginConfig.database.SaveAddress}${ii.id}-$i${ii.extension}")
                                                 .uploadAsImage(subject)
                                         )
                                     }

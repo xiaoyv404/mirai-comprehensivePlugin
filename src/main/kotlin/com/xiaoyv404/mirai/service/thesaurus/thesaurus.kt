@@ -4,8 +4,8 @@ import com.xiaoyv404.mirai.databace.Command
 import com.xiaoyv404.mirai.databace.Database
 import com.xiaoyv404.mirai.databace.dao.Thesaurus
 import com.xiaoyv404.mirai.service.Thesauru
-import com.xiaoyv404.mirai.service.getUserInformation
 import com.xiaoyv404.mirai.service.accessControl.authorityIdentification
+import com.xiaoyv404.mirai.service.getUserInformation
 import com.xiaoyv404.mirai.service.queryTerm
 import net.mamoe.mirai.event.GlobalEventChannel
 import net.mamoe.mirai.event.subscribeMessages
@@ -28,9 +28,11 @@ fun thesaurusEntrance() {
                         "reply: $reply\n"
                         + "请输入[y]以确认"
                 )
-                if (nextMessage().contentToString() == "y")
+                if (nextMessage().contentToString() == "y") {
                     increaseEntry(question, reply, sender.id)
-                subject.sendMessage("success")
+                    subject.sendMessage("添加成功~")
+                }else
+                    subject.sendMessage("啊咧, 为啥要取消捏")
             }
         }
 
