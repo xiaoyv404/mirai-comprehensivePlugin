@@ -33,12 +33,8 @@ data class DatabaseConfig(
     val AdditionalParameters: String = "",
     @Comment("最大连接数，也许是连接池的大小？？？")
     var maximumPoolSize: Int? = 10,
-    @Comment("图库图片位置")
-    val SaveAddress: String = "/gallery/",
     @Comment("本地代理端口")
     val ProxyPort: Int = 404,
-    @Comment("聊天记录历史保存位置")
-    val SaveHistory: String = "/history/",
     @Comment("SauceNAOAPIKEY")
     val sauceNaoApiKey: String = ""
 )

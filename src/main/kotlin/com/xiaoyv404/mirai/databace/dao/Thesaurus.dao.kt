@@ -1,10 +1,8 @@
 package com.xiaoyv404.mirai.databace.dao
 
+import kotlinx.serialization.json.Json
 import org.ktorm.entity.Entity
-import org.ktorm.schema.Table
-import org.ktorm.schema.int
-import org.ktorm.schema.long
-import org.ktorm.schema.varchar
+import org.ktorm.schema.*
 
 
 interface Thesauru : Entity<Thesauru> {
@@ -13,6 +11,7 @@ interface Thesauru : Entity<Thesauru> {
     val reply: String
     val creator: Long
     val weight: Int
+    val scope: Json
 }
 
 object Thesaurus : Table<Thesauru>("Thesaurus") {
@@ -21,5 +20,6 @@ object Thesaurus : Table<Thesauru>("Thesaurus") {
     val reply = varchar("reply")
     val creator = long("creator").primaryKey()
     val weight = int("weight")
+    val scope = text("scope")
 }
     

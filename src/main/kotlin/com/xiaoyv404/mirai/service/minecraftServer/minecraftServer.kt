@@ -85,7 +85,7 @@ class MinecraftServerStatusRequester(private var group: Contact? = null) {
                             }
 
                             if (control == 2U) {
-                                sendPlayerList(players!!.players)
+                                sendPlayerList(si.host, si.port, players!!)
                             }
                             if (dStatus != 1) {
                                 updateServerInformation(si.id, 1)
@@ -118,10 +118,27 @@ class MinecraftServerStatusRequester(private var group: Contact? = null) {
         }
     }
 
-    private suspend fun sendPlayerList(players: List<Player>) {
+    @KtorExperimentalAPI
+    private suspend fun sendPlayerList(host: String, port: Int, players: Players) {
+        val playersML = players.players.toMutableList()
+        var cycles = players.online / 12
+        if (cycles != 0)
+            cycles++
+
+        PluginMain.logger.info("尝试获取PlayList次数：${cycles+1}次")
+
+        for (i in 1..cycles) {
+            getServerInfo(host, port).serverInformationFormat?.players?.players?.forEach {
+                playersML.add(it)
+            }
+        }
+
+        val playersL = playersML.distinct()
+        PluginMain.logger.info("已获取到玩家列表人数：${playersL.size}")
+
         group!!.sendMessage(
             buildForwardMessage(group!!) {
-                players.forEach { player ->
+                playersL.forEach { player ->
                     group!!.bot.says(
                         "name: ${player.name}\n" +
                             "id: ${player.id}"

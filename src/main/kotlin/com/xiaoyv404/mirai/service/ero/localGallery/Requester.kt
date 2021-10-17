@@ -1,6 +1,5 @@
 package com.xiaoyv404.mirai.service.ero.localGallery
 
-import com.xiaoyv404.mirai.PluginConfig
 import com.xiaoyv404.mirai.PluginMain
 import com.xiaoyv404.mirai.databace.Pixiv
 import com.xiaoyv404.mirai.service.ero.increaseEntry
@@ -12,7 +11,6 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import org.apache.tika.Tika
 import java.io.BufferedInputStream
-import java.io.File
 import java.io.InputStream
 import java.sql.SQLIntegrityConstraintViolationException
 
@@ -55,12 +53,12 @@ suspend fun unformat(id: String, senderId: Long): ImageInfo {
         PluginMain.logger.info("含有$num 张图片")
         for (i in 1..num) {
             val `in` = KtorUtils.normalClient.get<InputStream>("https://pixiv.cat/$id-$i.png")
-            fe = verifyExtensionAndSaveFile(`in`, "${PluginConfig.database.SaveAddress}$id-$i")
+            fe = verifyExtensionAndSaveFile(`in`, "gallery/$id-$i")
         }
     } else {
         PluginMain.logger.info("含有1 张图片")
         val `in` = KtorUtils.normalClient.get<InputStream>("https://pixiv.cat/$id.png")
-        fe = verifyExtensionAndSaveFile(`in`, "${PluginConfig.database.SaveAddress}$id")
+        fe = verifyExtensionAndSaveFile(`in`, "gallery/$id")
     }
 
     try {
@@ -83,6 +81,6 @@ fun verifyExtensionAndSaveFile(src: InputStream, dst: String): String {
         else         -> "???"
     }
     bSrc.reset()
-    FileUtils.saveFileFromStream(bSrc, File("$dst.$fe"))
+    FileUtils.saveFileFromStream(bSrc,  PluginMain.resolveDataFile("$dst.$fe"))
     return fe
 }

@@ -1,6 +1,5 @@
 package com.xiaoyv404.mirai.service.ero.localGallery
 
-import com.xiaoyv404.mirai.PluginConfig
 import com.xiaoyv404.mirai.PluginMain
 import com.xiaoyv404.mirai.databace.Command
 import com.xiaoyv404.mirai.service.accessControl.authorityIdentification
@@ -14,7 +13,6 @@ import net.mamoe.mirai.event.GlobalEventChannel
 import net.mamoe.mirai.event.subscribeMessages
 import net.mamoe.mirai.message.data.buildForwardMessage
 import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
-import java.io.File
 import java.io.InputStream
 
 
@@ -74,7 +72,7 @@ fun localGalleryListener() {
                         val ii = unformat(rd[3]!!.value, sender.id)
                         if (ii.picturesNum == 1) {
                             subject.sendMessage(
-                                File("${PluginConfig.database.SaveAddress}${ii.id}.${ii.extension}")
+                                PluginMain.resolveDataFile("gallery/${ii.id}.${ii.extension}")
                                     .uploadAsImage(subject).plus(sequenceInformation(ii))
                             )
                         } else {
@@ -83,7 +81,7 @@ fun localGalleryListener() {
                                     bot.says(sequenceInformation(ii))
                                     for (i in 1..ii.picturesNum) {
                                         bot.says(
-                                            File("${PluginConfig.database.SaveAddress}${ii.id}-$i.${ii.extension}")
+                                            PluginMain.resolveDataFile("gallery/${ii.id}-$i.${ii.extension}")
                                                 .uploadAsImage(subject)
                                         )
                                     }
@@ -123,7 +121,7 @@ fun localGalleryListener() {
 
                         if (ii.picturesNum == 1)
                             subject.sendMessage(
-                                File("${PluginConfig.database.SaveAddress}${ii.id}.${ii.extension}")
+                                PluginMain.resolveDataFile("gallery/${ii.id}.${ii.extension}")
                                     .uploadAsImage(subject).plus(sequenceInformation(ii))
                             )
                         else {
@@ -132,7 +130,7 @@ fun localGalleryListener() {
                                     bot.says(sequenceInformation(ii))
                                     for (i in 1..ii.picturesNum) {
                                         bot.says(
-                                            File("${PluginConfig.database.SaveAddress}${ii.id}-$i${ii.extension}")
+                                            PluginMain.resolveDataFile("gallery/${ii.id}-$i.${ii.extension}")
                                                 .uploadAsImage(subject)
                                         )
                                     }
@@ -161,12 +159,16 @@ fun localGalleryListener() {
                         val num = queryTagQuantityByTagId(tagid)
                         updateTagNumber(tagid, num - 1)
                     }
-                    val imgNum = getImgInformationById(id).picturesNum
+
+                    val information = getImgInformationById(id)
+                    val imgNum = information.picturesNum
+                    val extension = information.extension
+
                     if (imgNum == 1)
-                        File("${PluginConfig.database.SaveAddress}$id.png").deleteRecursively()
+                        PluginMain.resolveDataFile("gallery/$id.$extension").deleteRecursively()
                     else
                         for (i in 1..imgNum) {
-                            File("${PluginConfig.database.SaveAddress}$id-$i.png")
+                            PluginMain.resolveDataFile("gallery/$id-$i.$extension")
                                 .deleteRecursively()
                         }
                     removeInformationById(id)

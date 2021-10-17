@@ -1,6 +1,6 @@
 package com.xiaoyv404.mirai.service.history
 
-import com.xiaoyv404.mirai.PluginConfig
+import com.xiaoyv404.mirai.PluginMain
 import com.xiaoyv404.mirai.service.getUserInformation
 import com.xiaoyv404.mirai.service.tool.FileUtils.saveFileFromString
 import kotlinx.serialization.SerializationException
@@ -10,7 +10,6 @@ import net.mamoe.mirai.message.data.MessageChain.Companion.serializeToJsonString
 import net.mamoe.mirai.message.data.ids
 import net.mamoe.mirai.message.data.time
 import net.mamoe.mirai.utils.MiraiExperimentalApi
-import java.io.File
 
 @MiraiExperimentalApi
 fun historyEntrance() {
@@ -19,7 +18,7 @@ fun historyEntrance() {
             if (getUserInformation(sender.id).bot != true) {
                 saveFileFromString(
                     message.contentToString() + "\n",
-                    File("${PluginConfig.database.SaveHistory}${group.id}.txt")
+                    PluginMain.resolveDataFile("history/${group.id}.txt")
                 )
             }
             try {

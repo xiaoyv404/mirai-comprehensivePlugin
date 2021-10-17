@@ -52,6 +52,8 @@ dependencies {
     implementation("org.apache.httpcomponents:httpclient:$httpcomponents")
     implementation("org.apache.httpcomponents:fluent-hc:$httpcomponents")
     implementation("org.apache.httpcomponents:httpmime:$httpcomponents")
+    implementation("org.apache.commons:commons-lang3:3.12.0")
+
 
     implementation("redis.clients:jedis:3.6.0")
 

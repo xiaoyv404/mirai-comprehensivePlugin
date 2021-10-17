@@ -1,7 +1,9 @@
 package com.xiaoyv404.mirai.service
 
+import com.xiaoyv404.mirai.PluginMain
 import com.xiaoyv404.mirai.databace.Command
 import com.xiaoyv404.mirai.service.accessControl.authorityIdentification
+import io.ktor.util.*
 import net.mamoe.mirai.contact.remarkOrNameCardOrNick
 import net.mamoe.mirai.event.GlobalEventChannel
 import net.mamoe.mirai.event.events.BotInvitedJoinGroupRequestEvent
@@ -10,10 +12,13 @@ import net.mamoe.mirai.event.subscribeGroupMessages
 import net.mamoe.mirai.message.code.MiraiCode
 import net.mamoe.mirai.message.data.PlainText
 import net.mamoe.mirai.message.data.buildMessageChain
+import net.mamoe.mirai.utils.MiraiInternalApi
 import kotlin.coroutines.EmptyCoroutineContext
 
 var BroadcastStatus = false
 
+@KtorExperimentalAPI
+@MiraiInternalApi
 fun someThinkEntrance() {
     GlobalEventChannel.subscribeAlways(
         BotInvitedJoinGroupRequestEvent::class,
@@ -35,7 +40,7 @@ fun someThinkEntrance() {
                     "ThesaurusResponse"
                 )
             ) {
-                val entryMassages = queryTerm(message.serializeToMiraiCode())
+                val entryMassages = queryTerm(message.serializeToMiraiCode(), group.id)
                 if (entryMassages.isNotEmpty()) {
                     var total = 0
                     entryMassages.forEach {
@@ -148,6 +153,9 @@ fun someThinkEntrance() {
                 )
             )
             bot.getFriend(3068755284)?.sendMessage(chain)
+        }
+        case("test") {
+            println(PluginMain.dataFolderPath)
         }
     }
     GlobalEventChannel.subscribeFriendMessages {
