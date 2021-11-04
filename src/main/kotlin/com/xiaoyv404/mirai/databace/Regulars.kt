@@ -20,7 +20,6 @@ object Command {
     val ero = Regex("^((À´)([0-9]*)(·ÝÉ¬Í¼))")
     val ban = Regex("^(404 ban ((-h\$|--help\$)|(([0-9]+) ([0-9]+) (([0-9]+)|unban))))\$")
     val join = Regex("^(404 join ((-h\$|--help\$)|( [0-9]+)))\$")
-    val bugReport = Regex("^(404 report bug ((-h\$|--help\$)|((\\w+) ((?:.|\\n)+))))\$")
     val eroAdd = Regex("^((404 ero add|Ìí¼ÓÉ¬Í¼) ((-h\$|--help\$)|([0-9]+)))\$")
     val eroRemove = Regex("^((404 ero remove|É¾³ýÉ¬Í¼) ((-h\$|--help\$)|([0-9]+)))\$")
     val eroSearch = Regex("^((404 ero search|ËÑÉ¬Í¼) ((-h\$|--help\$)|(.+)))\$")

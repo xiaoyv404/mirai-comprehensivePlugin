@@ -33,35 +33,6 @@ fun someThinkEntrance() {
     }
 
     GlobalEventChannel.subscribeGroupMessages {
-        always {
-            if ((getUserInformation(sender.id).bot != true) && authorityIdentification(
-                    sender.id,
-                    group.id,
-                    "ThesaurusResponse"
-                )
-            ) {
-                val entryMassages = queryTerm(message.serializeToMiraiCode(), group.id)
-                if (entryMassages.isNotEmpty()) {
-                    var total = 0
-                    entryMassages.forEach {
-                        total += it.weight
-                    }
-                    val rad = (1..total).random()
-                    var curTotal = 0
-                    var res = ""
-                    run {
-                        entryMassages.forEach {
-                            curTotal += it.weight
-                            if (rad <= curTotal) {
-                                res = it.reply
-                                return@run
-                            }
-                        }
-                    }
-                    group.sendMessage(MiraiCode.deserializeMiraiCode(res))
-                }
-            }
-        }
         case("404 status") {
             group.sendMessage(
                 "Bot: ${bot.nick}(${bot.id})\n" +
@@ -92,24 +63,6 @@ fun someThinkEntrance() {
                 group.sendMessage("*${name}坐在地上哭着说道「可怜哒${name}什么时候才有大佬们百分之一厉害呀……」")
             }
         }
-//        case("开关BiliBili解析功能") {
-//            when (groupDataRead(group.id)[0].biliStatus) {
-//                0    -> groupDataUpdate(group.id, 1)
-//                1    -> groupDataUpdate(group.id, 0)
-//                null -> groupDataCreate(group.id)
-//            }
-//            group.sendMessage(
-//                "w, BiliBili解析功能现在是" +
-//                    when (groupDataRead(group.id)[0].biliStatus) {
-//                        1    -> "开"
-//                        0    -> "关"
-//                        -1   -> "黑名单中"
-//                        null -> "关"
-//                        else -> "???"
-//                    }
-//                    + "的哦"
-//            )
-//        }
         finding(Command.addBot) {
             val rd = it.groups
             if (rd[3]!!.value == "-h" || rd[3]!!.value == "--help") {

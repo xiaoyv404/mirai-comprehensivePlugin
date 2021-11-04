@@ -12,13 +12,15 @@ import com.xiaoyv404.mirai.service.tool.FileUtils
 import com.xiaoyv404.mirai.service.tool.KtorUtils
 import io.ktor.client.request.*
 import io.ktor.util.*
+import net.mamoe.mirai.contact.Contact.Companion.uploadImage
 import net.mamoe.mirai.event.GlobalEventChannel
+import net.mamoe.mirai.event.subscribeGroupMessages
 import net.mamoe.mirai.event.subscribeMessages
+import net.mamoe.mirai.message.code.MiraiCode
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
 import net.mamoe.mirai.message.nextMessage
 import net.mamoe.mirai.utils.MiraiInternalApi
-import org.apache.commons.lang3.StringUtils
 import org.ktorm.dsl.delete
 import org.ktorm.dsl.eq
 import org.ktorm.dsl.insert
@@ -26,14 +28,16 @@ import java.io.InputStream
 import java.math.BigInteger
 
 
+@KtorExperimentalAPI
+@MiraiInternalApi
 fun thesaurusEntrance() {
     GlobalEventChannel.subscribeMessages {
         finding(Regex("^(!!创建词条)\$")) {
             if (authorityIdentification(sender.id, subject.id, "ThesaurusAdd")) {
                 subject.sendMessage("请发送question")
-                val question = nextMessage().serializeToMiraiCode()
+                val question = parseMsgAndSaveImg(nextMessage())
                 subject.sendMessage("请发送reply")
-                val reply = nextMessage().serializeToMiraiCode()
+                val reply = parseMsgAndSaveImg(nextMessage())
                 subject.sendMessage(
                     "question: $question\n" +
                         "reply: $reply\n"
@@ -52,14 +56,14 @@ fun thesaurusEntrance() {
                 val gp = it.groups
                 val gid = when {
                     subject is net.mamoe.mirai.contact.Group -> subject.id
-                    gp[5] != null -> gp[5]!!.value.toLong()
+                    gp[5] != null                            -> gp[5]!!.value.toLong()
                     else                                     -> {
                         subject.sendMessage("输入值错误")
                         return@finding
                     }
                 }
                 subject.sendMessage("请发送question")
-                val entryMassages = queryTerm(nextMessage().serializeToMiraiCode(), gid)
+                val entryMassages = queryTerm(parseMsg(nextMessage()), gid)
                 if (entryMassages.isEmpty()) {
                     subject.sendMessage("好像没有呢")
                 } else {
@@ -96,6 +100,43 @@ fun thesaurusEntrance() {
             }
         }
     }
+    GlobalEventChannel.subscribeGroupMessages {
+        always {
+            if ((getUserInformation(sender.id).bot != true) && authorityIdentification(
+                    sender.id,
+                    group.id,
+                    "ThesaurusResponse"
+                )
+            ) {
+                val entryMassages = queryTerm(parseMsg(message), group.id)
+                if (entryMassages.isNotEmpty()) {
+                    var total = 0
+                    entryMassages.forEach {
+                        total += it.weight
+                    }
+                    val rad = (1..total).random()
+                    var curTotal = 0
+                    var res = ""
+                    run {
+                        entryMassages.forEach {
+                            curTotal += it.weight
+                            if (rad <= curTotal) {
+                                res = it.reply
+                                return@run
+                            }
+                        }
+                    }
+                    Regex("(\\[404:image:(.+)])").findAll(res).forEach {
+                        val img =
+                            group.uploadImage(PluginMain.resolveDataFile("thesaurus/${it.groups[2]!!.value}"))
+                                .serializeToMiraiCode()
+                        res = res.replace(it.value, img)
+                    }
+                    group.sendMessage(MiraiCode.deserializeMiraiCode(res))
+                }
+            }
+        }
+    }
 }
 
 fun thesaurusRemoveMsg(da: Thesauru): String {
@@ -121,13 +162,13 @@ fun increaseEntry(question: String, reply: String, creator: Long) {
 
 @KtorExperimentalAPI
 @MiraiInternalApi
-suspend fun parseAndSaveMsg(message: Message) {
-    val msg = mutableListOf<String>()
+suspend fun parseMsgAndSaveImg(message: MessageChain): String {
+    val img =  mutableListOf<String>()
     message.toMessageChain().forEach {
         if (it is Image) {
             val imageId = BigInteger(1, it.md5).toString(16)
             val `in` = KtorUtils.normalClient.get<InputStream>(it.queryUrl())
-            val imageType = if (it.imageType == ImageType.UNKNOWN)
+            val imageType = if (it.imageType != ImageType.UNKNOWN)
                 it.imageType
             else
                 ImageType.PNG
@@ -136,11 +177,37 @@ suspend fun parseAndSaveMsg(message: Message) {
                 `in`,
                 PluginMain.resolveDataFile("thesaurus/$imageId.$imageType")
             )
-            msg.add("[404:image:${imageId}.$imageType]")
-        } else {
-            msg.add(it.toString())
+            img.add("[404:image:${imageId}.$imageType]")
         }
     }
 
-    println(StringUtils.join(msg.drop(1), ""))
-}   
+    var msg = message.serializeToMiraiCode()
+    val matchImg =  Regex("^\\[mirai:image:.+]\$").findAll(msg)
+    for ((i, v) in matchImg.withIndex()){
+        msg = msg.replace(v.value,img[i])
+    }
+
+    return msg
+}
+
+@KtorExperimentalAPI
+@MiraiInternalApi
+fun parseMsg(message: MessageChain): String {
+    val img =  mutableListOf<String>()
+    message.toMessageChain().forEach {
+        if (it is Image) {
+            val imageId = BigInteger(1, it.md5).toString(16)
+            val imageType = if (it.imageType != ImageType.UNKNOWN)
+                it.imageType
+            else
+                ImageType.PNG
+            img.add("[404:image:${imageId}.$imageType]")
+        }
+    }
+    var msg = message.serializeToMiraiCode()
+    val matchImg =  Regex("^\\[mirai:image:.+]\$").findAll(msg)
+    for ((i, v) in matchImg.withIndex()){
+        msg = msg.replace(v.value,img[i])
+    }
+    return msg
+}
