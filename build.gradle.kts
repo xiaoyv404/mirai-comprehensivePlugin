@@ -3,7 +3,7 @@ plugins {
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.serialization") version kotlinVersion
 
-    id("net.mamoe.mirai-console") version "2.8.0-M1"
+    id("net.mamoe.mirai-console") version "2.8.0"
 }
 
 group = "com.xiaoyv404"
@@ -11,7 +11,7 @@ version = "1.0.0-beta"
 
 val ktorm = "3.3.0"
 val ktor = "1.5.1"
-val yamlKtVersion = "0.7.5"
+val yamlKtVersion = "0.10.2"
 val httpcomponents = "4.5.4"
 
 repositories {
@@ -47,6 +47,7 @@ dependencies {
 
     implementation("io.ktor:ktor-client-cio:$ktor")
     implementation("io.ktor:ktor-server-netty:$ktor")
+    implementation("io.ktor:ktor-jackson:$ktor")
 
 
     implementation("org.apache.httpcomponents:httpclient:$httpcomponents")

@@ -43,7 +43,7 @@ suspend fun unformat(id: String, senderId: Long): ImageInfo {
     val num: Int = try {
         Pixiv.worksNumberFind.find(KtorUtils.normalClient.config {
             expectSuccess = false
-        }.get<String>("https://pixiv.cat/$id.png"))?.value?.toInt() ?: 1
+        }.get<String>("https://pixiv.re/$id.png"))?.value?.toInt() ?: 1
     } catch (e: Exception) {
         1
     }
@@ -52,12 +52,12 @@ suspend fun unformat(id: String, senderId: Long): ImageInfo {
     if (num != 1) {
         PluginMain.logger.info("含有$num 张图片")
         for (i in 1..num) {
-            val `in` = KtorUtils.normalClient.get<InputStream>("https://pixiv.cat/$id-$i.png")
+            val `in` = KtorUtils.normalClient.get<InputStream>("https://pixiv.re/$id-$i.png")
             fe = verifyExtensionAndSaveFile(`in`, "gallery/$id-$i")
         }
     } else {
         PluginMain.logger.info("含有1 张图片")
-        val `in` = KtorUtils.normalClient.get<InputStream>("https://pixiv.cat/$id.png")
+        val `in` = KtorUtils.normalClient.get<InputStream>("https://pixiv.re/$id.png")
         fe = verifyExtensionAndSaveFile(`in`, "gallery/$id")
     }
 
