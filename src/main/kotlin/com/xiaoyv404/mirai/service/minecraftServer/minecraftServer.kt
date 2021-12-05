@@ -38,15 +38,37 @@ fun minecraftServerEntrance() {
                         "诶?你问我为什么不写之前的那种命令帮助了?唔。。。你自己看嘛,又不是不能看"
                 )
             } else {
-                getServerMapByGroupID(group.id).forEach { si ->
-                    getServerInformationByServerID(si!!).forEach { sv ->
-                        MinecraftServerStatusRequester(group).check(
-                            sv,
-                            if (rd[10]?.value == "-p")
-                                2U
-                            else
-                                1U
-                        )
+                if (group.id != 1147939635L) {
+                    getServerMapByGroupID(group.id).forEach { si ->
+                        getServerInformationByServerID(si!!).forEach { sv ->
+                            MinecraftServerStatusRequester(group).check(
+                                sv,
+                                if (rd[10]?.value == "-p")
+                                    2U
+                                else
+                                    1U
+                            )
+                        }
+                    }
+                }else{
+                    when ((0..3).random()) {
+                        0 -> group.sendMessage("都说了停运了（恼）")
+                        1 -> group.sendMessage(".list")
+                        2 -> group.sendMessage("我。。。我要生气了哦")
+                        3 -> {
+                            group.sendMessage("好叭╮(╯-╰)╭")
+                            getServerMapByGroupID(group.id).forEach { si ->
+                                getServerInformationByServerID(si!!).forEach { sv ->
+                                    MinecraftServerStatusRequester(group).check(
+                                        sv,
+                                        if (rd[10]?.value == "-p")
+                                            2U
+                                        else
+                                            1U
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -59,7 +81,6 @@ class MinecraftServerStatusRequester(private var group: Contact? = null) {
     suspend fun check(si: ServerInformation, control: UInt = 0U) {
         PluginMain.launch {
             val dStatus = si.status
-
             if (dStatus != -2) {
                 try {
                     val information = getServerInfo(si.host, si.port)

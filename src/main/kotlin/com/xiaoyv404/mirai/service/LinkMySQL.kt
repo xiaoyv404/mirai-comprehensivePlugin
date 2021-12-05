@@ -4,11 +4,8 @@ package com.xiaoyv404.mirai.service
 
 import com.xiaoyv404.mirai.databace.Database
 import com.xiaoyv404.mirai.databace.dao.Groups
-import com.xiaoyv404.mirai.databace.dao.Thesaurus
 import com.xiaoyv404.mirai.databace.dao.Users
-import com.xiaoyv404.mirai.service.tool.jsonExtractContains
 import org.ktorm.dsl.*
-import org.ktorm.schema.VarcharSqlType
 import org.ktorm.support.mysql.jsonExtract
 
 
@@ -24,7 +21,6 @@ data class Thesauru(
     val question: String,
     val reply: String,
     val creator: Long,
-    val weight: Int
 )
 
 fun groupNoticeSwitchRead(gid: Long, func: String): Boolean {
@@ -39,24 +35,7 @@ fun groupNoticeSwitchRead(gid: Long, func: String): Boolean {
 }
 
 
-fun queryTerm(question: String, gid: Long): List<Thesauru> {
-    val sGid = gid.toString()
-    return Database.db
-        .from(Thesaurus)
-        .select()
-        .where {
-            Thesaurus.question eq question and
-                (Thesaurus.scope.jsonExtractContains("$", sGid, VarcharSqlType) or Thesaurus.scope.isNull())
-        }.map { row ->
-            Thesauru(
-                row[Thesaurus.id]!!,
-                row[Thesaurus.question]!!,
-                row[Thesaurus.reply]!!,
-                row[Thesaurus.creator]!!,
-                row[Thesaurus.weight]!!
-            )
-        }
-}
+
 
 
 fun getUserInformation(id: Long): User {

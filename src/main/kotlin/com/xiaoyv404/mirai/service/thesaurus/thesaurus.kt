@@ -7,9 +7,9 @@ import com.xiaoyv404.mirai.databace.dao.Thesaurus
 import com.xiaoyv404.mirai.service.Thesauru
 import com.xiaoyv404.mirai.service.accessControl.authorityIdentification
 import com.xiaoyv404.mirai.service.getUserInformation
-import com.xiaoyv404.mirai.service.queryTerm
 import com.xiaoyv404.mirai.service.tool.FileUtils
 import com.xiaoyv404.mirai.service.tool.KtorUtils
+import com.xiaoyv404.mirai.service.tool.jsonExtractContains
 import io.ktor.client.request.*
 import io.ktor.util.*
 import net.mamoe.mirai.contact.Contact.Companion.uploadImage
@@ -21,9 +21,8 @@ import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
 import net.mamoe.mirai.message.nextMessage
 import net.mamoe.mirai.utils.MiraiInternalApi
-import org.ktorm.dsl.delete
-import org.ktorm.dsl.eq
-import org.ktorm.dsl.insert
+import org.ktorm.dsl.*
+import org.ktorm.schema.VarcharSqlType
 import java.io.InputStream
 import java.math.BigInteger
 
@@ -63,7 +62,7 @@ fun thesaurusEntrance() {
                     }
                 }
                 subject.sendMessage("请发送question")
-                val entryMassages = queryTerm(parseMsg(nextMessage()), gid)
+                val entryMassages = queryTerm(nextMessage(), gid)
                 if (entryMassages.isEmpty()) {
                     subject.sendMessage("好像没有呢")
                 } else {
@@ -92,9 +91,9 @@ fun thesaurusEntrance() {
                     )
                     if (nextMessage().contentToString() == "y") {
                         thesaurusRemove(entryMassages[subscriptI].id)
-                        subject.sendMessage("success")
+                        subject.sendMessage("成功删除")
                     } else {
-                        subject.sendMessage("取消")
+                        subject.sendMessage("为什么要取消捏")
                     }
                 }
             }
@@ -108,42 +107,28 @@ fun thesaurusEntrance() {
                     "ThesaurusResponse"
                 )
             ) {
-                val entryMassages = queryTerm(parseMsg(message), group.id)
-                if (entryMassages.isNotEmpty()) {
-                    var total = 0
-                    entryMassages.forEach {
-                        total += it.weight
-                    }
-                    val rad = (1..total).random()
-                    var curTotal = 0
-                    var res = ""
-                    run {
-                        entryMassages.forEach {
-                            curTotal += it.weight
-                            if (rad <= curTotal) {
-                                res = it.reply
-                                return@run
-                            }
-                        }
-                    }
-                    Regex("(\\[404:image:(.+)])").findAll(res).forEach {
-                        val img =
-                            group.uploadImage(PluginMain.resolveDataFile("thesaurus/${it.groups[2]!!.value}"))
-                                .serializeToMiraiCode()
-                        res = res.replace(it.value, img)
-                    }
-                    group.sendMessage(MiraiCode.deserializeMiraiCode(res))
+                val replyC = queryTerm(message, group.id)
+                if (replyC.isEmpty())
+                    return@always
+                var reply =  replyC.random().reply
+                Regex("(\\[404:image:(.+)])").findAll(reply).forEach {
+                    val img =
+                        group.uploadImage(PluginMain.resolveDataFile("thesaurus/${it.groups[2]!!.value}"))
+                            .serializeToMiraiCode()
+                    reply = reply.replace(it.value, img)
                 }
+                group.sendMessage(MiraiCode.deserializeMiraiCode(reply))
             }
         }
     }
 }
 
+
 fun thesaurusRemoveMsg(da: Thesauru): String {
-    return "ID: ${da.id}\n" +
-        "   question: ${da.question}\n" +
-        "   reply: ${da.reply}\n" +
-        "   creator id: ${da.creator}"
+    return("""ID: ${da.id}
+   question: ${da.question}
+   reply: ${da.reply}
+   creator id: ${da.creator}""")
 }
 
 fun thesaurusRemove(id: Long) {
@@ -163,7 +148,7 @@ fun increaseEntry(question: String, reply: String, creator: Long) {
 @KtorExperimentalAPI
 @MiraiInternalApi
 suspend fun parseMsgAndSaveImg(message: MessageChain): String {
-    val img =  mutableListOf<String>()
+    val img = mutableListOf<String>()
     message.toMessageChain().forEach {
         if (it is Image) {
             val imageId = BigInteger(1, it.md5).toString(16)
@@ -182,9 +167,9 @@ suspend fun parseMsgAndSaveImg(message: MessageChain): String {
     }
 
     var msg = message.serializeToMiraiCode()
-    val matchImg =  Regex("^\\[mirai:image:.+]\$").findAll(msg)
-    for ((i, v) in matchImg.withIndex()){
-        msg = msg.replace(v.value,img[i])
+    val matchImg = Regex("^\\[mirai:image:.+]\$").findAll(msg)
+    for ((i, v) in matchImg.withIndex()) {
+        msg = msg.replace(v.value, img[i])
     }
 
     return msg
@@ -193,7 +178,7 @@ suspend fun parseMsgAndSaveImg(message: MessageChain): String {
 @KtorExperimentalAPI
 @MiraiInternalApi
 fun parseMsg(message: MessageChain): String {
-    val img =  mutableListOf<String>()
+    val img = mutableListOf<String>()
     message.toMessageChain().forEach {
         if (it is Image) {
             val imageId = BigInteger(1, it.md5).toString(16)
@@ -205,9 +190,30 @@ fun parseMsg(message: MessageChain): String {
         }
     }
     var msg = message.serializeToMiraiCode()
-    val matchImg =  Regex("^\\[mirai:image:.+]\$").findAll(msg)
-    for ((i, v) in matchImg.withIndex()){
-        msg = msg.replace(v.value,img[i])
+    val matchImg = Regex("^\\[mirai:image:.+]\$").findAll(msg)
+    for ((i, v) in matchImg.withIndex()) {
+        msg = msg.replace(v.value, img[i])
     }
     return msg
+}
+
+@KtorExperimentalAPI
+@MiraiInternalApi
+fun queryTerm(question: MessageChain, gid: Long): List<Thesauru> {
+    val sQuestion = parseMsg(question)
+    val sGid = gid.toString()
+    return Database.db
+        .from(Thesaurus)
+        .select()
+        .where {
+            Thesaurus.question eq sQuestion and
+                (Thesaurus.scope.jsonExtractContains("$", sGid, VarcharSqlType) or Thesaurus.scope.isNull())
+        }.map { row ->
+            Thesauru(
+                row[Thesaurus.id]!!,
+                row[Thesaurus.question]!!,
+                row[Thesaurus.reply]!!,
+                row[Thesaurus.creator]!!,
+            )
+        }
 }

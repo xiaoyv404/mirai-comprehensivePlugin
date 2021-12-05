@@ -9,11 +9,12 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
+import io.ktor.sessions.*
 
 
 fun webAPIEntrance() {
     Thread {
-        embeddedServer(Netty, port = 8080) {
+        embeddedServer(Netty, port = 8888) {
             install(ContentNegotiation) {
                 jackson {
                     enable(SerializationFeature.INDENT_OUTPUT) // ÃÀ»¯Êä³ö JSON

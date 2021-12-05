@@ -12,6 +12,7 @@ import net.mamoe.mirai.event.subscribeGroupMessages
 import net.mamoe.mirai.message.code.MiraiCode
 import net.mamoe.mirai.message.data.PlainText
 import net.mamoe.mirai.message.data.buildMessageChain
+import net.mamoe.mirai.message.nextMessage
 import net.mamoe.mirai.utils.MiraiInternalApi
 import kotlin.coroutines.EmptyCoroutineContext
 
@@ -78,6 +79,7 @@ fun someThinkEntrance() {
                 group.sendMessage("Done")
             }
         }
+
         at(2083664136L).invoke {
             var chain = buildMessageChain {
                 +PlainText("${sender.nick}(${sender.id})在${group.name}(${group.id})中对主人说：\n")
@@ -142,7 +144,19 @@ fun someThinkEntrance() {
         }
         matching(Command.join) {}
 
-
+        matching(Regex("404 sendto")) {
+            if (getUserInformation(sender.id).admin == true) {
+                subject.sendMessage("请发送群id")
+                val gp = nextMessage().contentToString().split("\n")
+                PluginMain.logger.info("群聊个数${gp.size}")
+                subject.sendMessage("请发送msg")
+                val msg = nextMessage()
+                gp.forEach {
+                    val gpL = it.toLong()
+                    bot.getGroup(gpL)?.sendMessage(msg)
+                }
+            }
+        }
 
         always {
             if (getUserInformation(sender.id).admin == true) {
@@ -153,7 +167,7 @@ fun someThinkEntrance() {
                             "全体广播已" +
                                 if (BroadcastStatus)
                                     "开启"
-                                else
+                                else    
                                     "关闭"
                         )
                     }
