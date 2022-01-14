@@ -48,6 +48,8 @@ dependencies {
     implementation("io.ktor:ktor-client-cio:$ktor")
     implementation("io.ktor:ktor-server-netty:$ktor")
     implementation("io.ktor:ktor-jackson:$ktor")
+    implementation("io.ktor:ktor-auth:$ktor")
+    implementation("io.ktor:ktor-auth-jwt:$ktor")
 
 
     implementation("org.apache.httpcomponents:httpclient:$httpcomponents")
