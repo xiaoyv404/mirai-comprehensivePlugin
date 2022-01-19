@@ -50,6 +50,7 @@ dependencies {
     implementation("io.ktor:ktor-jackson:$ktor")
     implementation("io.ktor:ktor-auth:$ktor")
     implementation("io.ktor:ktor-auth-jwt:$ktor")
+    implementation("de.svenkubiak:jBCrypt:0.4.3")
 
 
     implementation("org.apache.httpcomponents:httpclient:$httpcomponents")

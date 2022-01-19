@@ -10,7 +10,7 @@ import com.xiaoyv404.mirai.service.minecraftServer.minecraftServerEntrance
 import com.xiaoyv404.mirai.service.someThinkEntrance
 import com.xiaoyv404.mirai.service.thesaurus.thesaurusEntrance
 import com.xiaoyv404.mirai.service.tool.KtorUtils
-import com.xiaoyv404.mirai.service.webAPI.webAPIEntrance
+import com.xiaoyv404.mirai.service.webAPI.WebApi
 import io.ktor.util.*
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescription
 import net.mamoe.mirai.console.plugin.jvm.KotlinPlugin
@@ -55,7 +55,7 @@ object PluginMain : KotlinPlugin(
         someThinkEntrance()
         minecraftServerEntrance()
 
-        webAPIEntrance()
+        WebApi.entrance()
     }
 
     @KtorExperimentalAPI
