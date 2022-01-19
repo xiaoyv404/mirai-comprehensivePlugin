@@ -61,16 +61,16 @@ object WebApi {
                 routing {
                     route("/lab") {
                         post("/login-register") {
-                            val post = call.receive<LoginRegister>()
-                            PluginMain.logger.info("收到${post.name}登录请求")
-                            val password = BCrypt.hashpw(post.password, BCrypt.gensalt(30))
-                            val user = User.getOrCreat(post.name) { User.Data(name = post.name, password = password) }
-                            if (user.password != password) {
-                                PluginMain.logger.info("驳回${post.name}登录请求")
-                                throw InvalidCredentialsException("Invalid credentials")
-                            }
-                            PluginMain.logger.info("${post.name}登录成功")
-                            call.respond(mapOf("token" to simpleJwt.sign(user.name!!)))
+                                val post = call.receive<LoginRegister>()
+                                PluginMain.logger.info("收到${post.name}登录请求")
+                                val user =
+                                    User.getOrCreat(post.name) { User.Data(name = post.name, password = post.password) }
+                                if (!BCrypt.checkpw(post.password, user.password)) {
+                                    PluginMain.logger.info("驳回${post.name}登录请求")
+                                    throw InvalidCredentialsException("Invalid credentials")
+                                }
+                                PluginMain.logger.info("${post.name}登录成功")
+                                call.respond(mapOf("token" to simpleJwt.sign(user.name!!)))
                         }
                         authenticate {
                             post("/QBind") {
@@ -96,9 +96,12 @@ object WebApi {
                                         .await().message.contentToString()
                                 if (qqRequest == "Y") {
                                     User.bindQQ(principal.name, post.qqNumber)
-                                }
+                                    target.sendMessage("绑定成功~")
+                                }else
+                                    target.sendMessage("不绑就不绑呗，哼")
                             }
                         }
+
                     }
                 }
             }.start(wait = true)
@@ -115,8 +118,7 @@ object WebApi {
         )
 
         fun get(name: String): Data {
-            return try {
-                Database.db
+              return Database.db
                     .from(WebApiUsers)
                     .select()
                     .where { WebApiUsers.name eq name }
@@ -128,11 +130,9 @@ object WebApi {
                             row[WebApiUsers.qid],
                             row[WebApiUsers.authority]
                         )
-                    }.first()
-            } catch (e: IndexOutOfBoundsException) {
-                Data()
-            }
+                    }.firstOrNull()?:Data()
         }
+
 
         fun bindQQ(name: String, qqNumber: Long) {
             Database.db
@@ -142,14 +142,21 @@ object WebApi {
                 }
         }
 
+        /**
+         * @param [user]内[Data.password]为明文
+         */
         private fun creat(user: Data) {
+            val password = BCrypt.hashpw(user.password, BCrypt.gensalt())
             Database.db
                 .insert(WebApiUsers) {
                     set(it.name, user.name!!)
-                    set(it.password, user.password!!)
+                    set(it.password, password)
                 }
         }
 
+        /**
+         * 获取或创建用户信息
+         */
         fun getOrCreat(name: String, defaultValue: () -> Data): Data {
             val user = get(name)
             return if (user.id == null){

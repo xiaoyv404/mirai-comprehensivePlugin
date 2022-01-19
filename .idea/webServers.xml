@@ -3,7 +3,7 @@
   <component name="WebServers">
     <option name="servers">
       <webServer id="be55c443-6dfd-49fa-8635-2c4412f3be9d" name="404bot">
-        <fileTransfer rootFolder="/home/mirai/404/plugins" accessType="SFTP" host="119.29.153.166" port="22" sshConfigId="cf7b1f0d-c629-4088-95e1-3334ab07054e" sshConfig="root@119.29.153.166:22 key" keyPair="true">
+        <fileTransfer accessType="SFTP" host="119.29.153.166" port="22" sshConfigId="cf7b1f0d-c629-4088-95e1-3334ab07054e" sshConfig="root@119.29.153.166:22 key" keyPair="true">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
           </advancedOptions>

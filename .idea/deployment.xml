@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" remoteFilesAllowedToDisappearOnAutoupload="false">
+  <component name="PublishConfigData" promptOnRemoteOverwrite="CHECK_TIMESTAMP" serverName="404bot" uploadOnCheckin="be55c443-6dfd-49fa-8635-2c4412f3be9d" remoteFilesAllowedToDisappearOnAutoupload="false">
     <serverData>
       <paths name="404bot">
         <serverdata>
           <mappings>
-            <mapping deploy="/" local="$PROJECT_DIR$/build/mirai" web="/" />
+            <mapping deploy="/home/mirai/404/plugins" local="$PROJECT_DIR$/build/mirai" web="/" />
           </mappings>
         </serverdata>
       </paths>
     </serverData>
+    <option name="myUploadOnCheckinName" value="404bot" />
   </component>
 </project>
