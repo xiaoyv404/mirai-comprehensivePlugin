@@ -17,6 +17,10 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
+import net.mamoe.mirai.Bot
+import net.mamoe.mirai.event.events.FriendMessageEvent
+import net.mamoe.mirai.event.nextEventAsync
+import net.mamoe.mirai.utils.MiraiExperimentalApi
 import org.apache.http.auth.InvalidCredentialsException
 import org.ktorm.dsl.*
 import org.mindrot.jbcrypt.BCrypt
@@ -27,6 +31,7 @@ open class SimpleJWT(secret: String) {
     fun sign(name: String): String = JWT.create().withClaim("name", name).sign(algorithm)
 }
 
+@MiraiExperimentalApi
 object WebApi {
     fun entrance() {
         Thread {
@@ -54,47 +59,51 @@ object WebApi {
                     }
                 }
                 routing {
-                    post("/login-register") {
-                        val post = call.receive<LoginRegister>()
-                        PluginMain.logger.info("收到${post.name}登录请求")
-                        val password = BCrypt.hashpw(post.password,BCrypt.gensalt(30))
-                        val user = User.getOrCreat(post.name) { User.Data(name = post.name, password = password) }
-                        if (user.password != password) {
-                            PluginMain.logger.info("驳回${post.name}登录请求")
-                            throw InvalidCredentialsException("Invalid credentials")
+                    route("/lab") {
+                        post("/login-register") {
+                            val post = call.receive<LoginRegister>()
+                            PluginMain.logger.info("收到${post.name}登录请求")
+                            val password = BCrypt.hashpw(post.password, BCrypt.gensalt(30))
+                            val user = User.getOrCreat(post.name) { User.Data(name = post.name, password = password) }
+                            if (user.password != password) {
+                                PluginMain.logger.info("驳回${post.name}登录请求")
+                                throw InvalidCredentialsException("Invalid credentials")
+                            }
+                            PluginMain.logger.info("${post.name}登录成功")
+                            call.respond(mapOf("token" to simpleJwt.sign(user.name!!)))
                         }
-                        PluginMain.logger.info("${post.name}登录成功")
-                        call.respond(mapOf("token" to simpleJwt.sign(user.name!!)))
+                        authenticate {
+                            post("/QBind") {
+                                val post = call.receive<QQBind>()
+                                val principal = call.principal<UserIdPrincipal>() ?: error("No principal")
+                                val bot = Bot.getInstance(2079373402)
+                                val target = bot.getFriend(post.qqNumber)
+                                if (target == null) {
+                                    call.respond(mapOf("code" to 1000, "msg" to "查无此人"))
+                                    return@post
+                                } else {
+                                    call.respond(mapOf("code" to 200))
+                                }
+                                target.sendMessage(
+                                    """
+                                    似乎有人想绑定你的qq捏
+                                    ${principal.name}是你吗w
+                                    如果是你的话请输入[Y]来确认哦
+                                """.trimIndent()
+                                )
+                                val qqRequest =
+                                    target.nextEventAsync<FriendMessageEvent> { it.friend.id == post.qqNumber }
+                                        .await().message.contentToString()
+                                if (qqRequest == "Y") {
+                                    User.bindQQ(principal.name, post.qqNumber)
+                                }
+                            }
+                        }
                     }
                 }
-                routing {
-                    index()
-                    authenticate {
-                        route("lab") {
-                            lab()
-                        }
-                    }
-                }
-
             }.start(wait = true)
         }.start()
     }
-
-
-    private fun Route.index() {
-        get("/") {
-            call.respondText("Hello World!", ContentType.Text.Plain)
-        }
-
-    }
-
-
-    private fun Route.lab() {
-        post {
-            call.respond(mapOf("OK" to true))
-        }
-    }
-
 
     object User{
         data class Data(
@@ -104,6 +113,7 @@ object WebApi {
             val qid: Long? = null,
             val authority: Int? = null,
         )
+
         fun get(name: String): Data {
             return try {
                 Database.db
@@ -124,13 +134,22 @@ object WebApi {
             }
         }
 
+        fun bindQQ(name: String, qqNumber: Long) {
+            Database.db
+                .update(WebApiUsers) {
+                    set(it.qid, qqNumber)
+                    where { it.name eq name }
+                }
+        }
+
         private fun creat(user: Data) {
             Database.db
-                .insert(WebApiUsers){
+                .insert(WebApiUsers) {
                     set(it.name, user.name!!)
                     set(it.password, user.password!!)
                 }
         }
+
         fun getOrCreat(name: String, defaultValue: () -> Data): Data {
             val user = get(name)
             return if (user.id == null){
@@ -141,6 +160,8 @@ object WebApi {
                 user
         }
     }
+
     class LoginRegister(val name: String, val password: String)
+    class QQBind(val qqNumber: Long)
 
 }
