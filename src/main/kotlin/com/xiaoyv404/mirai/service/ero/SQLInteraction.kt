@@ -9,14 +9,12 @@ import com.xiaoyv404.mirai.service.ero.localGallery.Tag
 import org.ktorm.dsl.*
 
 
-fun queryTagIdByTag(tag: String): Long {
-    var tagid: Long = -1
-    Database.db
+fun queryTagIdByTag(tag: String): Long? {
+    return Database.db
         .from(GalleryTags)
         .select()
         .where { (GalleryTags.tagname eq tag) }
-        .forEach { row -> tagid = row[GalleryTags.tagid]!! }
-    return tagid
+        .map { row ->  row[GalleryTags.tagid] }.first()
 }
 
 fun queryIdByTagId(tagid: Long): List<Long> {
@@ -28,23 +26,21 @@ fun queryIdByTagId(tagid: Long): List<Long> {
 }
 
 fun getImgInformationById(id: Long): ImageInfo {
-    var data = ImageInfo(0, 0, "", "", 0, "", "")
-    Database.db
+   return Database.db
         .from(Gallerys)
         .select()
         .where { Gallerys.id eq id }
-        .forEach { row ->
-            data = ImageInfo(
-                row[Gallerys.id]!!,
-                row[Gallerys.picturesMun]!!,
-                row[Gallerys.title]!!,
-                row[Gallerys.tags]!!,
-                row[Gallerys.userId]!!,
-                row[Gallerys.userName]!!,
-                row[Gallerys.extension]!!
+        .map { row ->
+            ImageInfo(
+                row[Gallerys.id],
+                row[Gallerys.picturesMun]?: 0,
+                row[Gallerys.title],
+                row[Gallerys.tags],
+                row[Gallerys.userId],
+                row[Gallerys.userName],
+                row[Gallerys.extension]
             )
-        }
-    return data
+        }.first()
 }
 
 fun queryTagIdById(id: Long): List<Long> {
@@ -84,26 +80,20 @@ fun updateTagNumber(tagid: Long, num: Long) {
 
 
 fun increaseEntry(
-    id: Long,
-    picturesMun: Int,
-    title: String,
-    tagsS: String,
-    userId: Long,
-    userName: String,
+    da : ImageInfo,
     creator: Long,
     tagsL: List<Tag>,
-    extension: String
 ) {
     Database.db
         .insert(Gallerys) {
-            set(it.id, id)
-            set(it.picturesMun, picturesMun)
-            set(it.title, title)
-            set(it.tags, tagsS)
-            set(it.userId, userId)
-            set(it.userName, userName)
+            set(it.id, da.id)
+            set(it.picturesMun, da.picturesNum)
+            set(it.title, da.title)
+            set(it.tags, da.tags)
+            set(it.userId, da.userId)
+            set(it.userName, da.userName)
             set(it.creator, creator)
-            set(it.extension, extension)
+            set(it.extension, da.extension)
         }
     for (i in tagsL.indices) {
         var num: Long? = null
@@ -141,7 +131,7 @@ fun increaseEntry(
         Database.db
             .insert(GalleryTagMaps) {
                 set(it.tagid, tagid)
-                set(it.pid, id)
+                set(it.pid, da.id)
             }
     }
 }

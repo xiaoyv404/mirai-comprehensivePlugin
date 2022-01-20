@@ -11,8 +11,7 @@ import io.ktor.util.*
 import net.mamoe.mirai.contact.Contact.Companion.sendImage
 import net.mamoe.mirai.event.GlobalEventChannel
 import net.mamoe.mirai.event.subscribeMessages
-import net.mamoe.mirai.message.data.buildForwardMessage
-import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
+import net.mamoe.mirai.message.nextMessage
 import java.io.InputStream
 
 
@@ -60,38 +59,24 @@ fun localGalleryListener() {
                 )) && (getUserInformation(sender.id).bot != true)
             ) {
                 val rd = it.groups
-                if (rd[3]!!.value == "-h" || rd[3]!!.value == "--help")
-                    subject.sendMessage(
-                        "Usage: Ìí¼ÓÉ¬Í¼ [option] <target>\n" +
-                            "¸ù¾ÝPixivIDÌí¼ÓÖÁÍ¼¿â\n" +
-                            "option: \n" +
-                            "   -h  °ïÖú"
-                    )
-                else {
-                    try {
-                        val ii = unformat(rd[3]!!.value, sender.id)
-                        if (ii.picturesNum == 1) {
-                            subject.sendMessage(
-                                PluginMain.resolveDataFile("gallery/${ii.id}.${ii.extension}")
-                                    .uploadAsImage(subject).plus(sequenceInformation(ii))
-                            )
-                        } else {
-                            subject.sendMessage(
-                                buildForwardMessage {
-                                    bot.says(sequenceInformation(ii))
-                                    for (i in 1..ii.picturesNum) {
-                                        bot.says(
-                                            PluginMain.resolveDataFile("gallery/${ii.id}-$i.${ii.extension}")
-                                                .uploadAsImage(subject)
-                                        )
-                                    }
-                                }
-                            )
-                        }
-                    } catch (e: Exception) {
-                        PluginMain.logger.error(e)
+                val ids = Regex("\\d+").findAll(
+                    if (rd[3] == null) {
+                        subject.sendMessage("Ã»ÕÒµ½Í¼Æ¬IDÄó£¬Çë·¢ËÍÍ¼Æ¬ID")
+                        nextMessage().contentToString()
+                    } else
+                        rd[3]!!.value
+                ).toList()
+                PluginMain.logger.info("ÕÒµ½${ids.size}¸öID")
+
+                ids.forEach { id ->
+                    PluginMain.logger.info("ÏÂÔØ${id.value}")
+                    if (LocalGallery(subject).unformat(id.value, sender.id)) {
                         subject.sendMessage("³ö´íÀ²(Ïê¼û¿ØÖÆÌ¨)")
                     }
+                }
+
+                if (ids.size >= 5){
+                    subject.sendMessage("Íê³ÉÀ²w!")
                 }
             }
         }
@@ -103,81 +88,47 @@ fun localGalleryListener() {
                 )) && (getUserInformation(sender.id).bot != true)
             ) {
                 val rd = it.groups
-
-                if (rd[3]!!.value == "-h" || rd[3]!!.value == "--help")
-                    subject.sendMessage(
-                        "Usage£ºËÑÉ¬Í¼ [option] <tag>\n" +
-                            "¸ù¾Ýtag´Ó±¾µØÍ¼¿âËÑÍ¼\n" +
-                            "option: \n" +
-                            "   -h  °ïÖú\n" +
-                            "example: \n" +
-                            "   \"ËÑÉ¬Í¼ ÏãïLÖÇÄË\""
-                    )
-                else {
-                    val tagid = queryTagIdByTag(rd[3]!!.value)
-                    if (tagid != -1L) {
-                        val id = queryIdByTagId(tagid).random().toLong()
-                        val ii = getImgInformationById(id)
-
-                        if (ii.picturesNum == 1)
-                            subject.sendMessage(
-                                PluginMain.resolveDataFile("gallery/${ii.id}.${ii.extension}")
-                                    .uploadAsImage(subject).plus(sequenceInformation(ii))
-                            )
-                        else {
-                            subject.sendMessage(
-                                buildForwardMessage {
-                                    bot.says(sequenceInformation(ii))
-                                    for (i in 1..ii.picturesNum) {
-                                        bot.says(
-                                            PluginMain.resolveDataFile("gallery/${ii.id}-$i.${ii.extension}")
-                                                .uploadAsImage(subject)
-                                        )
-                                    }
-                                }
-                            )
-                        }
-                    } else
-                        subject.sendMessage("ßí....ËÆºõÃ»ÓÐÄØ")
+                val tagid = queryTagIdByTag(rd[3]!!.value)
+                if (tagid == null) {
+                    subject.sendMessage("ßí....ËÆºõÃ»ÓÐÄØ")
+                    return@finding
                 }
+
+                val id = queryIdByTagId(tagid).random().toLong()
+                val ii = getImgInformationById(id)
+                LocalGallery(subject).send(ii)
             }
         }
         finding(Command.eroRemove) {
             if (getUserInformation(sender.id).admin == true) {
                 val rd = it.groups
-                if (rd[3]!!.value == "-h" || rd[3]!!.value == "--help")
-                    subject.sendMessage(
-                        "help"
-                    )
-                else {
-                    val id = rd[3]!!.value.toLong()
-                    subject.sendMessage("ÕýÔÚÉ¾³ý: $id")
+                val id = rd[3]!!.value.toLong()
+                subject.sendMessage("ÕýÔÚÉ¾³ý: $id")
 
-                    val tags = queryTagIdById(id)
+                val tags = queryTagIdById(id)
 
-                    tags.forEach { tagid ->
-                        val num = queryTagQuantityByTagId(tagid)
-                        updateTagNumber(tagid, num - 1)
-                    }
-
-                    val information = getImgInformationById(id)
-                    val imgNum = information.picturesNum
-                    val extension = information.extension
-
-                    if (imgNum == 1)
-                        PluginMain.resolveDataFile("gallery/$id.$extension").deleteRecursively()
-                    else
-                        for (i in 1..imgNum) {
-                            PluginMain.resolveDataFile("gallery/$id-$i.$extension")
-                                .deleteRecursively()
-                        }
-                    removeInformationById(id)
-
-                    subject.sendMessage(
-                        "${id}ÒÑÉ¾³ý\n" +
-                            "É¾³ý${imgNum}ÕÅÍ¼Æ¬    ${tags.size + 1}Ìõ¼ÇÂ¼"
-                    )
+                tags.forEach { tagid ->
+                    val num = queryTagQuantityByTagId(tagid)
+                    updateTagNumber(tagid, num - 1)
                 }
+
+                val information = getImgInformationById(id)
+                val imgNum = information.picturesNum
+                val extension = information.extension
+
+                if (imgNum == 1)
+                    PluginMain.resolveDataFile("gallery/$id.$extension").deleteRecursively()
+                else
+                    for (i in 1..imgNum) {
+                        PluginMain.resolveDataFile("gallery/$id-$i.$extension")
+                            .deleteRecursively()
+                    }
+                removeInformationById(id)
+
+                subject.sendMessage(
+                    "${id}ÒÑÉ¾³ý\n" +
+                        "É¾³ý${imgNum}ÕÅÍ¼Æ¬    ${tags.size + 1}Ìõ¼ÇÂ¼"
+                )
             }
         }
     }
