@@ -18,6 +18,7 @@ import io.ktor.routing.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import net.mamoe.mirai.Bot
+import net.mamoe.mirai.contact.remarkOrNick
 import net.mamoe.mirai.event.events.FriendMessageEvent
 import net.mamoe.mirai.event.nextEventAsync
 import net.mamoe.mirai.utils.MiraiExperimentalApi
@@ -97,15 +98,50 @@ object WebApi {
                                 if (qqRequest == "Y") {
                                     User.bindQQ(principal.name, post.qqNumber)
                                     target.sendMessage("绑定成功~")
-                                }else
+                                } else
                                     target.sendMessage("不绑就不绑呗，哼")
                             }
-                        }
+                            route("/admin") {
+                                post("/getConversationsInfoList") {
+                                    val principal = call.principal<UserIdPrincipal>() ?: error("No principal")
+                                    if (User.get(principal.name).authority != 1) {
+                                        error("No permission")
+                                    }
+                                    val bot = Bot.getInstance(2079373402)
+                                    val groups = mutableMapOf<Long, Map<String, Any>>()
+                                    bot.groups.forEach {
+                                        val group = mapOf<String, Any>(
+                                            "name" to it.name,
+                                            "botPermission" to it.botPermission,
+                                            "avatarUrl" to it.avatarUrl,
+                                        )
+                                        groups[it.id] = group
+                                    }
 
+                                    val friends = mutableMapOf<Long, Map<String, Any>>()
+                                    bot.friends.forEach {
+                                        val friend = mapOf<String, Any>(
+                                            "name" to it.remarkOrNick,
+                                            "avatarUrl" to it.avatarUrl,
+                                        )
+                                        friends[it.id] = friend
+                                    }
+
+                                    call.respond(
+                                        mapOf(
+                                            "code" to 200,
+                                            "data" to mapOf("groups" to groups, "friends" to friends)
+                                        )
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             }.start(wait = true)
         }.start()
+
+
     }
 
     object User{
