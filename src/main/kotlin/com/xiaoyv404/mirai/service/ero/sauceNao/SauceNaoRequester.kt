@@ -10,8 +10,6 @@ import kotlinx.serialization.json.Json
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.message.data.Image
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
-import net.mamoe.mirai.message.data.MessageChain
-import net.mamoe.mirai.message.data.MessageSource.Key.quote
 import net.mamoe.mirai.message.data.PlainText
 import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
 import java.io.InputStream
@@ -56,8 +54,12 @@ class SauceNaoRequester(private val subject: Contact) {
         result = res.results[0]
     }
 
-    suspend fun sendResult(message: MessageChain) {
+    suspend fun sendResult() {
         val image = KtorUtils.normalClient.get<InputStream>(result!!.header.thumbnail).uploadAsImage(subject)
+        if (result!!.header.similarity.toFloat() < 60){
+            subject.sendMessage("找不到捏，匹配度只有${result!!.header.similarity}")
+            return
+        }
         val msg = when (result!!.header.index_id) {
             // Index #5: Pixiv Images
             5    -> {
@@ -94,6 +96,6 @@ class SauceNaoRequester(private val subject: Contact) {
             }
             else -> "暂时无法解析的参数, 数据库：${result!!.header.index_name}\n 请把开发者揪出来给他看看结果"
         }
-        subject.sendMessage(message.quote() + PlainText(msg) + image)
+        subject.sendMessage(PlainText(msg) + image)
     }
 }

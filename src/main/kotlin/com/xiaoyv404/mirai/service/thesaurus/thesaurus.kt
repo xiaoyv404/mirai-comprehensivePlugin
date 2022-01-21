@@ -29,7 +29,7 @@ import java.math.BigInteger
 
 @KtorExperimentalAPI
 @MiraiInternalApi
-fun thesaurusEntrance() {
+fun  thesaurusEntrance() {
     GlobalEventChannel.subscribeMessages {
         finding(Regex("^(!!¥¥Ω®¥ Ãı)\$")) {
             if (authorityIdentification(sender.id, subject.id, "ThesaurusAdd")) {

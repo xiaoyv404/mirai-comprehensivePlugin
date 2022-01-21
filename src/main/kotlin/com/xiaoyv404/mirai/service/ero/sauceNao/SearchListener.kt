@@ -36,12 +36,12 @@ fun searchListenerRegister() {
                                 subject.sendMessage(nextMsg.quote() + "没有获取图片")
                             } else {
                                 sauceNao.search(nextImage)
-                                sauceNao.sendResult(nextMsg)
+                                sauceNao.sendResult()
                             }
                         }
                     } else {
                         sauceNao.search(image)
-                        sauceNao.sendResult(message)
+                        sauceNao.sendResult()
                     }
                 }
             }
