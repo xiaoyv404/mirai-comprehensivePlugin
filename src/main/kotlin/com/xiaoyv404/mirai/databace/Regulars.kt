@@ -31,4 +31,6 @@ object Command {
     val SauceNao = Regex("^((404 img search|ËÑÍ¼)( (-h\$|--help\$)|(.*))?)\$")
 
     val debuMe= Regex("^(~me(.*))$")
+
+    val dice = Regex("^((\\.r)( (\\d+)((\\((\\d+)\\))|(:(\\d+)))?)?)\$")
 }

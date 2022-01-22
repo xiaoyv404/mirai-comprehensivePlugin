@@ -4,6 +4,7 @@ import com.xiaoyv404.mirai.databace.Database.connect
 import com.xiaoyv404.mirai.service.bilibili.b23ShortLinkEntrance
 import com.xiaoyv404.mirai.service.bilibili.biliVideoEntrance
 import com.xiaoyv404.mirai.service.bilibili.informationEntrance
+import com.xiaoyv404.mirai.service.dice.Dice
 import com.xiaoyv404.mirai.service.ero.eroEntrance
 import com.xiaoyv404.mirai.service.history.historyEntrance
 import com.xiaoyv404.mirai.service.minecraftServer.minecraftServerEntrance
@@ -46,13 +47,13 @@ object PluginMain : KotlinPlugin(
         biliVideoEntrance()
         informationEntrance()
 
-        eroEntrance()
-
         thesaurusEntrance()
 
         historyEntrance()
 
+        eroEntrance()
         someThinkEntrance()
+        Dice.entrance()
         minecraftServerEntrance()
 
         WebApi.entrance()
