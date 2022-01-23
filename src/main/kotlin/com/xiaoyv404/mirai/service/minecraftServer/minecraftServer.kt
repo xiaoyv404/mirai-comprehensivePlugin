@@ -31,45 +31,15 @@ fun minecraftServerEntrance() {
     GlobalEventChannel.subscribeGroupMessages {
         finding(Command.minecraftServerStats) {
             val rd = it.groups
-            if (rd[10]?.value == "-h" || rd[10]?.value == "--help") {
-                group.sendMessage(
-                    "这是正则:\n" +
-                        "   ^(404 (((服务器|土豆|破推头)(熟了没|状态))|((?i)((Server|Potato)Stats)))( ((-h|--help)|(-p)))?)\$\n" +
-                        "诶?你问我为什么不写之前的那种命令帮助了?唔。。。你自己看嘛,又不是不能看"
-                )
-            } else {
-                if (group.id != 1147939635L) {
-                    getServerMapByGroupID(group.id).forEach { si ->
-                        getServerInformationByServerID(si!!).forEach { sv ->
-                            MinecraftServerStatusRequester(group).check(
-                                sv,
-                                if (rd[10]?.value == "-p")
-                                    2U
-                                else
-                                    1U
-                            )
-                        }
-                    }
-                }else{
-                    when ((0..3).random()) {
-                        0 -> group.sendMessage("都说了停运了（恼）")
-                        1 -> group.sendMessage(".list")
-                        2 -> group.sendMessage("我。。。我要生气了哦")
-                        3 -> {
-                            group.sendMessage("好叭╮(╯-╰)╭")
-                            getServerMapByGroupID(group.id).forEach { si ->
-                                getServerInformationByServerID(si!!).forEach { sv ->
-                                    MinecraftServerStatusRequester(group).check(
-                                        sv,
-                                        if (rd[10]?.value == "-p")
-                                            2U
-                                        else
-                                            1U
-                                    )
-                                }
-                            }
-                        }
-                    }
+            getServerMapByGroupID(group.id).forEach { si ->
+                getServerInformationByServerID(si!!).forEach { sv ->
+                    MinecraftServerStatusRequester(group).check(
+                        sv,
+                        if (rd[9] != null)
+                            2U
+                        else
+                            1U
+                    )
                 }
             }
         }

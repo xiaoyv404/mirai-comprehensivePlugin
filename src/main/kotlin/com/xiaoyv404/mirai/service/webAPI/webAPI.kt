@@ -21,6 +21,7 @@ import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.remarkOrNick
 import net.mamoe.mirai.event.events.FriendMessageEvent
 import net.mamoe.mirai.event.nextEventAsync
+import net.mamoe.mirai.message.code.MiraiCode
 import net.mamoe.mirai.utils.MiraiExperimentalApi
 import org.apache.http.auth.InvalidCredentialsException
 import org.ktorm.dsl.*
@@ -134,6 +135,32 @@ object WebApi {
                                         )
                                     )
                                 }
+                                post("/sendMsg") {
+                                    val principal = call.principal<UserIdPrincipal>() ?: error("No principal")
+                                    val post = call.receive<SendMsg>()
+                                    if (User.get(principal.name).authority != 1) {
+                                        error("No permission")
+                                    }
+                                    val bot = Bot.getInstance(2079373402)
+                                    val fail = mutableListOf<Long>()
+                                    post.targets.forEach {
+                                        val target = bot.getGroup(it)
+                                        if (target == null) {
+                                            fail.add(it)
+                                        } else
+                                            target.sendMessage(MiraiCode.deserializeMiraiCode(post.msg))
+                                    }
+                                    if (fail.isNotEmpty())
+                                        call.respond(
+                                            mapOf(
+                                                "code" to 10001,
+                                                "msg" to "Î´·¢ËÍ³É¹¦",
+                                                "list" to fail
+                                            )
+                                        )
+                                    else
+                                        call.respond(mapOf("code" to 200))
+                                }
                             }
                         }
                     }
@@ -204,6 +231,7 @@ object WebApi {
         }
     }
 
+    class SendMsg(val targets: List<Long>, val msg: String)
     class LoginRegister(val name: String, val password: String)
     class QQBind(val qqNumber: Long)
 

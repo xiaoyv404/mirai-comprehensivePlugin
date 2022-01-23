@@ -10,7 +10,7 @@ object Dice {
         GlobalEventChannel.subscribeMessages {
             finding(Command.dice) {
                 val rd = it.groups
-                val start = rd[4]?.value?.toLong() ?: 0
+                val start = rd[4]?.value?.toLong() ?: 1
                 val end = if (rd[5] != null) {
                     if (rd[6] != null) {
                         rd[7]!!.value.toLong()

@@ -34,6 +34,9 @@ fun someThinkEntrance() {
     }
 
     GlobalEventChannel.subscribeGroupMessages {
+        case("404 help"){
+            group.sendMessage("https://www.xiaoyv404.top/archives/404.html")
+        }
         case("404 status") {
             group.sendMessage(
                 "Bot: ${bot.nick}(${bot.id})\n" +

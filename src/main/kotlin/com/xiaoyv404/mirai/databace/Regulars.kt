@@ -25,7 +25,7 @@ object Command {
     val eroSearch = Regex("^((404 ero search|搜涩图) (.+))\$")
     val addBot = Regex("^((404 add bot|添加机器人) ((-h|--help)|(@*[0-9]+)))\$")
     val minecraftServerStats =
-        Regex("^(404 (((服务器|土豆|破推头)(熟了没|状态))|((?i)((Server|Potato)Status)))( ((-h|--help)|(-p)))?)\$")
+        Regex("^(404 (((服务器|土豆|破推头)(熟了没|状态))|((?i)((Server|Potato)Status)))( -p)?)\$")
     val getBiliBiliUpInformation = Regex("^(404 (?i)(获取up信息|(getUpInformation))( ((-h|--help)|([0-9]+)))?)\$")
 
     val SauceNao = Regex("^((404 img search|搜图)( (-h\$|--help\$)|(.*))?)\$")
