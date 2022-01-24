@@ -1,18 +1,18 @@
 plugins {
-    val kotlinVersion = "1.5.10"
+    val kotlinVersion = "1.6.10"
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.serialization") version kotlinVersion
 
-    id("net.mamoe.mirai-console") version "2.8.2"
+    id("net.mamoe.mirai-console") version "2.10.0-RC2"
 }
 
 group = "com.xiaoyv404"
 version = "1.0.0-beta"
 
-val ktorm = "3.3.0"
-val ktor = "1.5.1"
+val ktorm = "3.4.1"
+val ktorVersion = "1.6.7"
 val yamlKtVersion = "0.10.2"
-val httpcomponents = "4.5.4"
+val httpcomponents = "4.5.13"
 
 repositories {
     mavenLocal()
@@ -30,6 +30,8 @@ repositories {
     mavenCentral()
     gradlePluginPortal()
     google()
+
+    maven("https://plugins.gradle.org/m2")
 }
 dependencies {
     compileOnly("net.mamoe.yamlkt:yamlkt-jvm:$yamlKtVersion")
@@ -37,29 +39,27 @@ dependencies {
     compileOnly("org.ktorm:ktorm-support-mysql:$ktorm")
 
 
-    implementation("mysql:mysql-connector-java:8.0.19")
+    implementation("mysql:mysql-connector-java:8.0.25")
     implementation("org.ktorm:ktorm-core:$ktorm")
-    implementation("com.zaxxer:HikariCP:4.0.2")
+    implementation("com.zaxxer:HikariCP:5.0.1")
 
 
-    implementation("com.alibaba:fastjson:1.2.76")
-    implementation("org.slf4j:slf4j-simple:1.7.25")
+    implementation("com.alibaba:fastjson:1.2.79")
+    implementation("org.slf4j:slf4j-simple:1.7.33")
 
-    implementation("io.ktor:ktor-client-cio:$ktor")
-    implementation("io.ktor:ktor-server-netty:$ktor")
-    implementation("io.ktor:ktor-jackson:$ktor")
-    implementation("io.ktor:ktor-auth:$ktor")
-    implementation("io.ktor:ktor-auth-jwt:$ktor")
+    implementation("io.ktor:ktor-client-cio:$ktorVersion")
+    implementation("io.ktor:ktor-server-netty:$ktorVersion")
+    implementation("io.ktor:ktor-jackson:$ktorVersion")
+    implementation("io.ktor:ktor-auth:$ktorVersion")
+    implementation("io.ktor:ktor-auth-jwt:$ktorVersion")
+    implementation("io.ktor:ktor-websockets:$ktorVersion")
     implementation("de.svenkubiak:jBCrypt:0.4.3")
 
 
     implementation("org.apache.httpcomponents:httpclient:$httpcomponents")
     implementation("org.apache.httpcomponents:fluent-hc:$httpcomponents")
     implementation("org.apache.httpcomponents:httpmime:$httpcomponents")
-    implementation("org.apache.commons:commons-lang3:3.12.0")
 
-
-    implementation("redis.clients:jedis:3.6.0")
 
     implementation("org.apache.tika:tika-core:2.1.0")
 
