@@ -11,6 +11,7 @@ import net.mamoe.mirai.event.GlobalEventChannel
 import net.mamoe.mirai.event.subscribeGroupMessages
 
 
+
 @KtorExperimentalAPI
 fun b23ShortLinkEntrance() {
     GlobalEventChannel.subscribeGroupMessages {

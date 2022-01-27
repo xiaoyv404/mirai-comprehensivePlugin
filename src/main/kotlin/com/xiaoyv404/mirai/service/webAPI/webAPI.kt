@@ -11,12 +11,14 @@ import io.ktor.auth.*
 import io.ktor.auth.jwt.*
 import io.ktor.features.*
 import io.ktor.http.*
+import io.ktor.http.cio.websocket.*
 import io.ktor.jackson.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
+import io.ktor.websocket.*
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.remarkOrNick
 import net.mamoe.mirai.event.events.FriendMessageEvent
@@ -26,6 +28,8 @@ import net.mamoe.mirai.utils.MiraiExperimentalApi
 import org.apache.http.auth.InvalidCredentialsException
 import org.ktorm.dsl.*
 import org.mindrot.jbcrypt.BCrypt
+import java.util.*
+import java.util.concurrent.atomic.AtomicInteger
 
 open class SimpleJWT(secret: String) {
     private val algorithm = HMAC256(secret)
@@ -33,8 +37,14 @@ open class SimpleJWT(secret: String) {
     fun sign(name: String): String = JWT.create().withClaim("name", name).sign(algorithm)
 }
 
+
 @MiraiExperimentalApi
 object WebApi {
+    class ChatClient(val session: DefaultWebSocketSession) {
+        companion object { var lastId = AtomicInteger(0) }
+        val id = lastId.getAndIncrement()
+        val name = "user$id"
+    }
     fun entrance() {
         Thread {
             embeddedServer(Netty, port = 8888) {
@@ -60,7 +70,11 @@ object WebApi {
                         )
                     }
                 }
+                install(WebSockets){
+
+                }
                 routing {
+                    val clients = Collections.synchronizedSet(LinkedHashSet<ChatClient>())
                     route("/lab") {
                         post("/login-register") {
                                 val post = call.receive<LoginRegister>()
@@ -73,6 +87,30 @@ object WebApi {
                                 }
                                 PluginMain.logger.info("${post.name}登录成功")
                                 call.respond(mapOf("token" to simpleJwt.sign(user.name!!)))
+                        }
+                        get {
+                            call.respond("欢迎来到 404Lab")
+                        }
+                        webSocket("/admin/listenMsg") {
+                            val client = ChatClient(this)
+                            clients += client
+                            try {
+                                while (true) {
+                                    when (val frame = incoming.receive()) {
+                                        is Frame.Text -> {
+                                            val text = frame.readText()
+                                            // 迭代所有连接
+                                            val textToSend = "${client.name} said: $text"
+                                            for (other in clients.toList()) {
+                                                other.session.outgoing.send(Frame.Text(textToSend))
+                                            }
+                                        }
+                                        else          -> {}
+                                    }
+                                }
+                            } finally {
+                                clients -= client
+                            }
                         }
                         authenticate {
                             post("/QBind") {

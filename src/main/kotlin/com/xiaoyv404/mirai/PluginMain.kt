@@ -26,6 +26,7 @@ object Version {
     const val PLUGINVERSION = "0.3.0"
 }
 
+
 object PluginMain : KotlinPlugin(
     JvmPluginDescription(
         id = Version.ID,
@@ -58,7 +59,6 @@ object PluginMain : KotlinPlugin(
 
         WebApi.entrance()
     }
-
     @KtorExperimentalAPI
     override fun onDisable() {
         // 关闭ktor客户端, 防止堵塞线程无法关闭

@@ -18,7 +18,6 @@ import kotlin.coroutines.EmptyCoroutineContext
 
 var BroadcastStatus = false
 
-@KtorExperimentalAPI
 @MiraiInternalApi
 fun someThinkEntrance() {
     GlobalEventChannel.subscribeAlways(
