@@ -18,6 +18,8 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
+import io.ktor.sessions.*
+import io.ktor.util.pipeline.*
 import io.ktor.websocket.*
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.remarkOrNick
@@ -30,24 +32,58 @@ import org.ktorm.dsl.*
 import org.mindrot.jbcrypt.BCrypt
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
-
-open class SimpleJWT(secret: String) {
-    private val algorithm = HMAC256(secret)
-    val verifier = JWT.require(algorithm).build()!!
-    fun sign(name: String): String = JWT.create().withClaim("name", name).sign(algorithm)
-}
+import kotlin.collections.set
 
 
 @MiraiExperimentalApi
 object WebApi {
+    private inline val WebSocketServerSession.session: UserSession?
+        get() = try {
+            call.sessions.get(SESSION_REGISTER_NAME) as? UserSession
+        } catch (th: Throwable) {
+            null
+        }
+    private inline val PipelineContext<*, ApplicationCall>.session: UserSession?
+        get() = try {
+            context.sessions.get(SESSION_REGISTER_NAME) as? UserSession
+        } catch (th: Throwable) {
+            null
+        }
+
+    private fun PipelineContext<*, ApplicationCall>.setSession(us: UserSession) =
+        context.sessions.set(SESSION_REGISTER_NAME, us)
+
+    private const val SESSION_REGISTER_NAME = "ktor-404"
+
+    open class SimpleJWT(secret: String) {
+        private val algorithm = HMAC256(secret)
+        val verifier = JWT.require(algorithm).build()!!
+        fun sign(name: String): String = JWT.create().withClaim("name", name).sign(algorithm)
+    }
+
     class ChatClient(val session: DefaultWebSocketSession) {
-        companion object { var lastId = AtomicInteger(0) }
+        companion object {
+            var lastId = AtomicInteger(0)
+        }
+
         val id = lastId.getAndIncrement()
         val name = "user$id"
     }
+
     fun entrance() {
         Thread {
             embeddedServer(Netty, port = 8888) {
+                install(CORS) {
+                    method(HttpMethod.Options)
+                    method(HttpMethod.Get)
+                    method(HttpMethod.Post)
+                    method(HttpMethod.Put)
+                    method(HttpMethod.Delete)
+                    method(HttpMethod.Patch)
+                    header(HttpHeaders.Authorization)
+//                    allowCredentials = true
+                    anyHost()
+                }
                 install(ContentNegotiation) {
                     jackson {
                         enable(SerializationFeature.INDENT_OUTPUT) // 美化输出 JSON
@@ -70,28 +106,41 @@ object WebApi {
                         )
                     }
                 }
-                install(WebSockets){
+                install(WebSockets) {
 
+                }
+                install(Sessions) {
+                    cookie<UserSession>(SESSION_REGISTER_NAME) {
+                        cookie.path = "*" //测试用
+                    }
                 }
                 routing {
                     val clients = Collections.synchronizedSet(LinkedHashSet<ChatClient>())
                     route("/lab") {
                         post("/login-register") {
-                                val post = call.receive<LoginRegister>()
-                                PluginMain.logger.info("收到${post.name}登录请求")
-                                val user =
-                                    User.getOrCreat(post.name) { User.Data(name = post.name, password = post.password) }
-                                if (!BCrypt.checkpw(post.password, user.password)) {
-                                    PluginMain.logger.info("驳回${post.name}登录请求")
-                                    throw InvalidCredentialsException("Invalid credentials")
-                                }
-                                PluginMain.logger.info("${post.name}登录成功")
-                                call.respond(mapOf("token" to simpleJwt.sign(user.name!!)))
+                            val post = call.receive<LoginRegister>()
+                            PluginMain.logger.info("收到${post.name}登录请求")
+                            val user =
+                                User.getOrCreat(post.name) { User.Data(name = post.name, password = post.password) }
+                            if (!BCrypt.checkpw(post.password, user.password)) {
+                                PluginMain.logger.info("驳回${post.name}登录请求")
+                                throw InvalidCredentialsException("Invalid credentials")
+                            }
+                            PluginMain.logger.info("${post.name}登录成功")
+                            call.respond(mapOf("token" to simpleJwt.sign(user.name!!)))
                         }
                         get {
                             call.respond("欢迎来到 404Lab")
                         }
                         webSocket("/admin/listenMsg") {
+                            val ses = session
+                            if (ses == null) {
+                                close(CloseReason(CloseReason.Codes.VIOLATED_POLICY, "No session"))
+                                return@webSocket
+                            }
+
+                            val get = call.receive<Chat>()
+                            println(get.token)
                             val client = ChatClient(this)
                             clients += client
                             try {
@@ -141,6 +190,23 @@ object WebApi {
                                     target.sendMessage("不绑就不绑呗，哼")
                             }
                             route("/admin") {
+                                get {
+                                    val principal = call.principal<UserIdPrincipal>() ?: error("No principal")
+                                    val user = User.get(principal.name)
+                                    if (user.authority != 1){
+                                        error("No permission")
+                                    }
+                                    val ses = session
+                                    if (ses == null) {
+                                        setSession(UserSession(
+                                            user.id!!,
+                                            user.authority,
+                                            user.name!!,
+                                            user.qid?: 0
+                                        ))
+                                    }
+                                    call.respond("这里是管理界面哦")
+                                }
                                 post("/getConversationsInfoList") {
                                     val principal = call.principal<UserIdPrincipal>() ?: error("No principal")
                                     if (User.get(principal.name).authority != 1) {
@@ -260,17 +326,23 @@ object WebApi {
          */
         fun getOrCreat(name: String, defaultValue: () -> Data): Data {
             val user = get(name)
-            return if (user.id == null){
+            return if (user.id == null) {
                 val answer = defaultValue()
                 creat(answer)
                 get(name)
-            }else
+            } else
                 user
         }
     }
 
     class SendMsg(val targets: List<Long>, val msg: String)
     class LoginRegister(val name: String, val password: String)
+    class Chat(val token: String)
     class QQBind(val qqNumber: Long)
-
+    data class UserSession(
+        val uid: Long,
+        val authority: Int,
+        val name: String,
+        val qid: Long
+    )
 }

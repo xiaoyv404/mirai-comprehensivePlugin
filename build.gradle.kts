@@ -53,6 +53,7 @@ dependencies {
     implementation("io.ktor:ktor-auth:$ktorVersion")
     implementation("io.ktor:ktor-auth-jwt:$ktorVersion")
     implementation("io.ktor:ktor-websockets:$ktorVersion")
+    implementation("io.ktor:ktor-server-sessions:$ktorVersion")
     implementation("de.svenkubiak:jBCrypt:0.4.3")
 
 
