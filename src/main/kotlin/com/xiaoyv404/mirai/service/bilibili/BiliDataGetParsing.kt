@@ -6,7 +6,7 @@ import com.xiaoyv404.mirai.service.getUserInformation
 import com.xiaoyv404.mirai.service.tool.KtorUtils
 import com.xiaoyv404.mirai.service.tool.parsingVideoDataString
 import io.ktor.client.request.*
-import io.ktor.util.*
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
@@ -18,7 +18,6 @@ import java.io.InputStream
 
 val format = Json { ignoreUnknownKeys = true }
 
-@KtorExperimentalAPI
 fun biliVideoEntrance() {
     GlobalEventChannel.subscribeGroupMessages {
         finding(Bilibili.biliBvFind){
@@ -55,7 +54,7 @@ fun biliVideoEntrance() {
 }
 
 //用于格式化Json并发送
-@KtorExperimentalAPI
+@OptIn(ExperimentalSerializationApi::class)
 suspend fun uJsonVideo(uJsonVideo: String, group: Contact) {
     /**
      * 如果pJson中含有data字段时不会抛出[SerializationException]，不含有则反之

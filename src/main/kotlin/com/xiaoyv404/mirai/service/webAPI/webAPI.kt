@@ -26,7 +26,6 @@ import net.mamoe.mirai.contact.remarkOrNick
 import net.mamoe.mirai.event.events.FriendMessageEvent
 import net.mamoe.mirai.event.nextEventAsync
 import net.mamoe.mirai.message.code.MiraiCode
-import net.mamoe.mirai.utils.MiraiExperimentalApi
 import org.apache.http.auth.InvalidCredentialsException
 import org.ktorm.dsl.*
 import org.mindrot.jbcrypt.BCrypt
@@ -35,7 +34,6 @@ import java.util.concurrent.atomic.AtomicInteger
 import kotlin.collections.set
 
 
-@MiraiExperimentalApi
 object WebApi {
     private inline val WebSocketServerSession.session: UserSession?
         get() = try {
@@ -81,8 +79,7 @@ object WebApi {
                     method(HttpMethod.Delete)
                     method(HttpMethod.Patch)
                     header(HttpHeaders.Authorization)
-//                    allowCredentials = true
-                    anyHost()
+                    allowCredentials = true
                 }
                 install(ContentNegotiation) {
                     jackson {
@@ -231,7 +228,7 @@ object WebApi {
                                         )
                                         friends[it.id] = friend
                                     }
-
+                                    
                                     call.respond(
                                         mapOf(
                                             "code" to 200,

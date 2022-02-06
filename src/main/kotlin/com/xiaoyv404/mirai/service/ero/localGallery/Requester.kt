@@ -6,7 +6,7 @@ import com.xiaoyv404.mirai.service.ero.increaseEntry
 import com.xiaoyv404.mirai.service.tool.FileUtils
 import com.xiaoyv404.mirai.service.tool.KtorUtils
 import io.ktor.client.request.*
-import io.ktor.util.*
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import net.mamoe.mirai.contact.Contact
@@ -47,7 +47,7 @@ class LocalGallery(private val subject: Contact) {
      *
      *  @return false 表示未报错, true 表示报错
      */
-    @KtorExperimentalAPI
+    @OptIn(ExperimentalSerializationApi::class)
     suspend fun unformat(id: String, senderId: Long): Boolean {
         val formatInfo: String
         try {
@@ -104,7 +104,6 @@ class LocalGallery(private val subject: Contact) {
                 作者ID: ${ii.userId}
             """.trimIndent()
         object Img {
-            @KtorExperimentalAPI
             suspend fun getSave(num: Int, id: String): String {
                 var fe = ""
                 if (num != 1) {

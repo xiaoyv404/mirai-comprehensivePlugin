@@ -4,7 +4,9 @@ import com.xiaoyv404.mirai.PluginConfig
 import com.xiaoyv404.mirai.PluginMain
 import com.xiaoyv404.mirai.service.tool.KtorUtils
 import io.ktor.client.request.*
-import io.ktor.util.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import net.mamoe.mirai.contact.Contact
@@ -15,8 +17,6 @@ import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
 import java.io.InputStream
 import java.net.URLDecoder
 
-@KtorExperimentalAPI
-@Suppress("BlockingMethodInNonBlockingContext")
 class SauceNaoRequester(private val subject: Contact) {
     private val jsonBuild = Json {
         ignoreUnknownKeys = true
@@ -33,7 +33,11 @@ class SauceNaoRequester(private val subject: Contact) {
                         "api_key=${PluginConfig.database.sauceNaoApiKey}&" +
                         "db=5&" +
                         "numres=1&" +
-                        "url=${URLDecoder.decode(image.queryUrl(), "utf-8")}"
+                        "url=${
+                            withContext(Dispatchers.IO) {
+                                URLDecoder.decode(image.queryUrl(), "utf-8")
+                            }
+                        }"
                 )
             PluginMain.logger.info(json)
             parseJson(json)
@@ -49,6 +53,7 @@ class SauceNaoRequester(private val subject: Contact) {
         }
     }
 
+    @OptIn(ExperimentalSerializationApi::class)
     private fun parseJson(json: String) {
         val res: SauceNaoResponse = jsonBuild.decodeFromString(json)
         result = res.results[0]

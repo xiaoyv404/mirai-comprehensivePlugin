@@ -6,7 +6,7 @@ import com.xiaoyv404.mirai.service.getUserInformation
 import com.xiaoyv404.mirai.service.tool.KtorUtils
 import io.ktor.client.*
 import io.ktor.client.request.*
-import io.ktor.util.*
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import net.mamoe.mirai.event.GlobalEventChannel
@@ -14,7 +14,7 @@ import net.mamoe.mirai.event.subscribeGroupMessages
 import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
 import java.io.InputStream
 
-@KtorExperimentalAPI
+@OptIn(ExperimentalSerializationApi::class)
 fun informationEntrance() {
     GlobalEventChannel.subscribeGroupMessages {
         finding(Command.getBiliBiliUpInformation) {

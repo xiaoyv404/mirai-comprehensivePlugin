@@ -9,9 +9,7 @@ import net.mamoe.mirai.event.subscribeGroupMessages
 import net.mamoe.mirai.message.data.MessageChain.Companion.serializeToJsonString
 import net.mamoe.mirai.message.data.ids
 import net.mamoe.mirai.message.data.time
-import net.mamoe.mirai.utils.MiraiExperimentalApi
 
-@MiraiExperimentalApi
 fun historyEntrance() {
     GlobalEventChannel.subscribeGroupMessages {
         always {
@@ -32,8 +30,7 @@ fun historyEntrance() {
                     message.ids[0].toLong(),
                     message.serializeToJsonString()
                 )
-            } catch (e: SerializationException) {
-            }
+            } catch (_: SerializationException) { }
         }
     }
 }

@@ -6,8 +6,8 @@ import com.xiaoyv404.mirai.service.tool.KtorUtils
 import io.ktor.client.features.*
 import io.ktor.client.request.*
 import io.ktor.network.sockets.*
-import io.ktor.util.*
 import kotlinx.coroutines.launch
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import net.mamoe.mirai.Bot
@@ -17,7 +17,6 @@ import net.mamoe.mirai.event.subscribeGroupMessages
 import net.mamoe.mirai.message.data.buildForwardMessage
 import java.util.*
 
-@KtorExperimentalAPI
 fun minecraftServerEntrance() {
     Timer().schedule(object : TimerTask() {
         override fun run() {
@@ -47,7 +46,6 @@ fun minecraftServerEntrance() {
 }
 
 class MinecraftServerStatusRequester(private var group: Contact? = null) {
-    @KtorExperimentalAPI
     suspend fun check(si: ServerInformation, control: UInt = 0U) {
         PluginMain.launch {
             val dStatus = si.status
@@ -72,7 +70,7 @@ class MinecraftServerStatusRequester(private var group: Contact? = null) {
                                     "服务器${si.name} is Online\n" +
                                         "IP: ${si.host}:${si.port}\n" +
                                         "人数: ${players!!.online}/${players.max}"
-                                )// todo 建议回答已经被吃掉了（离线）/熟了（极卡）/快熟了（有点卡）/ 还没熟（不咋卡）
+                                )
                             }
 
                             if (control == 2U) {
@@ -82,6 +80,7 @@ class MinecraftServerStatusRequester(private var group: Contact? = null) {
                                 updateServerInformation(si.id, 1)
                             }
                         }
+
                         0U -> {
                             groups.forEach { g ->
                                 g.sendMessage(
@@ -109,8 +108,11 @@ class MinecraftServerStatusRequester(private var group: Contact? = null) {
         }
     }
 
-    @KtorExperimentalAPI
     private suspend fun sendPlayerList(host: String, port: Int, players: Players) {
+        if (players.online == 0){
+            group!!.sendMessage("都没有人为什么要播报玩家列表呢（恼）")
+            return
+        }
         val playersML = players.players.toMutableList()
         var cycles = players.online / 12
         if (cycles != 0)
@@ -141,7 +143,7 @@ class MinecraftServerStatusRequester(private var group: Contact? = null) {
 }
 
 
-@KtorExperimentalAPI
+@OptIn(ExperimentalSerializationApi::class)
 suspend fun getServerInfo(host: String, port: Int): ServerInformationFormatAndStatus {
     val pJ = ServerInformationFormatAndStatus()
     return try {

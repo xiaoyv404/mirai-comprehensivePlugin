@@ -1,18 +1,16 @@
 package com.xiaoyv404.mirai.service.bilibili
 
 import com.xiaoyv404.mirai.databace.Bilibili
-import com.xiaoyv404.mirai.service.getUserInformation
 import com.xiaoyv404.mirai.service.accessControl.authorityIdentification
+import com.xiaoyv404.mirai.service.getUserInformation
 import com.xiaoyv404.mirai.service.tool.KtorUtils
 import io.ktor.client.*
 import io.ktor.client.request.*
-import io.ktor.util.*
 import net.mamoe.mirai.event.GlobalEventChannel
 import net.mamoe.mirai.event.subscribeGroupMessages
 
 
 
-@KtorExperimentalAPI
 fun b23ShortLinkEntrance() {
     GlobalEventChannel.subscribeGroupMessages {
         finding(Bilibili.b23Find) {

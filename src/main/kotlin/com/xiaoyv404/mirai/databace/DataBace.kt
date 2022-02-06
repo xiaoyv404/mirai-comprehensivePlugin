@@ -4,6 +4,7 @@ import com.xiaoyv404.mirai.PluginConfig
 import com.xiaoyv404.mirai.PluginMain
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
+import net.mamoe.mirai.console.util.ConsoleExperimentalApi
 import net.mamoe.mirai.utils.info
 import net.mamoe.mirai.utils.warning
 import org.ktorm.database.Database
@@ -39,6 +40,7 @@ lateinit var db: Database
         }
     }
 
+    @OptIn(ConsoleExperimentalApi::class)
     private fun hikariDataSourceProvider(): HikariDataSource = HikariDataSource(HikariConfig().apply {
         when {
 

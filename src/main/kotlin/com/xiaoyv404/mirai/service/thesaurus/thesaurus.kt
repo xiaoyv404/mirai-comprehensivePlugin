@@ -11,7 +11,6 @@ import com.xiaoyv404.mirai.service.tool.FileUtils
 import com.xiaoyv404.mirai.service.tool.KtorUtils
 import com.xiaoyv404.mirai.service.tool.jsonExtractContains
 import io.ktor.client.request.*
-import io.ktor.util.*
 import net.mamoe.mirai.contact.Contact.Companion.uploadImage
 import net.mamoe.mirai.event.GlobalEventChannel
 import net.mamoe.mirai.event.subscribeGroupMessages
@@ -20,15 +19,12 @@ import net.mamoe.mirai.message.code.MiraiCode
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
 import net.mamoe.mirai.message.nextMessage
-import net.mamoe.mirai.utils.MiraiInternalApi
 import org.ktorm.dsl.*
 import org.ktorm.schema.VarcharSqlType
 import java.io.InputStream
 import java.math.BigInteger
 
 
-@KtorExperimentalAPI
-@MiraiInternalApi
 fun  thesaurusEntrance() {
     GlobalEventChannel.subscribeMessages {
         finding(Regex("^(!!¥¥Ω®¥ Ãı)\$")) {
@@ -145,8 +141,7 @@ fun increaseEntry(question: String, reply: String, creator: Long) {
         }
 }
 
-@KtorExperimentalAPI
-@MiraiInternalApi
+
 suspend fun parseMsgAndSaveImg(message: MessageChain): String {
     val img = mutableListOf<String>()
     message.toMessageChain().forEach {
@@ -175,8 +170,6 @@ suspend fun parseMsgAndSaveImg(message: MessageChain): String {
     return msg
 }
 
-@KtorExperimentalAPI
-@MiraiInternalApi
 fun parseMsg(message: MessageChain): String {
     val img = mutableListOf<String>()
     message.toMessageChain().forEach {
@@ -197,8 +190,6 @@ fun parseMsg(message: MessageChain): String {
     return msg
 }
 
-@KtorExperimentalAPI
-@MiraiInternalApi
 fun queryTerm(question: MessageChain, gid: Long): List<Thesauru> {
     val sQuestion = parseMsg(question)
     val sGid = gid.toString()

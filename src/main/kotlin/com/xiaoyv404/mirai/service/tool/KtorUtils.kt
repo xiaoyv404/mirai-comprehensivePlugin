@@ -4,9 +4,7 @@ import com.xiaoyv404.mirai.PluginConfig
 import io.ktor.client.*
 import io.ktor.client.engine.*
 import io.ktor.client.engine.okhttp.*
-import io.ktor.util.*
 
-@KtorExperimentalAPI
 object KtorUtils {
     // 使用代理的ktor客户端
     val proxyClient = HttpClient(OkHttp) {

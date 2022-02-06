@@ -3,7 +3,7 @@ plugins {
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.serialization") version kotlinVersion
 
-    id("net.mamoe.mirai-console") version "2.10.0-RC2"
+    id("net.mamoe.mirai-console") version "2.10.0"
 }
 
 group = "com.xiaoyv404"
@@ -45,7 +45,7 @@ dependencies {
 
 
     implementation("com.alibaba:fastjson:1.2.79")
-    implementation("org.slf4j:slf4j-simple:1.7.33")
+    implementation("org.slf4j:slf4j-simple:1.7.35")
 
     implementation("io.ktor:ktor-client-cio:$ktorVersion")
     implementation("io.ktor:ktor-server-netty:$ktorVersion")

@@ -3,7 +3,6 @@ package com.xiaoyv404.mirai.service
 import com.xiaoyv404.mirai.PluginMain
 import com.xiaoyv404.mirai.databace.Command
 import com.xiaoyv404.mirai.service.accessControl.authorityIdentification
-import io.ktor.util.*
 import net.mamoe.mirai.contact.remarkOrNameCardOrNick
 import net.mamoe.mirai.event.GlobalEventChannel
 import net.mamoe.mirai.event.events.BotInvitedJoinGroupRequestEvent
@@ -13,12 +12,10 @@ import net.mamoe.mirai.message.code.MiraiCode
 import net.mamoe.mirai.message.data.PlainText
 import net.mamoe.mirai.message.data.buildMessageChain
 import net.mamoe.mirai.message.nextMessage
-import net.mamoe.mirai.utils.MiraiInternalApi
 import kotlin.coroutines.EmptyCoroutineContext
 
 var BroadcastStatus = false
 
-@MiraiInternalApi
 fun someThinkEntrance() {
     GlobalEventChannel.subscribeAlways(
         BotInvitedJoinGroupRequestEvent::class,

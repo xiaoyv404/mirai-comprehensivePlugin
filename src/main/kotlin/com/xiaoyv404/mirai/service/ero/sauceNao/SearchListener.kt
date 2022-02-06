@@ -3,7 +3,6 @@ package com.xiaoyv404.mirai.service.ero.sauceNao
 import com.xiaoyv404.mirai.databace.Command
 import com.xiaoyv404.mirai.service.accessControl.authorityIdentification
 import com.xiaoyv404.mirai.service.getUserInformation
-import io.ktor.util.*
 import net.mamoe.mirai.event.GlobalEventChannel
 import net.mamoe.mirai.event.subscribeMessages
 import net.mamoe.mirai.message.data.Image
@@ -11,7 +10,6 @@ import net.mamoe.mirai.message.data.MessageSource.Key.quote
 import net.mamoe.mirai.message.data.time
 import net.mamoe.mirai.message.nextMessage
 
-@KtorExperimentalAPI
 fun searchListenerRegister() {
     GlobalEventChannel.subscribeMessages {
         finding(Command.SauceNao) {

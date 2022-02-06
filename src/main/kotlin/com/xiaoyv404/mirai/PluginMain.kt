@@ -12,12 +12,9 @@ import com.xiaoyv404.mirai.service.someThinkEntrance
 import com.xiaoyv404.mirai.service.thesaurus.thesaurusEntrance
 import com.xiaoyv404.mirai.service.tool.KtorUtils
 import com.xiaoyv404.mirai.service.webAPI.WebApi
-import io.ktor.util.*
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescription
 import net.mamoe.mirai.console.plugin.jvm.KotlinPlugin
 import net.mamoe.mirai.console.plugin.version
-import net.mamoe.mirai.utils.MiraiExperimentalApi
-import net.mamoe.mirai.utils.MiraiInternalApi
 import net.mamoe.mirai.utils.info
 
 object Version {
@@ -34,9 +31,6 @@ object PluginMain : KotlinPlugin(
         version = Version.PLUGINVERSION
     )
 )       {
-    @KtorExperimentalAPI
-    @MiraiExperimentalApi
-    @MiraiInternalApi
     override fun onEnable() {
         PluginConfig.reload()
 
@@ -59,7 +53,6 @@ object PluginMain : KotlinPlugin(
 
         WebApi.entrance()
     }
-    @KtorExperimentalAPI
     override fun onDisable() {
         // 关闭ktor客户端, 防止堵塞线程无法关闭
         KtorUtils.closeClient()
