@@ -144,7 +144,7 @@ fun increaseEntry(question: String, reply: String, creator: Long) {
 
 suspend fun parseMsgAndSaveImg(message: MessageChain): String {
     val img = mutableListOf<String>()
-    message.toMessageChain().forEach {
+    message.forEach {
         if (it is Image) {
             val imageId = BigInteger(1, it.md5).toString(16)
             val `in` = KtorUtils.normalClient.get<InputStream>(it.queryUrl())
