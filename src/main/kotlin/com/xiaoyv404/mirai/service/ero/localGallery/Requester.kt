@@ -18,7 +18,7 @@ import java.io.InputStream
 import java.sql.SQLIntegrityConstraintViolationException
 
 class LocalGallery(private val subject: Contact) {
-    suspend fun send(ii: ImageInfo) {
+    suspend fun send(ii: Process.Img.Info) {
         if (ii.picturesNum == 1) {
             subject.sendMessage(
                 PluginMain.resolveDataFile("gallery/${ii.id}.${ii.extension}")
@@ -49,9 +49,8 @@ class LocalGallery(private val subject: Contact) {
      */
     @OptIn(ExperimentalSerializationApi::class)
     suspend fun unformat(id: String, senderId: Long): Boolean {
-        val formatInfo: String
-        try {
-            formatInfo = KtorUtils.proxyClient.get(
+        val formatInfo = try {
+            KtorUtils.proxyClient.get<String>(
                 "https://www.pixiv.net/artworks/" +
                     id
             )
@@ -75,17 +74,17 @@ class LocalGallery(private val subject: Contact) {
             Pixiv.worksNumberFind.find(KtorUtils.normalClient.config {
                 expectSuccess = false
             }.get<String>("https://pixiv.re/$id.png"))?.value?.toInt() ?: 1
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             1
         }
 
         val fe = Process.Img.getSave(num, id)
 
-        val info = ImageInfo(id.toLong(), num, pJ.title, tags, pJ.userId.toLong(), pJ.userName, fe)
+        val info = Process.Img.Info(id.toLong(), num, pJ.title, tags, pJ.userId.toLong(), pJ.userName, fe)
 
         try {
             increaseEntry(info, senderId, pJ.tags.tags)
-        } catch (e: SQLIntegrityConstraintViolationException) {
+        } catch (_: SQLIntegrityConstraintViolationException) {
             PluginMain.logger.info("数据库已经保存pid: $id")
         }
 
@@ -95,7 +94,7 @@ class LocalGallery(private val subject: Contact) {
     }
 
     object Process {
-        fun linkInfo(ii: ImageInfo): String = """
+        fun linkInfo(ii: Img.Info): String = """
                 作品ID: ${ii.id}
                 标题: ${ii.title}
                 标签: ${ii.tags}
@@ -104,11 +103,21 @@ class LocalGallery(private val subject: Contact) {
                 作者ID: ${ii.userId}
             """.trimIndent()
         object Img {
+            data class Info(
+                val id: Long?,
+                val picturesNum: Int,
+                val title: String?,
+                val tags: String?,
+                val userId: Long?,
+                val userName: String?,
+                val extension: String?,
+            )
             suspend fun getSave(num: Int, id: String): String {
                 var fe = ""
                 if (num != 1) {
                     PluginMain.logger.info("含有$num 张图片")
                     for (i in 1..num) {
+                        PluginMain.logger.info("正在保存第$i 张图片")
                         val `in` = KtorUtils.normalClient.get<InputStream>("https://pixiv.re/$id-$i.png")
                         fe = verifyExtensionAndSaveFile(`in`, "gallery/$id-$i")
                     }

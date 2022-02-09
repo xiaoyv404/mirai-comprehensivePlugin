@@ -4,7 +4,7 @@ import com.xiaoyv404.mirai.databace.Database
 import com.xiaoyv404.mirai.databace.dao.gallery.GalleryTagMaps
 import com.xiaoyv404.mirai.databace.dao.gallery.GalleryTags
 import com.xiaoyv404.mirai.databace.dao.gallery.Gallerys
-import com.xiaoyv404.mirai.service.ero.localGallery.ImageInfo
+import com.xiaoyv404.mirai.service.ero.localGallery.LocalGallery
 import com.xiaoyv404.mirai.service.ero.localGallery.Tag
 import org.ktorm.dsl.*
 
@@ -25,13 +25,13 @@ fun queryIdByTagId(tagid: Long): List<Long> {
         .map { row -> row[GalleryTagMaps.pid]!! }
 }
 
-fun getImgInformationById(id: Long): ImageInfo {
+fun getImgInformationById(id: Long): LocalGallery.Process.Img.Info {
    return Database.db
         .from(Gallerys)
         .select()
         .where { Gallerys.id eq id }
         .map { row ->
-            ImageInfo(
+            LocalGallery.Process.Img.Info(
                 row[Gallerys.id],
                 row[Gallerys.picturesMun]?: 0,
                 row[Gallerys.title],
@@ -80,7 +80,7 @@ fun updateTagNumber(tagid: Long, num: Long) {
 
 
 fun increaseEntry(
-    da : ImageInfo,
+    da : LocalGallery.Process.Img.Info,
     creator: Long,
     tagsL: List<Tag>,
 ) {
@@ -95,13 +95,13 @@ fun increaseEntry(
             set(it.creator, creator)
             set(it.extension, da.extension)
         }
-    for (i in tagsL.indices) {
+    tagsL.forEach{ tag ->
         var num: Long? = null
         var tagid: Long? = null
         Database.db
             .from(GalleryTags)
             .select()
-            .where { (GalleryTags.tagname eq tagsL[i].tag) }
+            .where { GalleryTags.tagname eq tag.tag }
             .forEach { row ->
                 num = row[GalleryTags.num]
                 tagid = row[GalleryTags.tagid]
@@ -118,12 +118,12 @@ fun increaseEntry(
             Database.db
                 .insert(GalleryTags) {
                     set(it.num, 1)
-                    set(it.tagname, tagsL[i].tag)
+                    set(it.tagname, tag.tag)
                 }
             Database.db
                 .from(GalleryTags)
                 .select()
-                .where { (GalleryTags.tagname eq tagsL[i].tag) }
+                .where { GalleryTags.tagname eq tag.tag }
                 .forEach { row ->
                     tagid = row[GalleryTags.tagid]
                 }

@@ -2,16 +2,6 @@ package com.xiaoyv404.mirai.service.ero.localGallery
 
 import kotlinx.serialization.Serializable
 
-data class ImageInfo(
-    val id: Long?,
-    val picturesNum: Int,
-    val title: String?,
-    val tags: String?,
-    val userId: Long?,
-    val userName: String?,
-    val extension: String?,
-)
-
 @Serializable
 data class PixivJson(
     val alt: String,

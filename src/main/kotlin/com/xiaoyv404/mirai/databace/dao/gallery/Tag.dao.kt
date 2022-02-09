@@ -5,14 +5,15 @@ import org.ktorm.schema.Table
 import org.ktorm.schema.long
 import org.ktorm.schema.varchar
 
-interface GalleryTag : Entity<Gallery> {
+interface GalleryTag : Entity<GalleryTag> {
     val tagid: Long
     val tagname: String
     val num: Long
 }
 
-object GalleryTags : Table<Gallery>("Gallerys_Tag") {
+object GalleryTags : Table<GalleryTag>("Gallerys_Tag") {
     val tagid = long("tagid")
     val tagname = varchar("tagname").primaryKey()
     val num = long("num")
 }
+
