@@ -107,7 +107,7 @@ fun localGalleryListener() {
 
                 tags.forEach { tagid ->
                     val num = queryTagQuantityByTagId(tagid)
-                    updateTagNumber(tagid, num - 1)
+                    SQLInteraction.GalleryTags.updateNumber(tagid, num - 1)
                 }
 
                 val information = getImgInformationById(id)

@@ -2,7 +2,7 @@ package com.xiaoyv404.mirai.service.ero.localGallery
 
 import com.xiaoyv404.mirai.PluginMain
 import com.xiaoyv404.mirai.databace.Pixiv
-import com.xiaoyv404.mirai.service.ero.increaseEntry
+import com.xiaoyv404.mirai.service.ero.SQLInteraction
 import com.xiaoyv404.mirai.service.tool.FileUtils
 import com.xiaoyv404.mirai.service.tool.KtorUtils
 import io.ktor.client.request.*
@@ -83,7 +83,7 @@ class LocalGallery(private val subject: Contact) {
         val info = Process.Img.Info(id.toLong(), num, pJ.title, tags, pJ.userId.toLong(), pJ.userName, fe)
 
         try {
-            increaseEntry(info, senderId, pJ.tags.tags)
+            SQLInteraction.GalleryTags.increaseEntry(info, senderId, pJ.tags.tags)
         } catch (_: SQLIntegrityConstraintViolationException) {
             PluginMain.logger.info("数据库已经保存pid: $id")
         }
