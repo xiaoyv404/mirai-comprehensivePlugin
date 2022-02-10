@@ -5,7 +5,6 @@ import com.xiaoyv404.mirai.databace.dao.gallery.GalleryTagMaps
 import com.xiaoyv404.mirai.databace.dao.gallery.GalleryTags
 import com.xiaoyv404.mirai.databace.dao.gallery.Gallerys
 import com.xiaoyv404.mirai.service.ero.localGallery.LocalGallery
-import com.xiaoyv404.mirai.service.ero.localGallery.Tag
 import org.ktorm.dsl.*
 
 
@@ -87,61 +86,6 @@ object SQLInteraction {
                     set(it.extension, da.extension)
                 }
         }
-    }
-
-    object GalleryTags {
-        fun updateNumber(tagid: Long, num: Long) {
-            Database.db
-                .update(com.xiaoyv404.mirai.databace.dao.gallery.GalleryTags) {
-                    set(it.num, num)
-                    where {
-                        it.tagid eq tagid
-                    }
-                }
-        }
-
-        fun increaseEntry(
-            da: LocalGallery.Process.Img.Info,
-            creator: Long,
-            tagsL: List<Tag>,
-        ) {
-            Gallerys.insert(da,creator)
-            tagsL.forEach { tag ->
-                var num: Long? = null
-                var tagid: Long? = null
-                Database.db
-                    .from(com.xiaoyv404.mirai.databace.dao.gallery.GalleryTags)
-                    .select()
-                    .where { com.xiaoyv404.mirai.databace.dao.gallery.GalleryTags.tagname eq tag.tag }
-                    .forEach { row ->
-                        num = row[com.xiaoyv404.mirai.databace.dao.gallery.GalleryTags.num]
-                        tagid = row[com.xiaoyv404.mirai.databace.dao.gallery.GalleryTags.tagid]
-                    }
-                if (tagid != null) {
-                    updateNumber(tagid!!, num!! + 1)
-                } else {
-                    Database.db
-                        .insert(com.xiaoyv404.mirai.databace.dao.gallery.GalleryTags) {
-                            set(it.num, 1)
-                            set(it.tagname, tag.tag)
-                        }
-                    Database.db
-                        .from(com.xiaoyv404.mirai.databace.dao.gallery.GalleryTags)
-                        .select()
-                        .where { com.xiaoyv404.mirai.databace.dao.gallery.GalleryTags.tagname eq tag.tag }
-                        .forEach { row ->
-                            tagid = row[com.xiaoyv404.mirai.databace.dao.gallery.GalleryTags.tagid]
-                        }
-                }
-                Database.db
-                    .insert(GalleryTagMaps) {
-                        set(it.tagid, tagid)
-                        set(it.pid, da.id)
-                    }
-            }
-        }
-
-
     }
 }
 

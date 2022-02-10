@@ -2,6 +2,10 @@ package com.xiaoyv404.mirai.service.ero.localGallery
 
 import com.xiaoyv404.mirai.PluginMain
 import com.xiaoyv404.mirai.databace.Command
+import com.xiaoyv404.mirai.databace.dao.gallery.GalleryTag
+import com.xiaoyv404.mirai.databace.dao.gallery.GalleryTags
+import com.xiaoyv404.mirai.databace.dao.gallery.save
+import com.xiaoyv404.mirai.databace.dao.gallery.update
 import com.xiaoyv404.mirai.service.accessControl.authorityIdentification
 import com.xiaoyv404.mirai.service.ero.*
 import com.xiaoyv404.mirai.service.getUserInformation
@@ -11,7 +15,12 @@ import net.mamoe.mirai.contact.Contact.Companion.sendImage
 import net.mamoe.mirai.event.GlobalEventChannel
 import net.mamoe.mirai.event.subscribeMessages
 import net.mamoe.mirai.message.nextMessage
+import org.ktorm.database.Database
+import org.ktorm.entity.add
+import org.ktorm.entity.sequenceOf
 import java.io.InputStream
+
+val Database.galleryTags get() = this.sequenceOf(GalleryTags)
 
 
 fun localGalleryListener() {
@@ -25,8 +34,8 @@ fun localGalleryListener() {
             ) {
                 var num = it.groups[3]!!.value.toInt()
                 when (num) {
-                    0 -> subject.sendMessage("w?你到底想让404干什么呢, 喵")
-                    9 -> subject.sendMessage("9?是这个⑨吗?www")
+                    0      -> subject.sendMessage("w?你到底想让404干什么呢, 喵")
+                    9      -> subject.sendMessage("9?是这个⑨吗?www")
                     114514 -> subject.sendMessage("好臭啊啊啊啊")
                 }
                 if (num > 5 && getUserInformation(sender.id).setu != true) {
@@ -97,6 +106,24 @@ fun localGalleryListener() {
                 LocalGallery(subject).send(ii)
             }
         }
+        case("test sql") {
+            if (getUserInformation(sender.id).admin == true) {
+                val data = GalleryTag {
+                    tagname = "Test!"
+                    num = 1
+                }
+                com.xiaoyv404.mirai.databace.Database.db.galleryTags.add(data)
+                println(data.tagid)
+            }
+        }
+        case("test Year"){
+            val test = GalleryTag{
+                tagname = "YEAR!"
+                num = 114514
+            }
+              val id =  test.save()
+            println(id)
+        }
         finding(Command.eroRemove) {
             if (getUserInformation(sender.id).admin == true) {
                 val rd = it.groups
@@ -105,9 +132,12 @@ fun localGalleryListener() {
 
                 val tags = queryTagIdById(id)
 
-                tags.forEach { tagid ->
-                    val num = queryTagQuantityByTagId(tagid)
-                    SQLInteraction.GalleryTags.updateNumber(tagid, num - 1)
+                tags.forEach { tagidA ->
+                    val numA = queryTagQuantityByTagId(tagidA)
+                    GalleryTag{
+                        tagid = tagidA
+                        num = numA
+                    }.update()
                 }
 
                 val information = getImgInformationById(id)
@@ -131,3 +161,5 @@ fun localGalleryListener() {
         }
     }
 }
+
+

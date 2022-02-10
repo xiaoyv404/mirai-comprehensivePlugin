@@ -2,6 +2,10 @@ package com.xiaoyv404.mirai.service.ero.localGallery
 
 import com.xiaoyv404.mirai.PluginMain
 import com.xiaoyv404.mirai.databace.Pixiv
+import com.xiaoyv404.mirai.databace.dao.gallery.GalleryTag
+import com.xiaoyv404.mirai.databace.dao.gallery.GalleryTagMap
+import com.xiaoyv404.mirai.databace.dao.gallery.save
+import com.xiaoyv404.mirai.databace.dao.gallery.update
 import com.xiaoyv404.mirai.service.ero.SQLInteraction
 import com.xiaoyv404.mirai.service.tool.FileUtils
 import com.xiaoyv404.mirai.service.tool.KtorUtils
@@ -83,7 +87,7 @@ class LocalGallery(private val subject: Contact) {
         val info = Process.Img.Info(id.toLong(), num, pJ.title, tags, pJ.userId.toLong(), pJ.userName, fe)
 
         try {
-            SQLInteraction.GalleryTags.increaseEntry(info, senderId, pJ.tags.tags)
+            increaseEntry(info, senderId, pJ.tags.tags)
         } catch (_: SQLIntegrityConstraintViolationException) {
             PluginMain.logger.info("数据库已经保存pid: $id")
         }
@@ -135,14 +139,40 @@ class LocalGallery(private val subject: Contact) {
                 var fe = Tika().detect(bSrc)
                 PluginMain.logger.info("文件格式: $fe")
                 fe = when (fe) {
-                    "image/png" -> "png"
+                    "image/png"  -> "png"
                     "image/jpeg" -> "jpg"
-                    else -> "???"
+                    else         -> "???"
                 }
                 bSrc.reset()
                 FileUtils.saveFileFromStream(bSrc, PluginMain.resolveDataFile("$dst.$fe"))
                 return fe
             }
+        }
+    }
+}
+
+fun increaseEntry(
+    da: LocalGallery.Process.Img.Info,
+    creator: Long,
+    tagsL: List<Tag>,
+) {
+    SQLInteraction.Gallerys.insert(da, creator)
+    tagsL.forEach { tag ->
+        val tagInfo = GalleryTag().findByTagName(tag.tag)
+        if (tagInfo != null) {
+            GalleryTag {
+                tagid = tagInfo.tagid
+                num = tagInfo.num + 1
+            }.update()
+        } else {
+            val tagidA = GalleryTag {
+                tagname = tag.tag
+                num = 1
+            }.save()
+            GalleryTagMap {
+                tagid = tagidA
+                pid = da.id!!
+            }.save()
         }
     }
 }
