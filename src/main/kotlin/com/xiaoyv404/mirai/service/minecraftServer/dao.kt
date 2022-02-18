@@ -2,14 +2,6 @@ package com.xiaoyv404.mirai.service.minecraftServer
 
 import kotlinx.serialization.Serializable
 
-data class ServerInformation(
-    val id: Int,
-    val host: String,
-    val port: Int,
-    val status: Int,
-    val name: String
-)
-
 data class ServerInformationFormatAndStatus(
     var serverInformationFormat: ServerInformationFormat? = null,
     var status: UInt = 1U

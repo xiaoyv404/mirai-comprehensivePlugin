@@ -3,8 +3,6 @@ package com.xiaoyv404.mirai.service.ero.localGallery
 import com.xiaoyv404.mirai.PluginMain
 import com.xiaoyv404.mirai.databace.Command
 import com.xiaoyv404.mirai.databace.dao.gallery.GalleryTag
-import com.xiaoyv404.mirai.databace.dao.gallery.GalleryTags
-import com.xiaoyv404.mirai.databace.dao.gallery.save
 import com.xiaoyv404.mirai.databace.dao.gallery.update
 import com.xiaoyv404.mirai.service.accessControl.authorityIdentification
 import com.xiaoyv404.mirai.service.ero.*
@@ -15,13 +13,7 @@ import net.mamoe.mirai.contact.Contact.Companion.sendImage
 import net.mamoe.mirai.event.GlobalEventChannel
 import net.mamoe.mirai.event.subscribeMessages
 import net.mamoe.mirai.message.nextMessage
-import org.ktorm.database.Database
-import org.ktorm.entity.add
-import org.ktorm.entity.sequenceOf
 import java.io.InputStream
-
-val Database.galleryTags get() = this.sequenceOf(GalleryTags)
-
 
 fun localGalleryListener() {
     GlobalEventChannel.subscribeMessages {
@@ -73,11 +65,12 @@ fun localGalleryListener() {
                     } else
                         rd[3]!!.value
                 ).toList()
+                val noOutPut = rd[7]!=null
                 PluginMain.logger.info("找到${ids.size}个ID")
 
                 ids.forEach { id ->
                     PluginMain.logger.info("下载${id.value}")
-                    if (LocalGallery(subject).unformat(id.value, sender.id)) {
+                    if (LocalGallery(subject).unformat(id.value, sender.id, noOutPut)) {
                         subject.sendMessage("出错啦(详见控制台)")
                     }
                 }
@@ -105,24 +98,6 @@ fun localGalleryListener() {
                 val ii = getImgInformationById(id)
                 LocalGallery(subject).send(ii)
             }
-        }
-        case("test sql") {
-            if (getUserInformation(sender.id).admin == true) {
-                val data = GalleryTag {
-                    tagname = "Test!"
-                    num = 1
-                }
-                com.xiaoyv404.mirai.databace.Database.db.galleryTags.add(data)
-                println(data.tagid)
-            }
-        }
-        case("test Year"){
-            val test = GalleryTag{
-                tagname = "YEAR!"
-                num = 114514
-            }
-              val id =  test.save()
-            println(id)
         }
         finding(Command.eroRemove) {
             if (getUserInformation(sender.id).admin == true) {

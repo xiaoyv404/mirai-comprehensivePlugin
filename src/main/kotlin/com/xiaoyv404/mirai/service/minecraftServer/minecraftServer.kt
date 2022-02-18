@@ -2,6 +2,10 @@ package com.xiaoyv404.mirai.service.minecraftServer
 
 import com.xiaoyv404.mirai.PluginMain
 import com.xiaoyv404.mirai.databace.Command
+import com.xiaoyv404.mirai.databace.dao.MinecraftServer
+import com.xiaoyv404.mirai.databace.dao.findById
+import com.xiaoyv404.mirai.databace.dao.getAll
+import com.xiaoyv404.mirai.databace.dao.update
 import com.xiaoyv404.mirai.service.tool.KtorUtils
 import io.ktor.client.features.*
 import io.ktor.client.request.*
@@ -21,7 +25,7 @@ fun minecraftServerEntrance() {
     Timer().schedule(object : TimerTask() {
         override fun run() {
             PluginMain.launch {
-                getServerInformation().forEach {
+                getAll().forEach {
                     MinecraftServerStatusRequester().check(it)
                 }
             }
@@ -31,9 +35,12 @@ fun minecraftServerEntrance() {
         finding(Command.minecraftServerStats) {
             val rd = it.groups
             getServerMapByGroupID(group.id).forEach { si ->
-                getServerInformationByServerID(si!!).forEach { sv ->
+                val info = MinecraftServer{
+                    id = si!!
+                }.findById()
+                if (info != null){
                     MinecraftServerStatusRequester(group).check(
-                        sv,
+                        info,
                         if (rd[9] != null)
                             2U
                         else
@@ -46,7 +53,7 @@ fun minecraftServerEntrance() {
 }
 
 class MinecraftServerStatusRequester(private var group: Contact? = null) {
-    suspend fun check(si: ServerInformation, control: UInt = 0U) {
+    suspend fun check(si: MinecraftServer, control: UInt = 0U) {
         PluginMain.launch {
             val dStatus = si.status
             if (dStatus != -2) {
@@ -54,7 +61,7 @@ class MinecraftServerStatusRequester(private var group: Contact? = null) {
                     val information = getServerInfo(si.host, si.port)
                     val players = information.serverInformationFormat?.players
                     val groups = mutableListOf<Contact>()
-                    val status = information.status
+                    var status = information.status
 
                     if (dStatus != status.toInt() && dStatus != 1 && !((dStatus == -1) && (status == 1U))) {
                         getServerMapByServerID(si.id).forEach { gid ->
@@ -97,11 +104,14 @@ class MinecraftServerStatusRequester(private var group: Contact? = null) {
                                     else
                                         0
                                 )
-                                -1 -> updateServerInformation(si.id, 0)
+                                -1 -> MinecraftServer{
+                                    id = si.id
+                                    status = 0u
+                                }.update()
                             }
                         }
                     }
-                } catch (e: SocketTimeoutException) {
+                } catch (_: SocketTimeoutException) {
                     group?.sendMessage("无法连接到分析服务器")
                 }
             }
@@ -155,7 +165,7 @@ suspend fun getServerInfo(host: String, port: Int): ServerInformationFormatAndSt
             )
         )
         pJ
-    } catch (e: ServerResponseException) {
+    } catch (_: ServerResponseException) {
         pJ.status = 0U
         pJ
     }

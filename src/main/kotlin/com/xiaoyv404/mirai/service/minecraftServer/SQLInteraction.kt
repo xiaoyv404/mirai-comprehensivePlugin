@@ -5,36 +5,6 @@ import com.xiaoyv404.mirai.databace.dao.MinecraftServerMaps
 import com.xiaoyv404.mirai.databace.dao.MinecraftServers
 import org.ktorm.dsl.*
 
-fun getServerInformation(): List<ServerInformation> {
-    return Database.db
-        .from(MinecraftServers)
-        .select()
-        .map { row ->
-            ServerInformation(
-                row[MinecraftServers.id]!!,
-                row[MinecraftServers.host]!!,
-                row[MinecraftServers.port]!!,
-                row[MinecraftServers.status]!!,
-                row[MinecraftServers.name]!!
-            )
-        }
-}
-
-fun getServerInformationByServerID(serverID: Int): List<ServerInformation> {
-    return Database.db
-        .from(MinecraftServers)
-        .select()
-        .where { MinecraftServers.id eq serverID }
-        .map { row ->
-            ServerInformation(
-                row[MinecraftServers.id]!!,
-                row[MinecraftServers.host]!!,
-                row[MinecraftServers.port]!!,
-                row[MinecraftServers.status]!!,
-                row[MinecraftServers.name]!!
-            )
-        }
-}
 
 fun updateServerInformation(id: Int, status: Int) {
     Database.db

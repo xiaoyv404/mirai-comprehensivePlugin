@@ -1,12 +1,12 @@
 package com.xiaoyv404.mirai.databace.dao.gallery
 
+import com.xiaoyv404.mirai.databace.Database.db
 import org.ktorm.database.Database
 import org.ktorm.dsl.eq
 import org.ktorm.entity.*
 import org.ktorm.schema.Table
 import org.ktorm.schema.long
 import org.ktorm.schema.varchar
-import com.xiaoyv404.mirai.databace.Database as DB
 
 private val Database.galleryTags get() = this.sequenceOf(GalleryTags)
 
@@ -15,23 +15,22 @@ interface GalleryTag : Entity<GalleryTag> {
     var tagid: Long
     var tagname: String
     var num: Long
-
-    fun findByTagName(tagname: String): GalleryTag? {
-        return DB.db.galleryTags.find { it.tagname eq tagname }
-    }
+}
+fun GalleryTag.findByTagName(): GalleryTag?{
+    return db.galleryTags.find { it.tagname eq this.tagname }
 }
 fun GalleryTag.save(): Long {
-    DB.db.galleryTags.add(this)
+    db.galleryTags.add(this)
     return this.tagid
 }
 fun GalleryTag.update(){
-    DB.db.galleryTags.update(this)
+    db.galleryTags.update(this)
 }
 
 
 
 
-object GalleryTags : Table<GalleryTag>("Gallerys_Tag_Test") {
+object GalleryTags : Table<GalleryTag>("Gallerys_Tag") {
     val tagid = long("tagid").primaryKey().bindTo{it.tagid}
     val tagname = varchar("tagname").bindTo { it.tagname }
     val num = long("num").bindTo { it.num }

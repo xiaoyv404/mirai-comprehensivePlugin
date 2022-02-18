@@ -2,11 +2,7 @@ package com.xiaoyv404.mirai.service.ero.localGallery
 
 import com.xiaoyv404.mirai.PluginMain
 import com.xiaoyv404.mirai.databace.Pixiv
-import com.xiaoyv404.mirai.databace.dao.gallery.GalleryTag
-import com.xiaoyv404.mirai.databace.dao.gallery.GalleryTagMap
-import com.xiaoyv404.mirai.databace.dao.gallery.save
-import com.xiaoyv404.mirai.databace.dao.gallery.update
-import com.xiaoyv404.mirai.service.ero.SQLInteraction
+import com.xiaoyv404.mirai.databace.dao.gallery.*
 import com.xiaoyv404.mirai.service.tool.FileUtils
 import com.xiaoyv404.mirai.service.tool.KtorUtils
 import io.ktor.client.request.*
@@ -52,7 +48,7 @@ class LocalGallery(private val subject: Contact) {
      *  @return false 表示未报错, true 表示报错
      */
     @OptIn(ExperimentalSerializationApi::class)
-    suspend fun unformat(id: String, senderId: Long): Boolean {
+    suspend fun unformat(id: String, senderId: Long, outPut: Boolean): Boolean {
         val formatInfo = try {
             KtorUtils.proxyClient.get<String>(
                 "https://www.pixiv.net/artworks/" +
@@ -92,8 +88,10 @@ class LocalGallery(private val subject: Contact) {
             PluginMain.logger.info("数据库已经保存pid: $id")
         }
 
-        send(info)
-
+        if (!outPut){
+            send(info)
+        }else
+            PluginMain.logger.info("已关闭输出")
         return false
     }
 
@@ -153,12 +151,21 @@ class LocalGallery(private val subject: Contact) {
 
 fun increaseEntry(
     da: LocalGallery.Process.Img.Info,
-    creator: Long,
+    creatorA: Long,
     tagsL: List<Tag>,
 ) {
-    SQLInteraction.Gallerys.insert(da, creator)
+    Gallery {
+        id = da.id!!
+        picturesMun = da.picturesNum
+        title = da.title!!
+        tags = da.tags!!
+        userId = da.userId!!
+        userName = da.userName!!
+        creator = creatorA
+        extension = da.extension!!
+    }.save()
     tagsL.forEach { tag ->
-        val tagInfo = GalleryTag().findByTagName(tag.tag)
+        val tagInfo = GalleryTag{tagname = tag.tag}.findByTagName()
         if (tagInfo != null) {
             GalleryTag {
                 tagid = tagInfo.tagid

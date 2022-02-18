@@ -66,26 +66,3 @@ fun queryTagQuantityByTagId(tagid: Long): Long {
         .forEach { data = it[GalleryTags.num]!! }
     return data
 }
-
-
-object SQLInteraction {
-    object Gallerys {
-        fun insert(
-            da: LocalGallery.Process.Img.Info,
-            creator: Long,
-        ) {
-            Database.db
-                .insert(com.xiaoyv404.mirai.databace.dao.gallery.Gallerys) {
-                    set(it.id, da.id)
-                    set(it.picturesMun, da.picturesNum)
-                    set(it.title, da.title)
-                    set(it.tags, da.tags)
-                    set(it.userId, da.userId)
-                    set(it.userName, da.userName)
-                    set(it.creator, creator)
-                    set(it.extension, da.extension)
-                }
-        }
-    }
-}
-
