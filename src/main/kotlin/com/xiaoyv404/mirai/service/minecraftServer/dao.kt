@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 data class ServerInformationFormatAndStatus(
     var serverInformationFormat: ServerInformationFormat? = null,
-    var status: UInt = 1U
+    var status: Int = 1
 )
 
 @Serializable

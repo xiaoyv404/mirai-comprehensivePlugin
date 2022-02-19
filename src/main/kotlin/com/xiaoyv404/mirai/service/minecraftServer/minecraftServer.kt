@@ -7,9 +7,7 @@ import com.xiaoyv404.mirai.databace.dao.findById
 import com.xiaoyv404.mirai.databace.dao.getAll
 import com.xiaoyv404.mirai.databace.dao.update
 import com.xiaoyv404.mirai.service.tool.KtorUtils
-import io.ktor.client.features.*
 import io.ktor.client.request.*
-import io.ktor.network.sockets.*
 import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromString
@@ -57,62 +55,59 @@ class MinecraftServerStatusRequester(private var group: Contact? = null) {
         PluginMain.launch {
             val dStatus = si.status
             if (dStatus != -2) {
-                try {
-                    val information = getServerInfo(si.host, si.port)
-                    val players = information.serverInformationFormat?.players
-                    val groups = mutableListOf<Contact>()
-                    var status = information.status
+                val information = getServerInfo(si.host, si.port)
+                val players = information.serverInformationFormat?.players
+                val groups = mutableListOf<Contact>()
+                val statusD = information.status
 
-                    if (dStatus != status.toInt() && dStatus != 1 && !((dStatus == -1) && (status == 1U))) {
-                        getServerMapByServerID(si.id).forEach { gid ->
-                            groups.add(Bot.getInstance(2079373402).getGroup(gid!!)!!)
-                        }
-                    } else {
-                        group?.let { groups.add(it) }
+                val statusT = if (statusD != 1)
+                    if (dStatus == 1 && control == 0U)
+                        0
+                    else
+                        -1
+                else
+                    1
+
+
+                if ((statusT == -1 && dStatus != -1) || (statusT == 1 && dStatus == -1)) {
+                    if (statusT == 1)
+                        PluginMain.logger.info("服务器 ${si.name} 上线")
+                    else
+                        PluginMain.logger.info("服务器 ${si.name} 离线")
+                    getServerMapByServerID(si.id).forEach { gid ->
+                        groups.add(Bot.getInstance(2079373402).getGroup(gid!!)!!)
                     }
-                    when (status) {
-                        1U -> {
-                            groups.forEach { g ->
-                                g.sendMessage(
-                                    "服务器${si.name} is Online\n" +
-                                        "IP: ${si.host}:${si.port}\n" +
-                                        "人数: ${players!!.online}/${players.max}"
-                                )
-                            }
+                } else
+                    group?.let { groups.add(it) }
 
-                            if (control == 2U) {
-                                sendPlayerList(si.host, si.port, players!!)
-                            }
-                            if (dStatus != 1) {
-                                updateServerInformation(si.id, 1)
-                            }
-                        }
+                if (statusT != dStatus) {
+                    MinecraftServer {
+                        id = si.id
+                        status = statusT
+                    }.update()
+                }
 
-                        0U -> {
-                            groups.forEach { g ->
-                                g.sendMessage(
-                                    ":(\n" +
-                                        "${si.name} is Offline\n" +
-                                        "IP: ${si.host}:${si.port}"
-                                )
-                            }
-                            when (dStatus) {
-                                1 -> updateServerInformation(
-                                    si.id,
-                                    if (control == 0U)
-                                        -1
-                                    else
-                                        0
-                                )
-                                -1 -> MinecraftServer{
-                                    id = si.id
-                                    status = 0u
-                                }.update()
-                            }
-                        }
-                    }
-                } catch (_: SocketTimeoutException) {
-                    group?.sendMessage("无法连接到分析服务器")
+                groups.forEach {
+                    if (statusT == 1) {
+                        it.sendMessage(
+                            """
+                                    服务器${si.name} is Online
+                                    IP: ${si.host}:${si.port}
+                                    人数: ${players!!.online}/${players.max}
+                                """.trimIndent()
+                        )
+                    } else
+                        it.sendMessage(
+                            """
+                                :(
+                                ${si.name} is Offline
+                                IP: ${si.host}:${si.port}
+                            """.trimIndent()
+                        )
+                }
+
+                if (control == 2U) {
+                    players?.let { sendPlayerList(si.host, si.port, it) }
                 }
             }
         }
@@ -165,8 +160,9 @@ suspend fun getServerInfo(host: String, port: Int): ServerInformationFormatAndSt
             )
         )
         pJ
-    } catch (_: ServerResponseException) {
-        pJ.status = 0U
+    } catch (e: Exception) {
+        PluginMain.logger.debug(e.message)
+        pJ.status = 0
         pJ
     }
 }

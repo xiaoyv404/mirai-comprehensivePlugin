@@ -15,7 +15,7 @@ interface MinecraftServer : Entity<MinecraftServer> {
     var id: Int
     val host: String
     val port: Int
-    val status: Int
+    var status: Int
     val name: String
 }
 

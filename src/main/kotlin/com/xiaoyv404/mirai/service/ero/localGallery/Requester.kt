@@ -50,7 +50,7 @@ class LocalGallery(private val subject: Contact) {
     @OptIn(ExperimentalSerializationApi::class)
     suspend fun unformat(id: String, senderId: Long, outPut: Boolean): Boolean {
         val formatInfo = try {
-            KtorUtils.proxyClient.get<String>(
+            KtorUtils.normalClient.get<String>(
                 "https://www.pixiv.net/artworks/" +
                     id
             )
