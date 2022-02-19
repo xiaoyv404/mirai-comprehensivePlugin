@@ -15,7 +15,6 @@ import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
 import org.apache.tika.Tika
 import java.io.BufferedInputStream
 import java.io.InputStream
-import java.sql.SQLIntegrityConstraintViolationException
 
 class LocalGallery(private val subject: Contact) {
     suspend fun send(ii: Process.Img.Info) {
@@ -82,11 +81,7 @@ class LocalGallery(private val subject: Contact) {
 
         val info = Process.Img.Info(id.toLong(), num, pJ.title, tags, pJ.userId.toLong(), pJ.userName, fe)
 
-        try {
-            increaseEntry(info, senderId, pJ.tags.tags)
-        } catch (_: SQLIntegrityConstraintViolationException) {
-            PluginMain.logger.info("数据库已经保存pid: $id")
-        }
+        increaseEntry(info, senderId, pJ.tags.tags)
 
         if (!outPut){
             send(info)
@@ -154,7 +149,7 @@ fun increaseEntry(
     creatorA: Long,
     tagsL: List<Tag>,
 ) {
-    Gallery {
+    val saveS = Gallery {
         id = da.id!!
         picturesMun = da.picturesNum
         title = da.title!!
@@ -164,8 +159,11 @@ fun increaseEntry(
         creator = creatorA
         extension = da.extension!!
     }.save()
+    if (saveS) {
+        return
+    }
     tagsL.forEach { tag ->
-        val tagInfo = GalleryTag{tagname = tag.tag}.findByTagName()
+        val tagInfo = GalleryTag { tagname = tag.tag }.findByTagName()
         if (tagInfo != null) {
             GalleryTag {
                 tagid = tagInfo.tagid

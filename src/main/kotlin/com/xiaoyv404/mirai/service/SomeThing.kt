@@ -108,9 +108,6 @@ fun someThinkEntrance() {
             )
             bot.getFriend(3068755284)?.sendMessage(chain)
         }
-        case("test") {
-            println(PluginMain.dataFolderPath)
-        }
     }
     GlobalEventChannel.subscribeFriendMessages {
         matching(Command.ban) {
@@ -166,7 +163,7 @@ fun someThinkEntrance() {
                             "全体广播已" +
                                 if (BroadcastStatus)
                                     "开启"
-                                else    
+                                else
                                     "关闭"
                         )
                     }

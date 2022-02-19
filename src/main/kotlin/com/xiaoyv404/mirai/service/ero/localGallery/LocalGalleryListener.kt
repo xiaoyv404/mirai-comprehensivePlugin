@@ -57,6 +57,7 @@ fun localGalleryListener() {
                     "LocalGallery"
                 )) && (getUserInformation(sender.id).bot != true)
             ) {
+                val fail = mutableListOf<String>()
                 val rd = it.groups
                 val ids = Regex("\\d+").findAll(
                     if (rd[3] == null) {
@@ -68,13 +69,18 @@ fun localGalleryListener() {
                 val noOutPut = rd[7]!=null
                 PluginMain.logger.info("找到${ids.size}个ID")
 
-                ids.forEach { id ->
-                    PluginMain.logger.info("下载${id.value}")
+                ids.forEachIndexed  { index, id ->
+                    PluginMain.logger.info("下载编号 ${ids.size-1}\\$index id ${id.value}")
                     if (LocalGallery(subject).unformat(id.value, sender.id, noOutPut)) {
-                        subject.sendMessage("出错啦(详见控制台)")
+                        PluginMain.logger.info("下载编号 $index id ${id.value} 失败")
+                        fail.add(id.value)
                     }
                 }
 
+                if (fail.isNotEmpty()){
+                    subject.sendMessage("下载失败 Id 列表")
+                    subject.sendMessage(fail.joinToString("，"))
+                }
                 if (ids.size >= 5){
                     subject.sendMessage("完成啦w!")
                 }
