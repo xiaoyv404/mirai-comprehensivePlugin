@@ -70,22 +70,25 @@ object WebApi {
 
     fun entrance() {
         Thread {
-            embeddedServer(Netty, port = 8888) {
-                install(CORS) {
-                    method(HttpMethod.Options)
-                    method(HttpMethod.Get)
-                    method(HttpMethod.Post)
-                    method(HttpMethod.Put)
-                    method(HttpMethod.Delete)
-                    method(HttpMethod.Patch)
-                    header(HttpHeaders.Authorization)
-                    allowCredentials = true
-                }
+            embeddedServer(Netty, port = 4040) {
+//                install(CORS) {
+//                    method(HttpMethod.Options)
+//                    method(HttpMethod.Get)
+//                    method(HttpMethod.Post)
+//                    method(HttpMethod.Put)
+//                    method(HttpMethod.Delete)
+//                    method(HttpMethod.Patch)
+//                    header(HttpHeaders.Authorization)
+//                    allowCredentials = true
+//                    hosts.add("0x00.xy404.iwangtca.hello.world.chs.pub")
+//                    hosts.add("")
+//                }
                 install(ContentNegotiation) {
                     jackson {
                         enable(SerializationFeature.INDENT_OUTPUT) // ÃÀ»¯Êä³ö JSON
                     }
                 }
+
                 val simpleJwt = SimpleJWT("my-super-secret-for-jwt")
                 install(Authentication) {
                     jwt {
@@ -95,6 +98,7 @@ object WebApi {
                         }
                     }
                 }
+
                 install(StatusPages) {
                     exception<InvalidCredentialsException> { exception ->
                         call.respond(
@@ -228,7 +232,7 @@ object WebApi {
                                         )
                                         friends[it.id] = friend
                                     }
-                                    
+
                                     call.respond(
                                         mapOf(
                                             "code" to 200,

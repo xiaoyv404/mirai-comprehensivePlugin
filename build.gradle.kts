@@ -35,9 +35,11 @@ repositories {
 }
 dependencies {
     compileOnly("net.mamoe.yamlkt:yamlkt-jvm:$yamlKtVersion")
-    compileOnly("org.ktorm:ktorm-jackson:$ktorm")
-    compileOnly("org.ktorm:ktorm-support-mysql:$ktorm")
 
+    implementation("org.ktorm:ktorm-jackson:$ktorm")
+    implementation("org.ktorm:ktorm-support-mysql:$ktorm")
+
+    implementation("ch.qos.logback:logback-classic:1.2.10")
 
     implementation("mysql:mysql-connector-java:8.0.25")
     implementation("org.ktorm:ktorm-core:$ktorm")
@@ -45,7 +47,6 @@ dependencies {
 
 
     implementation("com.alibaba:fastjson:1.2.79")
-    implementation("org.slf4j:slf4j-simple:1.7.35")
 
     implementation("io.ktor:ktor-client-cio:$ktorVersion")
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
@@ -63,5 +64,6 @@ dependencies {
 
 
     implementation("org.apache.tika:tika-core:2.1.0")
+
 
 }
