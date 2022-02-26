@@ -1,8 +1,8 @@
 package com.xiaoyv404.mirai.service.bilibili
 
 import com.xiaoyv404.mirai.databace.Command
+import com.xiaoyv404.mirai.databace.dao.itNotBot
 import com.xiaoyv404.mirai.service.accessControl.authorityIdentification
-import com.xiaoyv404.mirai.service.getUserInformation
 import com.xiaoyv404.mirai.service.tool.KtorUtils
 import io.ktor.client.*
 import io.ktor.client.request.*
@@ -22,7 +22,7 @@ fun informationEntrance() {
                     sender.id,
                     group.id,
                     "BiliBiliParsing"
-                )) && (getUserInformation(sender.id).bot != true)
+                )) && sender.itNotBot()
             ) {
                 val rd = it.groups
                 val uid = when {

@@ -4,9 +4,10 @@ import com.xiaoyv404.mirai.PluginMain
 import com.xiaoyv404.mirai.databace.Command
 import com.xiaoyv404.mirai.databace.dao.gallery.GalleryTag
 import com.xiaoyv404.mirai.databace.dao.gallery.update
+import com.xiaoyv404.mirai.databace.dao.itAdmin
+import com.xiaoyv404.mirai.databace.dao.itNotBot
 import com.xiaoyv404.mirai.service.accessControl.authorityIdentification
 import com.xiaoyv404.mirai.service.ero.*
-import com.xiaoyv404.mirai.service.getUserInformation
 import com.xiaoyv404.mirai.service.tool.KtorUtils.normalClient
 import io.ktor.client.request.*
 import net.mamoe.mirai.contact.Contact.Companion.sendImage
@@ -22,7 +23,7 @@ fun localGalleryListener() {
                     sender.id,
                     subject.id,
                     "NetworkEro"
-                )) && (getUserInformation(sender.id).bot != true)
+                )) && sender.itNotBot()
             ) {
                 var num = it.groups[3]!!.value.toInt()
                 when (num) {
@@ -30,7 +31,7 @@ fun localGalleryListener() {
                     9      -> subject.sendMessage("9?是这个⑨吗?www")
                     114514 -> subject.sendMessage("好臭啊啊啊啊")
                 }
-                if (num > 5 && getUserInformation(sender.id).setu != true) {
+                if (num > 5 && sender.itNotBot()) {
                     num = if (9 == (5..10).random()) {
                         subject.sendMessage("去死啊你这个变态, 要看自己去Pixiv看")
                         0
@@ -51,11 +52,11 @@ fun localGalleryListener() {
             }
         }
         finding(Command.eroAdd) {
-            if ((authorityIdentification(
+            if (authorityIdentification(
                     sender.id,
                     subject.id,
                     "LocalGallery"
-                )) && (getUserInformation(sender.id).bot != true)
+                ) && sender.itNotBot()
             ) {
                 val fail = mutableListOf<String>()
                 val rd = it.groups
@@ -91,7 +92,7 @@ fun localGalleryListener() {
                     sender.id,
                     subject.id,
                     "LocalGallery"
-                )) && (getUserInformation(sender.id).bot != true)
+                )) && sender.itNotBot()
             ) {
                 val rd = it.groups
                 val tagid = queryTagIdByTag(rd[3]!!.value)
@@ -106,7 +107,7 @@ fun localGalleryListener() {
             }
         }
         finding(Command.eroRemove) {
-            if (getUserInformation(sender.id).admin == true) {
+            if (sender.itAdmin()) {
                 val rd = it.groups
                 val id = rd[3]!!.value.toLong()
                 subject.sendMessage("正在删除: $id")
@@ -115,7 +116,7 @@ fun localGalleryListener() {
 
                 tags.forEach { tagidA ->
                     val numA = queryTagQuantityByTagId(tagidA)
-                    GalleryTag{
+                    GalleryTag {
                         tagid = tagidA
                         num = numA
                     }.update()
@@ -142,5 +143,3 @@ fun localGalleryListener() {
         }
     }
 }
-
-

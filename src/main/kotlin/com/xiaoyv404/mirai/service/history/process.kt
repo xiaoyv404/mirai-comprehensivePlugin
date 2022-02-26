@@ -1,7 +1,7 @@
 package com.xiaoyv404.mirai.service.history
 
 import com.xiaoyv404.mirai.PluginMain
-import com.xiaoyv404.mirai.service.getUserInformation
+import com.xiaoyv404.mirai.databace.dao.itNotBot
 import com.xiaoyv404.mirai.service.tool.FileUtils.saveFileFromString
 import kotlinx.serialization.SerializationException
 import net.mamoe.mirai.event.GlobalEventChannel
@@ -12,7 +12,7 @@ import net.mamoe.mirai.message.data.MessageChain.Companion.serializeToJsonString
 fun historyEntrance() {
     GlobalEventChannel.subscribeGroupMessages {
         always {
-            if (getUserInformation(sender.id).bot != true) {
+            if (sender.itNotBot()) {
                 val msg =  when (message[1]) {
                     is PlainText  -> {
                         message.content

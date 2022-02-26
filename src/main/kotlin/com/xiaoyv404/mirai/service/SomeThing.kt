@@ -2,6 +2,7 @@ package com.xiaoyv404.mirai.service
 
 import com.xiaoyv404.mirai.PluginMain
 import com.xiaoyv404.mirai.databace.Command
+import com.xiaoyv404.mirai.databace.dao.*
 import com.xiaoyv404.mirai.service.accessControl.authorityIdentification
 import net.mamoe.mirai.contact.remarkOrNameCardOrNick
 import net.mamoe.mirai.event.GlobalEventChannel
@@ -49,7 +50,7 @@ fun someThinkEntrance() {
             )
         }
         matching(Command.debuMe) {
-            if ((getUserInformation(sender.id).bot != true) && authorityIdentification(
+            if (sender.itNotBot() && authorityIdentification(
                     sender.id,
                     group.id,
                     "DebuMe"
@@ -65,18 +66,12 @@ fun someThinkEntrance() {
         }
         finding(Command.addBot) {
             val rd = it.groups
-            if (rd[3]!!.value == "-h" || rd[3]!!.value == "--help") {
-                group.sendMessage("help")
-            } else {
-                val idL = rd[3]!!.value.replace("@", "").toLong()
-                val status: Boolean? = getUserInformation(idL).bot
-                if (status != null) {
-                    updateUserBot(idL, !status)
-                } else {
-                    createUserInformation(idL, false, bot = true, setu = false)
-                }
-                group.sendMessage("Done")
-            }
+            val idL = rd[4]!!.value.toLong()
+            User{
+                id = idL
+                bot = true
+            }.save()
+            group.sendMessage("添加成功~")
         }
 
         at(2083664136L).invoke {
@@ -111,7 +106,7 @@ fun someThinkEntrance() {
     }
     GlobalEventChannel.subscribeFriendMessages {
         matching(Command.ban) {
-            if (getUserInformation(sender.id).admin == true) {
+            if (sender.itAdmin()) {
                 val rd = it.groups
                 when {
                     (rd[3]!!.value == "-h") or (rd[3]!!.value == "--help") -> friend.sendMessage("help")
@@ -141,7 +136,7 @@ fun someThinkEntrance() {
         matching(Command.join) {}
 
         matching(Regex("404 sendto")) {
-            if (getUserInformation(sender.id).admin == true) {
+            if (sender.itAdmin()) {
                 subject.sendMessage("请发送群id")
                 val gp = nextMessage().contentToString().split("\n")
                 PluginMain.logger.info("群聊个数${gp.size}")
@@ -155,7 +150,7 @@ fun someThinkEntrance() {
         }
 
         always {
-            if (getUserInformation(sender.id).admin == true) {
+            if (sender.itAdmin()) {
                 when (message.contentToString()) {
                     "!!开关全体广播" -> {
                         BroadcastStatus = !BroadcastStatus
@@ -173,7 +168,10 @@ fun someThinkEntrance() {
                                 val entryMassage = message.serializeToMiraiCode()
                                 if (entryMassage != "") {
                                     bot.groups.forEach {
-                                        if (groupNoticeSwitchRead(it.id, "AdminBroadcast")) {
+                                        val status = Group {
+                                            id = it.id
+                                        }.noticeSwitchRead("AdminBroadcast")
+                                        if (status) {
                                             bot.getGroup(it.id)
                                                 ?.sendMessage(
                                                     MiraiCode.deserializeMiraiCode(entryMassage)

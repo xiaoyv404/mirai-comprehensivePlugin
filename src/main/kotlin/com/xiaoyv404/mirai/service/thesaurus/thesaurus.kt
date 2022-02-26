@@ -4,14 +4,15 @@ import com.xiaoyv404.mirai.PluginMain
 import com.xiaoyv404.mirai.databace.Command
 import com.xiaoyv404.mirai.databace.Database
 import com.xiaoyv404.mirai.databace.dao.Thesaurus
-import com.xiaoyv404.mirai.service.Thesauru
+import com.xiaoyv404.mirai.databace.dao.itAdmin
+import com.xiaoyv404.mirai.databace.dao.itNotBot
 import com.xiaoyv404.mirai.service.accessControl.authorityIdentification
-import com.xiaoyv404.mirai.service.getUserInformation
 import com.xiaoyv404.mirai.service.tool.FileUtils
 import com.xiaoyv404.mirai.service.tool.KtorUtils
 import com.xiaoyv404.mirai.service.tool.jsonExtractContains
 import io.ktor.client.request.*
 import net.mamoe.mirai.contact.Contact.Companion.uploadImage
+import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.event.GlobalEventChannel
 import net.mamoe.mirai.event.subscribeGroupMessages
 import net.mamoe.mirai.event.subscribeMessages
@@ -24,6 +25,12 @@ import org.ktorm.schema.VarcharSqlType
 import java.io.InputStream
 import java.math.BigInteger
 
+data class Thesauru(
+    val id: Long,
+    val question: String,
+    val reply: String,
+    val creator: Long,
+)
 
 fun  thesaurusEntrance() {
     GlobalEventChannel.subscribeMessages {
@@ -47,12 +54,12 @@ fun  thesaurusEntrance() {
         }
 
         finding(Command.thesaurusRemove) {
-            if (getUserInformation(sender.id).admin == true) {
+            if (sender.itAdmin()) {
                 val gp = it.groups
                 val gid = when {
-                    subject is net.mamoe.mirai.contact.Group -> subject.id
-                    gp[5] != null                            -> gp[5]!!.value.toLong()
-                    else                                     -> {
+                    subject is Group -> subject.id
+                    gp[3] != null    -> gp[3]!!.value.toLong()
+                    else             -> {
                         subject.sendMessage(" ‰»Î÷µ¥ÌŒÛ")
                         return@finding
                     }
@@ -97,7 +104,7 @@ fun  thesaurusEntrance() {
     }
     GlobalEventChannel.subscribeGroupMessages {
         always {
-            if ((getUserInformation(sender.id).bot != true) && authorityIdentification(
+            if (sender.itNotBot() && authorityIdentification(
                     sender.id,
                     group.id,
                     "ThesaurusResponse"
@@ -106,7 +113,7 @@ fun  thesaurusEntrance() {
                 val replyC = queryTerm(message, group.id)
                 if (replyC.isEmpty())
                     return@always
-                var reply =  replyC.random().reply
+                var reply = replyC.random().reply
                 Regex("(\\[404:image:(.+)])").findAll(reply).forEach {
                     val img =
                         group.uploadImage(PluginMain.resolveDataFile("thesaurus/${it.groups[2]!!.value}"))

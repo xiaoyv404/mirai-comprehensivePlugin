@@ -1,8 +1,8 @@
 package com.xiaoyv404.mirai.service.bilibili
 
 import com.xiaoyv404.mirai.databace.Bilibili
+import com.xiaoyv404.mirai.databace.dao.itNotBot
 import com.xiaoyv404.mirai.service.accessControl.authorityIdentification
-import com.xiaoyv404.mirai.service.getUserInformation
 import com.xiaoyv404.mirai.service.tool.KtorUtils
 import com.xiaoyv404.mirai.service.tool.parsingVideoDataString
 import io.ktor.client.request.*
@@ -26,7 +26,7 @@ fun biliVideoEntrance() {
                     sender.id,
                     group.id,
                     "BiliBiliParsing"
-                )) && (getUserInformation(sender.id).bot != true)
+                )) && sender.itNotBot()
             ) {
                 uJsonVideo(
                     KtorUtils.normalClient.get(
@@ -41,7 +41,7 @@ fun biliVideoEntrance() {
                     sender.id,
                     group.id,
                     "BiliBiliParsing"
-                )) && (getUserInformation(sender.id).bot != true)
+                )) && sender.itNotBot()
             ) {
                 uJsonVideo(
                     KtorUtils.normalClient.get(

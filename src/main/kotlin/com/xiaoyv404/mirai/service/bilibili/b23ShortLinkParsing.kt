@@ -1,8 +1,8 @@
 package com.xiaoyv404.mirai.service.bilibili
 
 import com.xiaoyv404.mirai.databace.Bilibili
+import com.xiaoyv404.mirai.databace.dao.itNotBot
 import com.xiaoyv404.mirai.service.accessControl.authorityIdentification
-import com.xiaoyv404.mirai.service.getUserInformation
 import com.xiaoyv404.mirai.service.tool.KtorUtils
 import io.ktor.client.*
 import io.ktor.client.request.*
@@ -14,11 +14,11 @@ import net.mamoe.mirai.event.subscribeGroupMessages
 fun b23ShortLinkEntrance() {
     GlobalEventChannel.subscribeGroupMessages {
         finding(Bilibili.b23Find) {
-            if ((authorityIdentification(
+            if (authorityIdentification(
                     sender.id,
                     group.id,
                     "BiliBiliParsing"
-                )) && (getUserInformation(sender.id).bot != true)
+                ) && sender.itNotBot()
             ) {
                 val b23 = it.value
                 val b23Data = b23DataGet(b23)
