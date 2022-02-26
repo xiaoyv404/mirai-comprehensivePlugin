@@ -2,10 +2,7 @@ package com.xiaoyv404.mirai.service.minecraftServer
 
 import com.xiaoyv404.mirai.PluginMain
 import com.xiaoyv404.mirai.databace.Command
-import com.xiaoyv404.mirai.databace.dao.MinecraftServer
-import com.xiaoyv404.mirai.databace.dao.findById
-import com.xiaoyv404.mirai.databace.dao.getAll
-import com.xiaoyv404.mirai.databace.dao.update
+import com.xiaoyv404.mirai.databace.dao.*
 import com.xiaoyv404.mirai.service.tool.KtorUtils
 import io.ktor.client.request.*
 import kotlinx.coroutines.launch
@@ -32,11 +29,13 @@ fun minecraftServerEntrance() {
     GlobalEventChannel.subscribeGroupMessages {
         finding(Command.minecraftServerStats) {
             val rd = it.groups
-            getServerMapByGroupID(group.id).forEach { si ->
-                val info = MinecraftServer{
-                    id = si!!
+            MinecraftServerMap {
+                groupID = group.id
+            }.findByGroupId().forEach { si ->
+                val info = MinecraftServer {
+                    id = si.serverID
                 }.findById()
-                if (info != null){
+                if (info != null) {
                     MinecraftServerStatusRequester(group).check(
                         info,
                         if (rd[9] != null)
@@ -49,6 +48,7 @@ fun minecraftServerEntrance() {
         }
     }
 }
+
 
 class MinecraftServerStatusRequester(private var group: Contact? = null) {
     suspend fun check(si: MinecraftServer, control: UInt = 0U) {
@@ -74,8 +74,8 @@ class MinecraftServerStatusRequester(private var group: Contact? = null) {
                         PluginMain.logger.info("服务器 ${si.name} 上线")
                     else
                         PluginMain.logger.info("服务器 ${si.name} 离线")
-                    getServerMapByServerID(si.id).forEach { gid ->
-                        groups.add(Bot.getInstance(2079373402).getGroup(gid!!)!!)
+                    MinecraftServerMap { serverID = si.id }.findByServerId().forEach {
+                        groups.add(Bot.getInstance(2079373402).getGroup(it.groupID) ?: return@forEach)
                     }
                 } else
                     group?.let { groups.add(it) }

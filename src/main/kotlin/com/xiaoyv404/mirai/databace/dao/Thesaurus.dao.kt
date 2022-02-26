@@ -43,11 +43,11 @@ fun Thesauru.findById(): Thesauru? {
 
 fun Thesauru.findByQuestion(gid: String): List<Thesauru> {
     return db.thesauru.filter {
-        it.question eq this.question and it.scope.jsonExtractContains(
+        it.question eq this.question and (it.scope.jsonExtractContains(
             "$",
             gid,
             VarcharSqlType
-        ) or it.scope.isNull()
+        ) or it.scope.isNull())
     }.toList()
 }
 

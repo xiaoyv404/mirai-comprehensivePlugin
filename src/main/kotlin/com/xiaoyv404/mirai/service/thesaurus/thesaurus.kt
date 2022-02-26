@@ -106,7 +106,7 @@ fun  thesaurusEntrance() {
                 )
             ) {
                 val replyC = Thesauru {
-                    parseMsg(message)
+                   question = parseMsg(message)
                 }.findByQuestion(group.id)
                 if (replyC.isEmpty())
                     return@always

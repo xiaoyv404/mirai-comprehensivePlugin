@@ -16,6 +16,8 @@ interface Group : Entity<Group> {
     val salutatory: String
 }
 
+//private val Database.group get() = this.sequenceOf(Groups)
+
 fun Group.noticeSwitchRead(func: String): Boolean {
     return db.from(Groups)
         .select(
@@ -28,8 +30,6 @@ fun Group.noticeSwitchRead(func: String): Boolean {
 
 object  Groups : Table<Group>("Groups") {
     val id = long("id").primaryKey().bindTo { it.id  }
-
-    // Todo 改用json类型
     val notice = text("notice").bindTo { it.notice }
     val permission = text("permission").bindTo { it.permission }
     val salutatory = text("salutatory").bindTo { it.salutatory }

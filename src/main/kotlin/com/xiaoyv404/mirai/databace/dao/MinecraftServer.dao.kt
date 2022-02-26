@@ -8,7 +8,6 @@ import org.ktorm.schema.Table
 import org.ktorm.schema.int
 import org.ktorm.schema.varchar
 
-private val Database.minecraftServers get() = this.sequenceOf(MinecraftServers)
 
 interface MinecraftServer : Entity<MinecraftServer> {
     companion object : Entity.Factory<MinecraftServer>()
@@ -18,6 +17,8 @@ interface MinecraftServer : Entity<MinecraftServer> {
     var status: Int
     val name: String
 }
+
+private val Database.minecraftServers get() = this.sequenceOf(MinecraftServers)
 
 fun MinecraftServer.findById(): MinecraftServer? {
     return db.minecraftServers.find { it.id eq this.id }
