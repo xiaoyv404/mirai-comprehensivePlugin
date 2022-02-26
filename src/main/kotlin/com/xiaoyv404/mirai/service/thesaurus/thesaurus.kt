@@ -2,14 +2,10 @@ package com.xiaoyv404.mirai.service.thesaurus
 
 import com.xiaoyv404.mirai.PluginMain
 import com.xiaoyv404.mirai.databace.Command
-import com.xiaoyv404.mirai.databace.Database
-import com.xiaoyv404.mirai.databace.dao.Thesaurus
-import com.xiaoyv404.mirai.databace.dao.itAdmin
-import com.xiaoyv404.mirai.databace.dao.itNotBot
+import com.xiaoyv404.mirai.databace.dao.*
 import com.xiaoyv404.mirai.service.accessControl.authorityIdentification
 import com.xiaoyv404.mirai.service.tool.FileUtils
 import com.xiaoyv404.mirai.service.tool.KtorUtils
-import com.xiaoyv404.mirai.service.tool.jsonExtractContains
 import io.ktor.client.request.*
 import net.mamoe.mirai.contact.Contact.Companion.uploadImage
 import net.mamoe.mirai.contact.Group
@@ -20,33 +16,28 @@ import net.mamoe.mirai.message.code.MiraiCode
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
 import net.mamoe.mirai.message.nextMessage
-import org.ktorm.dsl.*
-import org.ktorm.schema.VarcharSqlType
 import java.io.InputStream
 import java.math.BigInteger
-
-data class Thesauru(
-    val id: Long,
-    val question: String,
-    val reply: String,
-    val creator: Long,
-)
 
 fun  thesaurusEntrance() {
     GlobalEventChannel.subscribeMessages {
         finding(Regex("^(!!创建词条)\$")) {
             if (authorityIdentification(sender.id, subject.id, "ThesaurusAdd")) {
                 subject.sendMessage("请发送question")
-                val question = parseMsgAndSaveImg(nextMessage())
+                val questionA = parseMsgAndSaveImg(nextMessage())
                 subject.sendMessage("请发送reply")
-                val reply = parseMsgAndSaveImg(nextMessage())
+                val replyA = parseMsgAndSaveImg(nextMessage())
                 subject.sendMessage(
-                    "question: $question\n" +
-                        "reply: $reply\n"
+                    "question: $questionA\n" +
+                        "reply: $replyA\n"
                         + "请输入[y]以确认"
                 )
                 if (nextMessage().contentToString() == "y") {
-                    increaseEntry(question, reply, sender.id)
+                    Thesauru {
+                        question = questionA
+                        reply = replyA
+                        creator = sender.id
+                    }.save()
                     subject.sendMessage("添加成功~")
                 } else
                     subject.sendMessage("啊咧, 为啥要取消捏")
@@ -65,7 +56,9 @@ fun  thesaurusEntrance() {
                     }
                 }
                 subject.sendMessage("请发送question")
-                val entryMassages = queryTerm(nextMessage(), gid)
+                val entryMassages = Thesauru {
+                    question = parseMsg(nextMessage())
+                }.findByQuestion(gid)
                 if (entryMassages.isEmpty()) {
                     subject.sendMessage("好像没有呢")
                 } else {
@@ -93,7 +86,9 @@ fun  thesaurusEntrance() {
                             "输入[y]以确认    输入[n]以取消"
                     )
                     if (nextMessage().contentToString() == "y") {
-                        thesaurusRemove(entryMassages[subscriptI].id)
+                        Thesauru{
+                            id = entryMassages[subscriptI].id
+                        }.deleteById()
                         subject.sendMessage("成功删除")
                     } else {
                         subject.sendMessage("为什么要取消捏")
@@ -110,7 +105,9 @@ fun  thesaurusEntrance() {
                     "ThesaurusResponse"
                 )
             ) {
-                val replyC = queryTerm(message, group.id)
+                val replyC = Thesauru {
+                    parseMsg(message)
+                }.findByQuestion(group.id)
                 if (replyC.isEmpty())
                     return@always
                 var reply = replyC.random().reply
@@ -133,21 +130,6 @@ fun thesaurusRemoveMsg(da: Thesauru): String {
    reply: ${da.reply}
    creator id: ${da.creator}""")
 }
-
-fun thesaurusRemove(id: Long) {
-    Database.db
-        .delete(Thesaurus) { it.id eq id }
-}
-
-fun increaseEntry(question: String, reply: String, creator: Long) {
-    Database.db
-        .insert(Thesaurus) {
-            set(it.question, question)
-            set(it.reply, reply)
-            set(it.creator, creator)
-        }
-}
-
 
 suspend fun parseMsgAndSaveImg(message: MessageChain): String {
     val img = mutableListOf<String>()
@@ -195,23 +177,4 @@ fun parseMsg(message: MessageChain): String {
         msg = msg.replace(v.value, img[i])
     }
     return msg
-}
-
-fun queryTerm(question: MessageChain, gid: Long): List<Thesauru> {
-    val sQuestion = parseMsg(question)
-    val sGid = gid.toString()
-    return Database.db
-        .from(Thesaurus)
-        .select()
-        .where {
-            Thesaurus.question eq sQuestion and
-                (Thesaurus.scope.jsonExtractContains("$", sGid, VarcharSqlType) or Thesaurus.scope.isNull())
-        }.map { row ->
-            Thesauru(
-                row[Thesaurus.id]!!,
-                row[Thesaurus.question]!!,
-                row[Thesaurus.reply]!!,
-                row[Thesaurus.creator]!!,
-            )
-        }
 }
