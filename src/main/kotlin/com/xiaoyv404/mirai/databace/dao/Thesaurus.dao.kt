@@ -13,7 +13,6 @@ import org.ktorm.schema.*
 
 interface Thesauru : Entity<Thesauru> {
     companion object : Entity.Factory<Thesauru>()
-
     var id: Long
     var question: String
     var reply: String
@@ -56,8 +55,7 @@ fun Thesauru.findByQuestion(gid: Long):List<Thesauru>{
 }
 
 fun Thesauru.deleteById(){
-    val target = db.thesauru.find { it.id eq this.id }?: return
-    target.delete()
+    db.thesauru.removeIf { it.id eq this.id }
 }
 
 object Thesaurus : Table<Thesauru>("Thesaurus") {
