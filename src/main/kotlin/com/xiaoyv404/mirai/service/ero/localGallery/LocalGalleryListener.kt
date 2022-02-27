@@ -94,17 +94,28 @@ fun localGalleryListener() {
                 )) && sender.itNotBot()
             ) {
                 val rd = it.groups
+                val tagNameA = rd[3]!!.value
+                PluginMain.logger.info("[LocalGallerySearch] 尝试从本地图库搜索 Tag 包含 $tagNameA 的图片")
                 val tagidA = GalleryTag {
-                    tagname = rd[3]!!.value
+                    tagname = tagNameA
                 }.findTagIdByTagName()
                 if (tagidA == null) {
+                    PluginMain.logger.info("[LocalGallerySearch] 未搜索到 TagName $tagNameA")
                     subject.sendMessage("唔....似乎没有呢")
                     return@finding
                 }
 
-                val idA = GalleryTagMap {
+                PluginMain.logger.info("[LocalGallerySearch] 搜索到 TagName $tagNameA ID $tagidA")
+
+                val idAL = GalleryTagMap {
                     tagid = tagidA
-                }.findPidByTagId().random()
+                }.findPidByTagId()
+
+                PluginMain.logger.info("[LocalGallerySearch] 搜索到 ID $tagidA 数量 ${idAL.size}")
+
+                val idA = idAL.random()
+
+                PluginMain.logger.info("[LocalGallerySearch] 随机到 Pid $idA")
 
                 val ii = Gallery {
                     id = idA

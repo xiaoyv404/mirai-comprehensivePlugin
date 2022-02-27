@@ -47,7 +47,7 @@ fun GalleryTag.reduceNumByTagId() {
 }
 
 fun GalleryTag.findTagIdByTagName():Long?{
-    return this.findByTagName()?.num
+    return this.findByTagName()?.tagid
 }
 
 object GalleryTags : Table<GalleryTag>("Gallerys_Tag") {
