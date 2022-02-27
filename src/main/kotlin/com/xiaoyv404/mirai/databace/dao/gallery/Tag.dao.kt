@@ -46,6 +46,9 @@ fun GalleryTag.reduceNumByTagId() {
     }
 }
 
+fun GalleryTag.findTagIdByTagName():Long?{
+    return this.findByTagName()?.num
+}
 
 object GalleryTags : Table<GalleryTag>("Gallerys_Tag") {
     val tagid = long("tagid").primaryKey().bindTo{it.tagid}

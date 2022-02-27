@@ -28,6 +28,9 @@ fun GalleryTagMap.findPidByTagId(): List<Long>{
     return db.galleryTagMap.filter { it.tagid eq this.tagid }.mapColumnsNotNull { it.pid }.toList()
 }
 
+fun GalleryTagMap.deleteByPid() {
+    db.galleryTagMap.removeIf { it.pid eq this.pid }
+}
 object GalleryTagMaps : Table<GalleryTagMap>("Gallerys_TagMap") {
     val tagid = long("tagid").primaryKey().bindTo { it.tagid }
     val pid = long("pid").primaryKey().bindTo { it.pid }

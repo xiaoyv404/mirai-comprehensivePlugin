@@ -6,8 +6,6 @@ import com.xiaoyv404.mirai.databace.dao.gallery.*
 import com.xiaoyv404.mirai.databace.dao.itAdmin
 import com.xiaoyv404.mirai.databace.dao.itNotBot
 import com.xiaoyv404.mirai.service.accessControl.authorityIdentification
-import com.xiaoyv404.mirai.service.ero.queryTagIdByTag
-import com.xiaoyv404.mirai.service.ero.removeInformationById
 import com.xiaoyv404.mirai.service.ero.setuAPIUrl
 import com.xiaoyv404.mirai.service.tool.KtorUtils.normalClient
 import io.ktor.client.request.*
@@ -96,7 +94,9 @@ fun localGalleryListener() {
                 )) && sender.itNotBot()
             ) {
                 val rd = it.groups
-                val tagidA = queryTagIdByTag(rd[3]!!.value)
+                val tagidA = GalleryTag {
+                    tagname = rd[3]!!.value
+                }.findTagIdByTagName()
                 if (tagidA == null) {
                     subject.sendMessage("ßí....ËÆºõÃ»ÓÐÄØ")
                     return@finding
@@ -144,8 +144,13 @@ fun localGalleryListener() {
                         PluginMain.resolveDataFile("gallery/$idA-$i.$extension")
                             .deleteRecursively()
                     }
-                removeInformationById(idA)
+                GalleryTagMap {
+                    pid = idA
+                }.deleteByPid()
 
+                Gallery {
+                    id = idA
+                }.deleteById()
                 subject.sendMessage(
                     "${idA}ÒÑÉ¾³ý\n" +
                         "É¾³ý${imgNum}ÕÅÍ¼Æ¬    ${tags.size + 1}Ìõ¼ÇÂ¼"
