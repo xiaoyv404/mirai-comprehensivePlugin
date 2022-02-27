@@ -21,9 +21,9 @@
 2. 插件下载
    - 前往本项目的[releases](https://github.com/xiaoyv404/mirai-comprehensivePlugin/releases) 下载插件~~自己Clone下来编译会比releases的版本快那么亿些些~~
 3. 配置数据库
-   - 请下载MySQL8并配置好一系列东西~~不然就等着满屏红色吧, 欸嘿~~
+   - 请下载MySQL8，并按照dao配置好表
 4. 插件运行
-   - 将本放入mirai-console的plugins的文件夹然后运行mirai-console。
+   - 将本插件放入 mirai-console 的 plugins 的文件夹并运行 mirai-console。
 
 ## 注意事项
 
@@ -31,16 +31,18 @@
 
 ## 指令
 
-~~太多了就先咕了~~
-
-## 配置文件
-
-配置数据库等必要配置
+详见帮助文档
 
 ## 未来计划
-1. 重构
- - ~~BiliBili解析重构~~
- - AC模块重构
+
+- 重构代码
+- 完善 WebAPI
+- 编写 Web控制台(使用 Vue 框架)
+
 ## 鸣谢
 
 感谢Mirai团队
+
+## 尾巴
+
+如有任何疑问，可以通过 mail 或者 qq 联系我
