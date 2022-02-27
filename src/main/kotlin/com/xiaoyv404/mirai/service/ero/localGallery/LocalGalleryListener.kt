@@ -2,12 +2,13 @@ package com.xiaoyv404.mirai.service.ero.localGallery
 
 import com.xiaoyv404.mirai.PluginMain
 import com.xiaoyv404.mirai.databace.Command
-import com.xiaoyv404.mirai.databace.dao.gallery.GalleryTag
-import com.xiaoyv404.mirai.databace.dao.gallery.update
+import com.xiaoyv404.mirai.databace.dao.gallery.*
 import com.xiaoyv404.mirai.databace.dao.itAdmin
 import com.xiaoyv404.mirai.databace.dao.itNotBot
 import com.xiaoyv404.mirai.service.accessControl.authorityIdentification
-import com.xiaoyv404.mirai.service.ero.*
+import com.xiaoyv404.mirai.service.ero.queryTagIdByTag
+import com.xiaoyv404.mirai.service.ero.removeInformationById
+import com.xiaoyv404.mirai.service.ero.setuAPIUrl
 import com.xiaoyv404.mirai.service.tool.KtorUtils.normalClient
 import io.ktor.client.request.*
 import net.mamoe.mirai.contact.Contact.Companion.sendImage
@@ -95,48 +96,58 @@ fun localGalleryListener() {
                 )) && sender.itNotBot()
             ) {
                 val rd = it.groups
-                val tagid = queryTagIdByTag(rd[3]!!.value)
-                if (tagid == null) {
+                val tagidA = queryTagIdByTag(rd[3]!!.value)
+                if (tagidA == null) {
                     subject.sendMessage("唔....似乎没有呢")
                     return@finding
                 }
 
-                val id = queryIdByTagId(tagid).random().toLong()
-                val ii = getImgInformationById(id)
-                LocalGallery(subject).send(ii)
+                val idA = GalleryTagMap {
+                    tagid = tagidA
+                }.findPidByTagId().random()
+
+                val ii = Gallery {
+                    id = idA
+                }.findById()
+                LocalGallery(subject).send(ii!!)
+
             }
         }
         finding(Command.eroRemove) {
             if (sender.itAdmin()) {
                 val rd = it.groups
-                val id = rd[3]!!.value.toLong()
-                subject.sendMessage("正在删除: $id")
+                val idA = rd[3]!!.value.toLong()
+                subject.sendMessage("正在删除: $idA")
 
-                val tags = queryTagIdById(id)
+                val tags = GalleryTagMap {
+                    pid = idA
+                }.findTagIdByPid()
 
                 tags.forEach { tagidA ->
-                    val numA = queryTagQuantityByTagId(tagidA)
                     GalleryTag {
                         tagid = tagidA
-                        num = numA
-                    }.update()
+                    }.reduceNumByTagId()
                 }
 
-                val information = getImgInformationById(id)
-                val imgNum = information.picturesNum
+
+                val information = Gallery {
+                    id = idA
+                }.findById()
+
+                val imgNum = information!!.picturesMun
                 val extension = information.extension
 
                 if (imgNum == 1)
-                    PluginMain.resolveDataFile("gallery/$id.$extension").deleteRecursively()
+                    PluginMain.resolveDataFile("gallery/$idA.$extension").deleteRecursively()
                 else
                     for (i in 1..imgNum) {
-                        PluginMain.resolveDataFile("gallery/$id-$i.$extension")
+                        PluginMain.resolveDataFile("gallery/$idA-$i.$extension")
                             .deleteRecursively()
                     }
-                removeInformationById(id)
+                removeInformationById(idA)
 
                 subject.sendMessage(
-                    "${id}已删除\n" +
+                    "${idA}已删除\n" +
                         "删除${imgNum}张图片    ${tags.size + 1}条记录"
                 )
             }

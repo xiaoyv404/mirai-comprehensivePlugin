@@ -17,8 +17,8 @@ import java.io.BufferedInputStream
 import java.io.InputStream
 
 class LocalGallery(private val subject: Contact) {
-    suspend fun send(ii: Process.Img.Info) {
-        if (ii.picturesNum == 1) {
+    suspend fun send(ii: Gallery) {
+        if (ii.picturesMun == 1) {
             subject.sendMessage(
                 PluginMain.resolveDataFile("gallery/${ii.id}.${ii.extension}")
                     .uploadAsImage(subject).plus(Process.linkInfo(ii))
@@ -27,7 +27,7 @@ class LocalGallery(private val subject: Contact) {
             subject.sendMessage(
                 buildForwardMessage(subject) {
                     subject.bot.says(Process.linkInfo(ii))
-                    for (i in 1..ii.picturesNum) {
+                    for (i in 1..ii.picturesMun) {
                         subject.bot.says(
                             PluginMain.resolveDataFile("gallery/${ii.id}-$i.${ii.extension}")
                                 .uploadAsImage(subject)
@@ -47,11 +47,11 @@ class LocalGallery(private val subject: Contact) {
      *  @return false 表示未报错, true 表示报错
      */
     @OptIn(ExperimentalSerializationApi::class)
-    suspend fun unformat(id: String, senderId: Long, outPut: Boolean): Boolean {
+    suspend fun unformat(idA: String, senderId: Long, outPut: Boolean): Boolean {
         val formatInfo = try {
             KtorUtils.normalClient.get<String>(
                 "https://www.pixiv.net/artworks/" +
-                    id
+                    idA
             )
         } catch (e: Exception) {
             PluginMain.logger.error(e)
@@ -63,52 +63,52 @@ class LocalGallery(private val subject: Contact) {
                 .find(formatInfo)!!.value + "}"
         )
 
-        var tags = ""
+        var tagsA = ""
         pJ.tags.tags.forEach {
-            tags += it.tag + ","
+            tagsA += it.tag + ","
         }
-        tags.subSequence(0, tags.length - 1)
+        tagsA.subSequence(0, tagsA.length - 1)
 
         val num: Int = try {
             Pixiv.worksNumberFind.find(KtorUtils.normalClient.config {
                 expectSuccess = false
-            }.get<String>("https://pixiv.re/$id.png"))?.value?.toInt() ?: 1
+            }.get<String>("https://pixiv.re/$idA.png"))?.value?.toInt() ?: 1
         } catch (_: Exception) {
             1
         }
 
-        val fe = Process.Img.getSave(num, id)
+        val fe = Process.Img.getSave(num, idA)
 
-        val info = Process.Img.Info(id.toLong(), num, pJ.title, tags, pJ.userId.toLong(), pJ.userName, fe)
+        val info = Gallery {
+            id = idA.toLong()
+            picturesMun = num
+            title = pJ.title
+            tags = tagsA
+            userId = pJ.userId.toLong()
+            userName = pJ.userName
+            creator = senderId
+            extension = fe
+        }
 
-        increaseEntry(info, senderId, pJ.tags.tags)
+        increaseEntry(info, pJ.tags.tags)
 
-        if (!outPut){
+        if (!outPut) {
             send(info)
-        }else
+        } else
             PluginMain.logger.info("已关闭输出")
         return false
     }
 
     object Process {
-        fun linkInfo(ii: Img.Info): String = """
+        fun linkInfo(ii: Gallery): String = """
                 作品ID: ${ii.id}
                 标题: ${ii.title}
                 标签: ${ii.tags}
-                图片数: ${ii.picturesNum}
+                图片数: ${ii.picturesMun}
                 作者名称: ${ii.userName}
                 作者ID: ${ii.userId}
             """.trimIndent()
         object Img {
-            data class Info(
-                val id: Long?,
-                val picturesNum: Int,
-                val title: String?,
-                val tags: String?,
-                val userId: Long?,
-                val userName: String?,
-                val extension: String?,
-            )
             suspend fun getSave(num: Int, id: String): String {
                 var fe = ""
                 if (num != 1) {
@@ -145,20 +145,10 @@ class LocalGallery(private val subject: Contact) {
 }
 
 fun increaseEntry(
-    da: LocalGallery.Process.Img.Info,
-    creatorA: Long,
+    da: Gallery,
     tagsL: List<Tag>,
 ) {
-    val saveS = Gallery {
-        id = da.id!!
-        picturesMun = da.picturesNum
-        title = da.title!!
-        tags = da.tags!!
-        userId = da.userId!!
-        userName = da.userName!!
-        creator = creatorA
-        extension = da.extension!!
-    }.save()
+    val saveS = da.save()
     if (saveS) {
         return
     }
@@ -176,7 +166,7 @@ fun increaseEntry(
             }.save()
             GalleryTagMap {
                 tagid = tagidA
-                pid = da.id!!
+                pid = da.id
             }.save()
         }
     }

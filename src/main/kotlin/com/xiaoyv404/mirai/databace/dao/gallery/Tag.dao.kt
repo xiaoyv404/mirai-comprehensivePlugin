@@ -19,15 +19,32 @@ interface GalleryTag : Entity<GalleryTag> {
 fun GalleryTag.findByTagName(): GalleryTag?{
     return db.galleryTags.find { it.tagname eq this.tagname }
 }
+
 fun GalleryTag.save(): Long {
     db.galleryTags.add(this)
     return this.tagid
 }
-fun GalleryTag.update(){
+
+fun GalleryTag.update() {
     db.galleryTags.update(this)
 }
 
+fun GalleryTag.findByTagId(): GalleryTag? {
+    return db.galleryTags.find { it.tagid eq this.tagid }
+}
 
+fun GalleryTag.findNumByTagId(): Long? {
+    return this.findByTagId()?.num
+}
+
+fun GalleryTag.reduceNumByTagId() {
+    val num = this.findNumByTagId() ?: return
+    if (num > 0) {
+        this.num = num-1
+        println(this.num)
+        this.update()
+    }
+}
 
 
 object GalleryTags : Table<GalleryTag>("Gallerys_Tag") {
