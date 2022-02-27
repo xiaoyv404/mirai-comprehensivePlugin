@@ -20,7 +20,7 @@ import net.mamoe.mirai.utils.info
 object Version {
     const val ID = "com.xiaoyv404.ComprehensivePlugin"
     const val NAME = "ComprehensivePlugin"
-    const val PLUGINVERSION = "0.3.0"
+    const val PLUGINVERSION = "1.0.0"
 }
 
 

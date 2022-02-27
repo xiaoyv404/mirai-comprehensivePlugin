@@ -1,13 +1,19 @@
 package com.xiaoyv404.mirai.service.history
 
 import com.xiaoyv404.mirai.PluginMain
+import com.xiaoyv404.mirai.databace.dao.HistoryRecord
 import com.xiaoyv404.mirai.databace.dao.itNotBot
+import com.xiaoyv404.mirai.databace.dao.save
 import com.xiaoyv404.mirai.service.tool.FileUtils.saveFileFromString
 import kotlinx.serialization.SerializationException
 import net.mamoe.mirai.event.GlobalEventChannel
 import net.mamoe.mirai.event.subscribeGroupMessages
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.data.MessageChain.Companion.serializeToJsonString
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZoneOffset
 
 fun historyEntrance() {
     GlobalEventChannel.subscribeGroupMessages {
@@ -41,17 +47,23 @@ fun historyEntrance() {
                     PluginMain.resolveDataFile("history/${group.id}.txt")
                 )
             }
+
             try {
-                insertMessage(
-                    message.time,
-                    "msg",
-                    group.id,
-                    group.name,
-                    sender.id,
-                    sender.nameCard,
-                    message.ids[0].toLong(),
-                    message.serializeToJsonString()
-                )
+                HistoryRecord {
+                    sendTime = LocalDateTime.ofInstant(
+                        Instant.ofEpochSecond(message.time.toLong() + 10800), ZoneId.ofOffset(
+                            "UTC",
+                            ZoneOffset.of("+18")
+                        )
+                    )
+                    eventType = "msg"
+                    groupId = group.id
+                    groupName = group.name
+                    senderId = sender.id
+                    senderName = sender.nameCard
+                    msgId = message.ids[0].toLong()
+                    content = message.serializeToJsonString()
+                }.save()
             } catch (_: SerializationException) {
             }
         }
