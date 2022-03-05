@@ -121,7 +121,6 @@ fun localGalleryListener() {
                     id = idA
                 }.findById()
                 LocalGallery(subject).send(ii!!)
-
             }
         }
         finding(Command.eroRemove) {

@@ -22,7 +22,7 @@ class LocalGallery(private val subject: Contact) {
             subject.sendMessage(
                 PluginMain.resolveDataFile("gallery/${ii.id}.${ii.extension}")
                     .uploadAsImage(subject).plus(Process.linkInfo(ii))
-            )
+            )   
         } else {
             subject.sendMessage(
                 buildForwardMessage(subject) {
