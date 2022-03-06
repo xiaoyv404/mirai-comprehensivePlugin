@@ -107,11 +107,11 @@ class MinecraftDataImgGenerator {
             g2d.paint = Color.decode("#FFFFFF")
             var i = 3
             val fm = g2d.getFontMetrics(fontMono)
-            playerList.forEachIndexed { index, plaer ->
+            playerList.forEachIndexed { index, player ->
                 if (index >= 8)
                     return@forEachIndexed
 
-                val name = plaer.name
+                val name = player.name
                 val xText = (165 - fm.stringWidth(name)) / 2
                 val yText = yData + yDataSize * i + 10
                 if (index % 2 == 0) {
