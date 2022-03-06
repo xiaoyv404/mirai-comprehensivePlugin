@@ -1,7 +1,7 @@
 package com.xiaoyv404.mirai.databace.dao
 
 import com.xiaoyv404.mirai.databace.Database.db
-import com.xiaoyv404.mirai.service.tool.jsonExtractContains
+import com.xiaoyv404.mirai.tool.jsonExtractContains
 import org.ktorm.database.Database
 import org.ktorm.dsl.and
 import org.ktorm.dsl.eq
