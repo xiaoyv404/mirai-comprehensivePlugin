@@ -7,6 +7,7 @@ import com.xiaoyv404.mirai.databace.dao.*
 import com.xiaoyv404.mirai.tool.FileUtils
 import com.xiaoyv404.mirai.tool.KtorUtils
 import io.ktor.client.request.*
+import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Contact.Companion.uploadImage
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.event.GlobalEventChannel
@@ -63,12 +64,14 @@ fun  thesaurusEntrance() {
                     subject.sendMessage("好像没有呢")
                 } else {
                     if (entryMassages.size == 1) {
-                        subject.sendMessage(thesaurusRemoveMsg(entryMassages[0]))
+                        subject.sendMessage(MiraiCode.deserializeMiraiCode(thesaurusRemoveMsg(entryMassages[0])))
                     } else {
                         subject.sendMessage(
                             buildForwardMessage {
                                 entryMassages.forEach { da ->
-                                    bot.says(thesaurusRemoveMsg(da))
+                                    da.question.cMsgToMiraiMsg(subject)
+                                    da.reply.cMsgToMiraiMsg(subject)
+                                    bot.says(MiraiCode.deserializeMiraiCode(thesaurusRemoveMsg(da)))
                                 }
                             }
                         )
@@ -82,7 +85,7 @@ fun  thesaurusEntrance() {
                     val subscriptI = subscript.toInt()
                     subject.sendMessage(
                         "确定要删除: \n" +
-                            "${thesaurusRemoveMsg(entryMassages[subscriptI])}\n" +
+                            "${MiraiCode.deserializeMiraiCode(thesaurusRemoveMsg(entryMassages[subscriptI]))}\n" +
                             "输入[y]以确认    输入[n]以取消"
                     )
                     if (nextMessage().contentToString() == "y") {
@@ -110,19 +113,22 @@ fun  thesaurusEntrance() {
                 }.findByQuestion(group.id)
                 if (replyC.isEmpty())
                     return@always
-                var reply = replyC.random().reply
-                Regex("(\\[404:image:(.+)])").findAll(reply).forEach {
-                    val img =
-                        group.uploadImage(PluginMain.resolveDataFile("thesaurus/${it.groups[2]!!.value}"))
-                            .serializeToMiraiCode()
-                    reply = reply.replace(it.value, img)
-                }
+                val reply = replyC.random().reply.cMsgToMiraiMsg(group)
                 group.sendMessage(MiraiCode.deserializeMiraiCode(reply))
             }
         }
     }
 }
 
+suspend fun String.cMsgToMiraiMsg(subject: Contact): String {
+    Regex("(\\[404:image:(.+)])").findAll(this).forEach {
+        val img =
+            subject.uploadImage(PluginMain.resolveDataFile("thesaurus/${it.groups[2]!!.value}"))
+                .serializeToMiraiCode()
+        this.replace(it.value, img)
+    }
+    return this
+}
 
 fun thesaurusRemoveMsg(da: Thesauru): String {
     return("""ID: ${da.id}
