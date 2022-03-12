@@ -39,9 +39,9 @@ dependencies {
     implementation("org.ktorm:ktorm-jackson:$ktorm")
     implementation("org.ktorm:ktorm-support-mysql:$ktorm")
 
-    implementation("ch.qos.logback:logback-classic:1.2.10")
+    implementation("ch.qos.logback:logback-classic:1.2.11")
 
-    implementation("mysql:mysql-connector-java:8.0.25")
+    implementation("mysql:mysql-connector-java:8.0.28")
     implementation("org.ktorm:ktorm-core:$ktorm")
     implementation("com.zaxxer:HikariCP:5.0.1")
 
@@ -63,7 +63,10 @@ dependencies {
     implementation("org.apache.httpcomponents:httpmime:$httpcomponents")
 
 
-    implementation("org.apache.tika:tika-core:2.1.0")
+    implementation("org.apache.tika:tika-core:2.3.0")
+    implementation("org.apache.commons:commons-lang3:3.12.0")
+    implementation("commons-cli:commons-cli:1.5.0")
 
-
+    implementation("org.reflections:reflections:0.10.2")
+    implementation("com.google.guava:guava:31.1-jre")
 }

@@ -2,6 +2,9 @@ package com.xiaoyv404.mirai.app.thesaurus
 
 import com.xiaoyv404.mirai.PluginMain
 import com.xiaoyv404.mirai.app.accessControl.authorityIdentification
+import com.xiaoyv404.mirai.app.fsh.IFshApp
+import com.xiaoyv404.mirai.core.App
+import com.xiaoyv404.mirai.core.NfApp
 import com.xiaoyv404.mirai.databace.Command
 import com.xiaoyv404.mirai.databace.dao.*
 import com.xiaoyv404.mirai.tool.FileUtils
@@ -11,6 +14,7 @@ import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Contact.Companion.uploadImage
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.event.GlobalEventChannel
+import net.mamoe.mirai.event.events.MessageEvent
 import net.mamoe.mirai.event.subscribeGroupMessages
 import net.mamoe.mirai.event.subscribeMessages
 import net.mamoe.mirai.message.code.MiraiCode
@@ -19,6 +23,19 @@ import net.mamoe.mirai.message.data.Image.Key.queryUrl
 import net.mamoe.mirai.message.nextMessage
 import java.io.InputStream
 import java.math.BigInteger
+
+@App
+class Thesaurus : NfApp(), IFshApp{
+
+    override fun getAppName() = "Thesaurus"
+    override fun getVersion() = "1.0.0"
+    override fun getAppDescription() = "´Ê¿â"
+    override fun getCommands() = arrayOf("echo")
+
+    override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
+        return true
+    }
+}
 
 fun  thesaurusEntrance() {
     GlobalEventChannel.subscribeMessages {
