@@ -6,7 +6,6 @@ import com.xiaoyv404.mirai.app.bilibili.informationEntrance
 import com.xiaoyv404.mirai.app.dice.Dice
 import com.xiaoyv404.mirai.app.ero.eroEntrance
 import com.xiaoyv404.mirai.app.history.historyEntrance
-import com.xiaoyv404.mirai.app.minecraftServer.minecraftServerEntrance
 import com.xiaoyv404.mirai.app.someThinkEntrance
 import com.xiaoyv404.mirai.app.thesaurus.thesaurusEntrance
 import com.xiaoyv404.mirai.app.webAPI.WebApi
@@ -56,7 +55,6 @@ object PluginMain : KotlinPlugin(
         eroEntrance()
         someThinkEntrance()
         Dice.entrance()
-        minecraftServerEntrance()
 
         WebApi.entrance()
 

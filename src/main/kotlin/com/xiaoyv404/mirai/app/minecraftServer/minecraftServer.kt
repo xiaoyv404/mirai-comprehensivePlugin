@@ -22,7 +22,7 @@ import java.util.*
 @App
 class MinecraftServerStats : NfApp(), IFshApp {
     override fun getAppName() = "MinecraftServerStats"
-    override fun getVersion() = "1.0.0"
+    override fun getVersion() = "1.0.1"
     override fun getAppDescription() = "我的世界服务器状态监测"
     override fun getCommands(): Array<String> =
         arrayOf("服务器熟了没", "服务器状态", "土豆熟了没", "土豆状态", "破推头熟了没", "破推头状态", "ServerStatus", "PotatoStatus")
@@ -53,20 +53,19 @@ class MinecraftServerStats : NfApp(), IFshApp {
         }
         return true
     }
-}
 
-fun minecraftServerEntrance() {
-    Timer().schedule(object : TimerTask() {
-        override fun run() {
-            PluginMain.launch {
-                getAll().forEach {
-                    MinecraftServerStatusRequester().check(it)
+    override fun init() {
+        Timer().schedule(object : TimerTask() {
+            override fun run() {
+                PluginMain.launch {
+                    getAll().forEach {
+                        MinecraftServerStatusRequester().check(it)
+                    }
                 }
             }
-        }
-    }, Date(), 60000)
+        }, Date(), 60000)
+    }
 }
-
 
 class MinecraftServerStatusRequester(private var group: Contact? = null) {
     suspend fun check(
@@ -90,7 +89,6 @@ class MinecraftServerStatusRequester(private var group: Contact? = null) {
                         -1
                 else
                     1
-
 
                 if ((statusT == -1 && dStatus != -1) || (statusT == 1 && dStatus == -1)) {
                     if (statusT == 1)
