@@ -39,7 +39,7 @@ class Thesaurus : NfApp(), IFshApp{
 
 fun  thesaurusEntrance() {
     GlobalEventChannel.subscribeMessages {
-        finding(Regex("^(!!创建词条)\$")) {
+        finding(Regex("^()\$")) {
             if (authorityIdentification(sender.id, subject.id, "ThesaurusAdd")) {
                 subject.sendMessage("请发送question")
                 val questionA = parseMsgAndSaveImg(nextMessage())

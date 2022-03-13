@@ -34,19 +34,6 @@ object NfApplicationManager {
             }
             log.info("注册消息处理器${app.getAppName()}")
         }
-//        val handlers = MethodUtils.getMethodsListWithAnnotation(app.javaClass, RobitEventHandler::class.java)
-//        handlers.forEach { method ->
-//            val paramTypes = method.parameterTypes
-//            if (paramTypes.size == 1) {
-//                val eventClass = paramTypes[0]
-//                if (Event::class.java.isAssignableFrom(eventClass)) {
-//                    log.info("注册事件处理器{}::{}", name, method.name)
-//                    GlobalEventChannel.subscribeAlways(eventClass as Class<out Event>) {
-//                        method.invoke(app, it)
-//                    }
-//                }
-//            }
-//        }
         if (app is IFshApp) {
             for (command in app.getCommands()) {
                 fshCommands[command] = app

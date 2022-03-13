@@ -1,7 +1,9 @@
 package com.xiaoyv404.mirai.app.minecraftServer
 
 import com.xiaoyv404.mirai.PluginMain
-import com.xiaoyv404.mirai.databace.Command
+import com.xiaoyv404.mirai.app.fsh.IFshApp
+import com.xiaoyv404.mirai.core.App
+import com.xiaoyv404.mirai.core.NfApp
 import com.xiaoyv404.mirai.databace.dao.*
 import com.xiaoyv404.mirai.tool.KtorUtils
 import io.ktor.client.request.*
@@ -12,10 +14,46 @@ import kotlinx.serialization.json.Json
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Contact.Companion.sendImage
-import net.mamoe.mirai.event.GlobalEventChannel
-import net.mamoe.mirai.event.subscribeGroupMessages
+import net.mamoe.mirai.event.events.MessageEvent
 import net.mamoe.mirai.message.data.buildForwardMessage
+import org.apache.commons.cli.Options
 import java.util.*
+
+@App
+class MinecraftServerStats : NfApp(), IFshApp {
+    override fun getAppName() = "MinecraftServerStats"
+    override fun getVersion() = "1.0.0"
+    override fun getAppDescription() = "我的世界服务器状态监测"
+    override fun getCommands(): Array<String> =
+        arrayOf("服务器熟了没", "服务器状态", "土豆熟了没", "土豆状态", "破推头熟了没", "破推头状态", "ServerStatus", "PotatoStatus")
+
+    private val options = Options().apply {
+        addOption("p", "player", false, "获取玩家列表")
+        addOption("n", "no-infoImg", false, "关闭发送信息图片")
+    }
+
+    override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
+        val cmdLine = IFshApp.cmdLine(options, args)
+        val group = msg.subject
+
+        MinecraftServerMap {
+            groupID = group.id
+        }.findByGroupId().forEach { si ->
+            val info = MinecraftServer {
+                id = si.serverID
+            }.findById()
+            if (info != null) {
+                MinecraftServerStatusRequester(group).check(
+                    info,
+                    false,
+                    !cmdLine.hasOption("no-infoImg"),
+                    cmdLine.hasOption("player")
+                )
+            }
+        }
+        return true
+    }
+}
 
 fun minecraftServerEntrance() {
     Timer().schedule(object : TimerTask() {
@@ -27,32 +65,16 @@ fun minecraftServerEntrance() {
             }
         }
     }, Date(), 60000)
-    GlobalEventChannel.subscribeGroupMessages {
-        finding(Command.minecraftServerStats) {
-            val rd = it.groups
-            MinecraftServerMap {
-                groupID = group.id
-            }.findByGroupId().forEach { si ->
-                val info = MinecraftServer {
-                    id = si.serverID
-                }.findById()
-                if (info != null) {
-                    MinecraftServerStatusRequester(group).check(
-                        info,
-                        if (rd[9] != null)
-                            2U
-                        else
-                            1U
-                    )
-                }
-            }
-        }
-    }
 }
 
 
 class MinecraftServerStatusRequester(private var group: Contact? = null) {
-    suspend fun check(si: MinecraftServer, control: UInt = 0U) {
+    suspend fun check(
+        si: MinecraftServer,
+        automaticallyInitiate: Boolean = true,
+        infoImg: Boolean = true,
+        playerList: Boolean = false
+    ) {
         PluginMain.launch {
             val dStatus = si.status
             if (dStatus != -2) {
@@ -62,7 +84,7 @@ class MinecraftServerStatusRequester(private var group: Contact? = null) {
                 val statusD = information.status
 
                 val statusT = if (statusD != 1)
-                    if (dStatus == 1 && control == 0U)
+                    if (dStatus == 1 && automaticallyInitiate)
                         0
                     else
                         -1
@@ -90,7 +112,19 @@ class MinecraftServerStatusRequester(private var group: Contact? = null) {
 
                 groups.forEach {
                     if (statusT == 1) {
-                        players?.let { it1 -> it.sendImage(MinecraftDataImgGenerator.getImg(it1.players,"${players.online}/${players.max}",si.host,si.port.toString())) }
+                        if (!infoImg) {
+                            return@forEach
+                        }
+                        players?.let { it1 ->
+                            it.sendImage(
+                                MinecraftDataImgGenerator.getImg(
+                                    it1.players,
+                                    "${players.online}/${players.max}",
+                                    si.host,
+                                    si.port.toString()
+                                )
+                            )
+                        }
                     } else
                         it.sendMessage(
                             """
@@ -101,13 +135,16 @@ class MinecraftServerStatusRequester(private var group: Contact? = null) {
                         )
                 }
 
-                if (control == 2U) {
+                if (playerList) {
                     if (players != null) {
-                        if (players.online == 0){
+                        if (statusT != 1) {
+                            return@launch
+                        }
+                        if (players.online == 0) {
                             group!!.sendMessage("都没有人为什么要播报玩家列表呢（恼）")
                             return@launch
                         }
-                        sendPlayerList(getPlayerList(si.host,si.port,players))
+                        sendPlayerList(getPlayerList(si.host, si.port, players))
                     }
                 }
             }

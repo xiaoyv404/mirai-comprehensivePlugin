@@ -20,7 +20,7 @@ object MessageProcessor {
         return reply(src, msg.toMessageChain(), quote)
     }
 
-    suspend fun reply(src: MessageEvent, msg: String, quote: Boolean): MessageReceipt<Contact> {
+    suspend fun reply(src: MessageEvent, msg: String, quote: Boolean = true): MessageReceipt<Contact> {
         return reply(src, PlainText(msg), quote)
     }
 

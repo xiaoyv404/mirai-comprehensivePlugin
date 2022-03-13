@@ -62,9 +62,6 @@ object PluginMain : KotlinPlugin(
 
         val f = Reflections("com.xiaoyv404.mirai.app")
         val set: Set<Class<*>> = f.getTypesAnnotatedWith(App::class.java)
-
-        println(set.size)
-
         set.forEach {
             val bean = it.getDeclaredConstructor().newInstance()
             NfApplicationManager.appInitialization(bean as NfApp)

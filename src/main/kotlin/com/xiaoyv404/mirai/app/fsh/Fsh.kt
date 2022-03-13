@@ -49,8 +49,10 @@ class Fsh : NfAppMessageHandler(){
             argsList.add(s)
         }
 
+
         // 最后参数的结果
-        if (argsList.isNotEmpty()) {
+        if (argsList.isNotEmpty() && argsList[0] == "404") {
+            argsList.removeAt(0)
             val fshApp = NfApplicationManager.fshCommands[argsList[0]]
             if (fshApp != null) {
                 fshApp as NfApp
