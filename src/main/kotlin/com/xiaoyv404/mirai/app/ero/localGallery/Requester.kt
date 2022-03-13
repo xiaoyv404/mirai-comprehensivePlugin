@@ -16,7 +16,7 @@ import org.apache.tika.Tika
 import java.io.BufferedInputStream
 import java.io.InputStream
 
-class LocalGallery(private val subject: Contact) {
+class LocalGallerys(private val subject: Contact) {
     suspend fun send(ii: Gallery) {
         if (ii.picturesMun == 1) {
             subject.sendMessage(

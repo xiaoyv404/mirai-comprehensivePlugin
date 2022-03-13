@@ -3,6 +3,9 @@ package com.xiaoyv404.mirai.app.ero.localGallery
 import com.xiaoyv404.mirai.PluginMain
 import com.xiaoyv404.mirai.app.accessControl.authorityIdentification
 import com.xiaoyv404.mirai.app.ero.setuAPIUrl
+import com.xiaoyv404.mirai.app.fsh.IFshApp
+import com.xiaoyv404.mirai.core.App
+import com.xiaoyv404.mirai.core.NfApp
 import com.xiaoyv404.mirai.databace.Command
 import com.xiaoyv404.mirai.databace.dao.gallery.*
 import com.xiaoyv404.mirai.databace.dao.isAdmin
@@ -11,9 +14,73 @@ import com.xiaoyv404.mirai.tool.KtorUtils.normalClient
 import io.ktor.client.request.*
 import net.mamoe.mirai.contact.Contact.Companion.sendImage
 import net.mamoe.mirai.event.GlobalEventChannel
+import net.mamoe.mirai.event.events.MessageEvent
 import net.mamoe.mirai.event.subscribeMessages
 import net.mamoe.mirai.message.nextMessage
+import org.apache.commons.cli.Options
 import java.io.InputStream
+
+@App
+class LocalGallery : NfApp(), IFshApp {
+    override fun getAppName() = "LocalGallery"
+    override fun getVersion() = "1.0.0"
+    override fun getAppDescription() = "本地图库"
+    override fun getCommands() = arrayOf("-ero")
+
+    private val options = Options().apply {
+        addOption("n", "no-outPut", false, "关闭输出")
+    }
+
+    override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
+        val cmdLine = IFshApp.cmdLine(options, args)
+
+        if (args[1] == "add") {
+            eroAdd(args.getOrNull(2), msg, cmdLine.hasOption("no-outPut"))
+            return true
+        }
+
+        return true
+    }
+
+    private suspend fun eroAdd(idData: String?, msg: MessageEvent, noOutPut: Boolean = false) {
+        val subject = msg.subject
+        val sender = msg.sender
+        if (authorityIdentification(
+                sender.id,
+                subject.id,
+                "LocalGallery"
+            ) && sender.isNotBot()
+        ) {
+            val fail = mutableListOf<String>()
+            val ids = Regex("\\d+").findAll(
+                if (idData == null) {
+                    subject.sendMessage("没找到图片ID捏，请发送图片ID")
+                    msg.nextMessage().contentToString()
+                } else
+                    idData
+            ).toList()
+
+            PluginMain.logger.info("找到${ids.size}个ID")
+
+            ids.forEachIndexed { index, id ->
+                PluginMain.logger.info("下载编号 ${ids.size - 1}\\$index id ${id.value}")
+                if (LocalGallerys(subject).unformat(id.value, sender.id, noOutPut)) {
+                    PluginMain.logger.info("下载编号 $index id ${id.value} 失败")
+                    fail.add(id.value)
+                }
+            }
+
+            if (fail.isNotEmpty()) {
+                subject.sendMessage("下载失败 Id 列表")
+                subject.sendMessage(fail.joinToString("，"))
+            }
+            if (ids.size >= 5) {
+                subject.sendMessage("完成啦w!")
+            }
+        }
+    }
+
+}
 
 fun localGalleryListener() {
     GlobalEventChannel.subscribeMessages {
@@ -47,42 +114,6 @@ fun localGalleryListener() {
                         subject.sendImage(im)
                     else
                         subject.sendMessage("`(*>﹏<*)′服务器酱好像不理我惹")
-                }
-            }
-        }
-        finding(Command.eroAdd) {
-            if (authorityIdentification(
-                    sender.id,
-                    subject.id,
-                    "LocalGallery"
-                ) && sender.isNotBot()
-            ) {
-                val fail = mutableListOf<String>()
-                val rd = it.groups
-                val ids = Regex("\\d+").findAll(
-                    if (rd[3] == null) {
-                        subject.sendMessage("没找到图片ID捏，请发送图片ID")
-                        nextMessage().contentToString()
-                    } else
-                        rd[3]!!.value
-                ).toList()
-                val noOutPut = rd[7]!=null
-                PluginMain.logger.info("找到${ids.size}个ID")
-
-                ids.forEachIndexed  { index, id ->
-                    PluginMain.logger.info("下载编号 ${ids.size-1}\\$index id ${id.value}")
-                    if (LocalGallery(subject).unformat(id.value, sender.id, noOutPut)) {
-                        PluginMain.logger.info("下载编号 $index id ${id.value} 失败")
-                        fail.add(id.value)
-                    }
-                }
-
-                if (fail.isNotEmpty()){
-                    subject.sendMessage("下载失败 Id 列表")
-                    subject.sendMessage(fail.joinToString("，"))
-                }
-                if (ids.size >= 5){
-                    subject.sendMessage("完成啦w!")
                 }
             }
         }
@@ -120,7 +151,7 @@ fun localGalleryListener() {
                 val ii = Gallery {
                     id = idA
                 }.findById()
-                LocalGallery(subject).send(ii!!)
+                LocalGallerys(subject).send(ii!!)
             }
         }
         finding(Command.eroRemove) {
