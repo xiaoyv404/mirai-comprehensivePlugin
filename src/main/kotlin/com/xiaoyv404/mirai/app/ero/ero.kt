@@ -1,7 +1,6 @@
 package com.xiaoyv404.mirai.app.ero
 
 import com.xiaoyv404.mirai.app.ero.localGallery.localGalleryListener
-import com.xiaoyv404.mirai.app.ero.sauceNao.searchListenerRegister
 
 const val setuAPIUrl = "https://api.ixiaowai.cn/api/api.php"
 
@@ -9,5 +8,4 @@ const val setuAPIUrl = "https://api.ixiaowai.cn/api/api.php"
 
 fun eroEntrance() {
     localGalleryListener()
-    searchListenerRegister()
 }

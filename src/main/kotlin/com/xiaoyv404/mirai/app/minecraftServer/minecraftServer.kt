@@ -24,8 +24,8 @@ class MinecraftServerStats : NfApp(), IFshApp {
     override fun getAppName() = "MinecraftServerStats"
     override fun getVersion() = "1.0.1"
     override fun getAppDescription() = "我的世界服务器状态监测"
-    override fun getCommands(): Array<String> =
-        arrayOf("服务器熟了没", "服务器状态", "土豆熟了没", "土豆状态", "破推头熟了没", "破推头状态", "ServerStatus", "PotatoStatus")
+    override fun getCommands() =
+        arrayOf("-服务器熟了没", "-服务器状态", "-土豆熟了没", "-土豆状态", "-破推头熟了没", "-破推头状态", "-ServerStatus", "-PotatoStatus")
 
     private val options = Options().apply {
         addOption("p", "player", false, "获取玩家列表")

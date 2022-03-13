@@ -1,48 +1,56 @@
 package com.xiaoyv404.mirai.app.ero.sauceNao
 
 import com.xiaoyv404.mirai.app.accessControl.authorityIdentification
-import com.xiaoyv404.mirai.databace.Command
+import com.xiaoyv404.mirai.app.fsh.IFshApp
+import com.xiaoyv404.mirai.core.App
+import com.xiaoyv404.mirai.core.NfApp
 import com.xiaoyv404.mirai.databace.dao.isNotBot
-import net.mamoe.mirai.event.GlobalEventChannel
-import net.mamoe.mirai.event.subscribeMessages
+import net.mamoe.mirai.event.events.MessageEvent
 import net.mamoe.mirai.message.data.Image
 import net.mamoe.mirai.message.data.MessageSource.Key.quote
 import net.mamoe.mirai.message.data.time
 import net.mamoe.mirai.message.nextMessage
 
-fun searchListenerRegister() {
-    GlobalEventChannel.subscribeMessages {
-        finding(Command.SauceNao) {
-            if ((authorityIdentification(
-                    sender.id,
-                    subject.id,
-                    "SauceNaoSearch"
-                )) && sender.isNotBot()) {
-                val rd = it.groups
-                if (rd[4]?.value == "-h" || rd[4]?.value == "--help") {
-                    subject.sendMessage("help")
-                } else {
-                    val sauceNao = SauceNaoRequester(subject)
-                    val image = message[Image]
-                    if (image == null) {
-                        subject.sendMessage(message.quote() + "没有图片的说,请在60s内发送图片")
-                        val nextMsg = nextMessage()
-                        //判断发送的时间
-                        if (nextMsg.time - time < 60) {
-                            val nextImage = nextMsg[Image]
-                            if (nextImage == null) {
-                                subject.sendMessage(nextMsg.quote() + "没有获取图片")
-                            } else {
-                                sauceNao.search(nextImage)
-                                sauceNao.sendResult()
-                            }
-                        }
+@App
+class SauceNaoImgSearch : NfApp(), IFshApp {
+    override fun getAppName() = "SauceNaoImgSearch"
+    override fun getVersion() = "1.0.0"
+    override fun getAppDescription() = "SauceNao图片搜索器"
+    override fun getCommands() = arrayOf("搜图", "-img")
+
+    override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
+        if (args[0] == "img" && !args[1].startsWith("search")) {
+            return true
+        }
+
+        if ((authorityIdentification(
+                msg.sender.id,
+                msg.subject.id,
+                "SauceNaoSearch"
+            )) && msg.isNotBot()
+        ) {
+            val subject = msg.subject
+
+            val sauceNao = SauceNaoRequester(subject)
+            val image = msg.message[Image]
+            if (image == null) {
+                subject.sendMessage(msg.message.quote() + "没有图片的说,请在60s内发送图片")
+                val nextMsg = msg.nextMessage()
+                //判断发送的时间
+                if (nextMsg.time - msg.time < 60) {
+                    val nextImage = nextMsg[Image]
+                    if (nextImage == null) {
+                        subject.sendMessage(nextMsg.quote() + "没有获取图片")
                     } else {
-                        sauceNao.search(image)
+                        sauceNao.search(nextImage)
                         sauceNao.sendResult()
                     }
                 }
+            } else {
+                sauceNao.search(image)
+                sauceNao.sendResult()
             }
         }
+        return true
     }
 }

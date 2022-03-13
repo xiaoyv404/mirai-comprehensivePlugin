@@ -26,8 +26,6 @@ object Command {
     val addBot = Regex("^((404 add bot|添加机器人) (@?([0-9]+)))\$")
     val getBiliBiliUpInformation = Regex("^(404 (?i)(获取up信息|(getUpInformation))( ((-h|--help)|([0-9]+)))?)\$")
 
-    val SauceNao = Regex("^((404 img search|搜图)( (-h\$|--help\$)|(.*))?)\$")
-
     val debuMe= Regex("^(~me(.*))$")
 
     val dice = Regex("^((\\.r)( (\\d+)((\\((\\d+)\\))|(:(\\d+)))?)?)\$")

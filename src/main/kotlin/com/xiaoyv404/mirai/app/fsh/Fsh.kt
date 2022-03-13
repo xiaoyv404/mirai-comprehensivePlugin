@@ -56,15 +56,15 @@ class Fsh : NfAppMessageHandler(){
             argsList.add(s)
         }
 
+        if (argsList.size > 1 && argsList[0] == "404") {
+            argsList.removeAt(0)
+            argsList[0] = "-${argsList[0]}"
+        }
+
 
         // 最后参数的结果
-        val fshApp = if (argsList.size > 1)
-            NfApplicationManager.fshCommands[argsList[1]]
-        else
-            null
-
-        if (fshApp != null && argsList[0] == "404") {
-            argsList.removeAt(0)
+        val fshApp = NfApplicationManager.fshCommands[argsList[0]]
+        if (fshApp != null) {
             fshApp as NfApp
             fshApp.requireCallLimiter(msg, uid, gid) {
                 try {

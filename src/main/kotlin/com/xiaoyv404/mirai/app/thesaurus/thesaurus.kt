@@ -30,7 +30,7 @@ class Thesaurus : NfApp(), IFshApp{
     override fun getAppName() = "Thesaurus"
     override fun getVersion() = "1.0.0"
     override fun getAppDescription() = "´Ê¿â"
-    override fun getCommands() = arrayOf("test")
+    override fun getCommands() = arrayOf("-test")
 
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
         return true
