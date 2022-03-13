@@ -5,9 +5,7 @@ import com.xiaoyv404.mirai.app.bilibili.biliVideoEntrance
 import com.xiaoyv404.mirai.app.bilibili.informationEntrance
 import com.xiaoyv404.mirai.app.dice.Dice
 import com.xiaoyv404.mirai.app.ero.eroEntrance
-import com.xiaoyv404.mirai.app.history.historyEntrance
 import com.xiaoyv404.mirai.app.someThinkEntrance
-import com.xiaoyv404.mirai.app.thesaurus.thesaurusEntrance
 import com.xiaoyv404.mirai.app.webAPI.WebApi
 import com.xiaoyv404.mirai.core.App
 import com.xiaoyv404.mirai.core.NfApp
@@ -39,18 +37,12 @@ object PluginMain : KotlinPlugin(
     @OptIn(DelicateCoroutinesApi::class)
     override fun onEnable() {
         PluginConfig.reload()
-
-        logger.info { "综合插件加载完成，版本：$version Java版本:${System.getProperty("java.version")}" }
-
         connect()
 
         b23ShortLinkEntrance()
         biliVideoEntrance()
         informationEntrance()
 
-        thesaurusEntrance()
-
-        historyEntrance()
 
         eroEntrance()
         someThinkEntrance()
@@ -64,6 +56,8 @@ object PluginMain : KotlinPlugin(
             val bean = it.getDeclaredConstructor().newInstance()
             NfApplicationManager.appInitialization(bean as NfApp)
         }
+
+        logger.info { "综合插件加载完成，版本：$version Java版本:${System.getProperty("java.version")}" }
     }
     override fun onDisable() {
         // 关闭ktor客户端, 防止堵塞线程无法关闭

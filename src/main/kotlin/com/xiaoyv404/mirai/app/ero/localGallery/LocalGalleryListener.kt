@@ -5,8 +5,8 @@ import com.xiaoyv404.mirai.app.accessControl.authorityIdentification
 import com.xiaoyv404.mirai.app.ero.setuAPIUrl
 import com.xiaoyv404.mirai.databace.Command
 import com.xiaoyv404.mirai.databace.dao.gallery.*
-import com.xiaoyv404.mirai.databace.dao.itAdmin
-import com.xiaoyv404.mirai.databace.dao.itNotBot
+import com.xiaoyv404.mirai.databace.dao.isAdmin
+import com.xiaoyv404.mirai.databace.dao.isNotBot
 import com.xiaoyv404.mirai.tool.KtorUtils.normalClient
 import io.ktor.client.request.*
 import net.mamoe.mirai.contact.Contact.Companion.sendImage
@@ -22,7 +22,7 @@ fun localGalleryListener() {
                     sender.id,
                     subject.id,
                     "NetworkEro"
-                )) && sender.itNotBot()
+                )) && sender.isNotBot()
             ) {
                 var num = it.groups[3]!!.value.toInt()
                 when (num) {
@@ -30,7 +30,7 @@ fun localGalleryListener() {
                     9      -> subject.sendMessage("9?是这个⑨吗?www")
                     114514 -> subject.sendMessage("好臭啊啊啊啊")
                 }
-                if (num > 5 && sender.itNotBot()) {
+                if (num > 5 && sender.isNotBot()) {
                     num = if (9 == (5..10).random()) {
                         subject.sendMessage("去死啊你这个变态, 要看自己去Pixiv看")
                         0
@@ -55,7 +55,7 @@ fun localGalleryListener() {
                     sender.id,
                     subject.id,
                     "LocalGallery"
-                ) && sender.itNotBot()
+                ) && sender.isNotBot()
             ) {
                 val fail = mutableListOf<String>()
                 val rd = it.groups
@@ -91,7 +91,7 @@ fun localGalleryListener() {
                     sender.id,
                     subject.id,
                     "LocalGallery"
-                )) && sender.itNotBot()
+                )) && sender.isNotBot()
             ) {
                 val rd = it.groups
                 val tagNameA = rd[3]!!.value
@@ -124,7 +124,7 @@ fun localGalleryListener() {
             }
         }
         finding(Command.eroRemove) {
-            if (sender.itAdmin()) {
+            if (sender.isAdmin()) {
                 val rd = it.groups
                 val idA = rd[3]!!.value.toLong()
                 subject.sendMessage("正在删除: $idA")

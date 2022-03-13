@@ -4,7 +4,7 @@ import com.xiaoyv404.mirai.PluginMain
 import com.xiaoyv404.mirai.core.App
 import com.xiaoyv404.mirai.core.NfApp
 import com.xiaoyv404.mirai.databace.dao.HistoryRecord
-import com.xiaoyv404.mirai.databace.dao.itNotBot
+import com.xiaoyv404.mirai.databace.dao.isNotBot
 import com.xiaoyv404.mirai.databace.dao.save
 import com.xiaoyv404.mirai.tool.FileUtils
 import kotlinx.serialization.SerializationException
@@ -25,7 +25,7 @@ class History : NfApp(){
     override fun init() {
         GlobalEventChannel.subscribeGroupMessages {
             always {
-                if (sender.itNotBot()) {
+                if (sender.isNotBot()) {
                     val msg =  when (message[1]) {
                         is PlainText  -> {
                             message.content

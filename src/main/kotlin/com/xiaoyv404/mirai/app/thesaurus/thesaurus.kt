@@ -30,108 +30,95 @@ class Thesaurus : NfApp(), IFshApp{
     override fun getAppName() = "Thesaurus"
     override fun getVersion() = "1.0.0"
     override fun getAppDescription() = "词库"
-    override fun getCommands() = arrayOf("echo")
+    override fun getCommands() = arrayOf("test")
 
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
         return true
     }
-}
 
-fun  thesaurusEntrance() {
-    GlobalEventChannel.subscribeMessages {
-        finding(Regex("^()\$")) {
-            if (authorityIdentification(sender.id, subject.id, "ThesaurusAdd")) {
-                subject.sendMessage("请发送question")
-                val questionA = parseMsgAndSaveImg(nextMessage())
-                subject.sendMessage("请发送reply")
-                val replyA = parseMsgAndSaveImg(nextMessage())
-                subject.sendMessage(
-                    "question: $questionA\n" +
-                        "reply: $replyA\n"
-                        + "请输入[y]以确认"
-                )
-                if (nextMessage().contentToString() == "y") {
-                    Thesauru {
-                        question = questionA
-                        reply = replyA
-                        creator = sender.id
-                    }.save()
-                    subject.sendMessage("添加成功~")
-                } else
-                    subject.sendMessage("啊咧, 为啥要取消捏")
-            }
-        }
-
-        finding(Command.thesaurusRemove) {
-            if (sender.itAdmin()) {
-                val gp = it.groups
-                val gid = when {
-                    subject is Group -> subject.id
-                    gp[3] != null    -> gp[3]!!.value.toLong()
-                    else             -> {
-                        subject.sendMessage("输入值错误")
-                        return@finding
-                    }
-                }
-                subject.sendMessage("请发送question")
-                val entryMassages = Thesauru {
-                    question = parseMsg(nextMessage())
-                }.findByQuestion(gid)
-                if (entryMassages.isEmpty()) {
-                    subject.sendMessage("好像没有呢")
-                } else {
-                    if (entryMassages.size == 1) {
-                        subject.sendMessage(MiraiCode.deserializeMiraiCode(thesaurusRemoveMsg(entryMassages[0])))
-                    } else {
-                        subject.sendMessage(
-                            buildForwardMessage {
-                                entryMassages.forEach { da ->
-                                    da.question.cMsgToMiraiMsg(subject)
-                                    da.reply.cMsgToMiraiMsg(subject)
-                                    bot.says(MiraiCode.deserializeMiraiCode(thesaurusRemoveMsg(da)))
-                                }
-                            }
-                        )
-                    }
-                    subject.sendMessage("请发送要删除的词条的下标")
-                    val subscript = nextMessage().contentToString()
-                    if (!(Regex("[0-9]+").containsMatchIn(subscript))) {
-                        subject.sendMessage("已取消")
-                        return@finding
-                    }
-                    val subscriptI = subscript.toInt()
+    override fun init() {
+        GlobalEventChannel.subscribeMessages {
+            finding(Regex("^(!!创建词条)\$")) {
+                if (authorityIdentification(sender.id, subject.id, "ThesaurusAdd")) {
+                    subject.sendMessage("请发送question")
+                    val questionA = parseMsgAndSaveImg(nextMessage())
+                    subject.sendMessage("请发送reply")
+                    val replyA = parseMsgAndSaveImg(nextMessage())
                     subject.sendMessage(
-                        "确定要删除: \n" +
-                            "${MiraiCode.deserializeMiraiCode(thesaurusRemoveMsg(entryMassages[subscriptI]))}\n" +
-                            "输入[y]以确认    输入[n]以取消"
+                        "question: $questionA\n" +
+                            "reply: $replyA\n"
+                            + "请输入[y]以确认"
                     )
                     if (nextMessage().contentToString() == "y") {
-                        Thesauru{
-                            id = entryMassages[subscriptI].id
-                        }.deleteById()
-                        subject.sendMessage("成功删除")
+                        Thesauru {
+                            question = questionA
+                            reply = replyA
+                            creator = sender.id
+                        }.save()
+                        subject.sendMessage("添加成功~")
+                    } else
+                        subject.sendMessage("啊咧, 为啥要取消捏")
+                }
+            }
+
+            finding(Command.thesaurusRemove) {
+                if (sender.isAdmin()) {
+                    val gp = it.groups
+                    val gid = when {
+                        subject is Group -> subject.id
+                        gp[3] != null    -> gp[3]!!.value.toLong()
+                        else             -> {
+                            subject.sendMessage("输入值错误")
+                            return@finding
+                        }
+                    }
+                    subject.sendMessage("请发送question")
+                    val entryMassages = Thesauru {
+                        question = parseMsg(nextMessage())
+                    }.findByQuestion(gid)
+                    if (entryMassages.isEmpty()) {
+                        subject.sendMessage("好像没有呢")
                     } else {
-                        subject.sendMessage("为什么要取消捏")
+                        if (entryMassages.size == 1) {
+                            subject.sendMessage(MiraiCode.deserializeMiraiCode(thesaurusRemoveMsg(entryMassages[0])))
+                        } else {
+                            subject.sendMessage(
+                                buildForwardMessage {
+                                    entryMassages.forEach { da ->
+                                        da.question.cMsgToMiraiMsg(subject)
+                                        da.reply.cMsgToMiraiMsg(subject)
+                                        bot.says(MiraiCode.deserializeMiraiCode(thesaurusRemoveMsg(da)))
+                                    }
+                                }
+                            )
+                        }
+                        subject.sendMessage("请发送要删除的词条的下标")
+                        val subscript = nextMessage().contentToString()
+                        if (!(Regex("[0-9]+").containsMatchIn(subscript))) {
+                            subject.sendMessage("已取消")
+                            return@finding
+                        }
+                        val subscriptI = subscript.toInt()
+                        subject.sendMessage(
+                            "确定要删除: \n" +
+                                "${MiraiCode.deserializeMiraiCode(thesaurusRemoveMsg(entryMassages[subscriptI]))}\n" +
+                                "输入[y]以确认    输入[n]以取消"
+                        )
+                        if (nextMessage().contentToString() == "y") {
+                            Thesauru {
+                                id = entryMassages[subscriptI].id
+                            }.deleteById()
+                            subject.sendMessage("成功删除")
+                        } else {
+                            subject.sendMessage("为什么要取消捏")
+                        }
                     }
                 }
             }
         }
-    }
-    GlobalEventChannel.subscribeGroupMessages {
-        always {
-            if (sender.itNotBot() && authorityIdentification(
-                    sender.id,
-                    group.id,
-                    "ThesaurusResponse"
-                )
-            ) {
-                val replyC = Thesauru {
-                   question = parseMsg(message)
-                }.findByQuestion(group.id)
-                if (replyC.isEmpty())
-                    return@always
-                val reply = replyC.random().reply.cMsgToMiraiMsg(group)
-                group.sendMessage(MiraiCode.deserializeMiraiCode(reply))
+        GlobalEventChannel.subscribeGroupMessages {
+            always {
+
             }
         }
     }

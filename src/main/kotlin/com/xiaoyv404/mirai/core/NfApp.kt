@@ -57,4 +57,17 @@ abstract class NfApp {
         block()
 
     }
+
+    /**
+     * 提交限制调用
+     *
+     * @param caller 调用者
+     * @param place 调用地点
+     */
+    fun submitCallLimiter(caller: Long, place: Long) {
+//        val key = "${getAppName()}_${place}_${caller}"
+//        template.opsForValue().increment(key)
+//        template.expire(key, getLimitExpiresTime(), TimeUnit.SECONDS)
+    }
+
 }

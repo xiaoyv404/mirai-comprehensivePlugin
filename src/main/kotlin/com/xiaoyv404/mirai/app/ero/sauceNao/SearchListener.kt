@@ -2,7 +2,7 @@ package com.xiaoyv404.mirai.app.ero.sauceNao
 
 import com.xiaoyv404.mirai.app.accessControl.authorityIdentification
 import com.xiaoyv404.mirai.databace.Command
-import com.xiaoyv404.mirai.databace.dao.itNotBot
+import com.xiaoyv404.mirai.databace.dao.isNotBot
 import net.mamoe.mirai.event.GlobalEventChannel
 import net.mamoe.mirai.event.subscribeMessages
 import net.mamoe.mirai.message.data.Image
@@ -17,7 +17,7 @@ fun searchListenerRegister() {
                     sender.id,
                     subject.id,
                     "SauceNaoSearch"
-                )) && sender.itNotBot()) {
+                )) && sender.isNotBot()) {
                 val rd = it.groups
                 if (rd[4]?.value == "-h" || rd[4]?.value == "--help") {
                     subject.sendMessage("help")

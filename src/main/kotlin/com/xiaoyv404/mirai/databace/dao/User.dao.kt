@@ -41,30 +41,36 @@ fun User.findById(): User?{
     return db.users.find { it.id eq this.id }
 }
 
-fun User.itNotBot():Boolean{
+fun User.isNotBot(): Boolean {
     return this.findById()?.bot != true
 }
 
-fun User.itAdmin(): Boolean{
+fun User.isAdmin(): Boolean {
     return this.findById()?.admin == true
 }
 
-fun Member.itNotBot(): Boolean{
-    return User{
-        id = this@itNotBot.id
-    }.itNotBot()
+fun Long.isNotBot(): Boolean {
+    return User {
+        id = this@isNotBot
+    }.isNotBot()
 }
 
-fun net.mamoe.mirai.contact.User.itNotBot(): Boolean {
-    return User{
-        id = this@itNotBot.id
-    }.itNotBot()
+fun Long.isAdmin(): Boolean {
+    return User {
+        id = this@isAdmin
+    }.isAdmin()
 }
 
-fun net.mamoe.mirai.contact.User.itAdmin(): Boolean {
-    return User{
-        id = this@itAdmin.id
-    }.itAdmin()
+fun Member.isNotBot(): Boolean {
+    return this@isNotBot.id.isNotBot()
+}
+
+fun net.mamoe.mirai.contact.User.isNotBot(): Boolean {
+    return this@isNotBot.id.isNotBot()
+}
+
+fun net.mamoe.mirai.contact.User.isAdmin(): Boolean {
+    return this@isAdmin.id.isAdmin()
 }
 
 

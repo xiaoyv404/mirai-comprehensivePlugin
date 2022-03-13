@@ -2,7 +2,7 @@ package com.xiaoyv404.mirai.app.bilibili
 
 import com.xiaoyv404.mirai.app.accessControl.authorityIdentification
 import com.xiaoyv404.mirai.databace.Bilibili
-import com.xiaoyv404.mirai.databace.dao.itNotBot
+import com.xiaoyv404.mirai.databace.dao.isNotBot
 import com.xiaoyv404.mirai.tool.KtorUtils
 import io.ktor.client.*
 import io.ktor.client.request.*
@@ -17,7 +17,7 @@ fun b23ShortLinkEntrance() {
                     sender.id,
                     group.id,
                     "BiliBiliParsing"
-                ) && sender.itNotBot()
+                ) && sender.isNotBot()
             ) {
                 val b23 = it.value
                 val b23Data = b23DataGet(b23)

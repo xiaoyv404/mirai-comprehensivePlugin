@@ -1,8 +1,15 @@
 package com.xiaoyv404.mirai.app.fsh
 
 import com.xiaoyv404.mirai.PluginMain
+import com.xiaoyv404.mirai.app.accessControl.authorityIdentification
+import com.xiaoyv404.mirai.app.thesaurus.cMsgToMiraiMsg
+import com.xiaoyv404.mirai.app.thesaurus.parseMsg
 import com.xiaoyv404.mirai.core.*
+import com.xiaoyv404.mirai.databace.dao.Thesauru
+import com.xiaoyv404.mirai.databace.dao.findByQuestion
+import com.xiaoyv404.mirai.databace.dao.isNotBot
 import net.mamoe.mirai.event.events.MessageEvent
+import net.mamoe.mirai.message.code.MiraiCode
 import net.mamoe.mirai.message.data.OnlineMessageSource
 import java.util.regex.Pattern
 
@@ -51,24 +58,40 @@ class Fsh : NfAppMessageHandler(){
 
 
         // 最后参数的结果
-        if (argsList.isNotEmpty() && argsList[0] == "404") {
+        val fshApp = if (argsList.size > 1)
+            NfApplicationManager.fshCommands[argsList[1]]
+        else
+            null
+
+        if (fshApp != null && argsList[0] == "404") {
             argsList.removeAt(0)
-            val fshApp = NfApplicationManager.fshCommands[argsList[0]]
-            if (fshApp != null) {
-                fshApp as NfApp
-                fshApp.requireCallLimiter(msg, uid, gid) {
-                    try {
-                        if (fshApp.executeRsh(argsList.toTypedArray(), msg)) {
-//                            // 调用成功进行限制计次
-//                            fshApp.submitCallLimiter(uid, gid)
-                        }
-                    } catch (e: Exception) {
-                        MessageProcessor.reply(msg, "执行时发生内部错误", quote = true)
-                        log.warning("处理${argsList[0]}命令发生异常\n$e")
+            fshApp as NfApp
+            fshApp.requireCallLimiter(msg, uid, gid) {
+                try {
+                    if (fshApp.executeRsh(argsList.toTypedArray(), msg)) {
+                        // 调用成功进行限制计次
+                        fshApp.submitCallLimiter(uid, gid)
                     }
+                } catch (e: Exception) {
+                    MessageProcessor.reply(msg, "执行时发生内部错误", quote = true)
+                    log.warning("处理${argsList[0]}命令发生异常\n$e")
                 }
+            }
+        } else {
+            if (uid.isNotBot() && authorityIdentification(
+                    uid, gid, "ThesaurusResponse"
+                )
+            ) {
+                val replyC = Thesauru {
+                    question = parseMsg(msg.message)
+                }.findByQuestion(gid)
+                if (replyC.isEmpty())
+                    return
+                val reply = replyC.random().reply.cMsgToMiraiMsg(msg.subject)
+                MessageProcessor.reply(msg, MiraiCode.deserializeMiraiCode(reply), quote = false)
             }
         }
 
     }
+
 }

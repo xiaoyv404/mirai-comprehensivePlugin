@@ -50,7 +50,7 @@ fun someThinkEntrance() {
             )
         }
         matching(Command.debuMe) {
-            if (sender.itNotBot() && authorityIdentification(
+            if (sender.isNotBot() && authorityIdentification(
                     sender.id,
                     group.id,
                     "DebuMe"
@@ -106,7 +106,7 @@ fun someThinkEntrance() {
     }
     GlobalEventChannel.subscribeFriendMessages {
         matching(Command.ban) {
-            if (sender.itAdmin()) {
+            if (sender.isAdmin()) {
                 val rd = it.groups
                 when {
                     (rd[3]!!.value == "-h") or (rd[3]!!.value == "--help") -> friend.sendMessage("help")
@@ -136,7 +136,7 @@ fun someThinkEntrance() {
         matching(Command.join) {}
 
         matching(Regex("404 sendto")) {
-            if (sender.itAdmin()) {
+            if (sender.isAdmin()) {
                 subject.sendMessage("请发送群id")
                 val gp = nextMessage().contentToString().split("\n")
                 PluginMain.logger.info("群聊个数${gp.size}")
@@ -150,7 +150,7 @@ fun someThinkEntrance() {
         }
 
         always {
-            if (sender.itAdmin()) {
+            if (sender.isAdmin()) {
                 when (message.contentToString()) {
                     "!!开关全体广播" -> {
                         BroadcastStatus = !BroadcastStatus
