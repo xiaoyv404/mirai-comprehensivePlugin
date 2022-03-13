@@ -15,8 +15,6 @@ object Pixiv {
 }
 
 object Command {
-    val thesaurusRemove = Regex("^(404 thesaurus remove( ([0-9]+))?)\$")
-
     val ero = Regex("^((À´)([0-9]*)(·ÝÉ¬Í¼))")
     val ban = Regex("^(404 ban ((-h\$|--help\$)|(([0-9]+) ([0-9]+) (([0-9]+)|unban))))\$")
     val join = Regex("^(404 join ((-h\$|--help\$)|( [0-9]+)))\$")

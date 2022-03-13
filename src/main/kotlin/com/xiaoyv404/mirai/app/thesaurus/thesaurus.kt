@@ -5,7 +5,6 @@ import com.xiaoyv404.mirai.app.accessControl.authorityIdentification
 import com.xiaoyv404.mirai.app.fsh.IFshApp
 import com.xiaoyv404.mirai.core.App
 import com.xiaoyv404.mirai.core.NfApp
-import com.xiaoyv404.mirai.databace.Command
 import com.xiaoyv404.mirai.databace.dao.*
 import com.xiaoyv404.mirai.tool.FileUtils
 import com.xiaoyv404.mirai.tool.KtorUtils
@@ -13,10 +12,7 @@ import io.ktor.client.request.*
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Contact.Companion.uploadImage
 import net.mamoe.mirai.contact.Group
-import net.mamoe.mirai.event.GlobalEventChannel
 import net.mamoe.mirai.event.events.MessageEvent
-import net.mamoe.mirai.event.subscribeGroupMessages
-import net.mamoe.mirai.event.subscribeMessages
 import net.mamoe.mirai.message.code.MiraiCode
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
@@ -30,97 +26,101 @@ class Thesaurus : NfApp(), IFshApp{
     override fun getAppName() = "Thesaurus"
     override fun getVersion() = "1.0.0"
     override fun getAppDescription() = "词库"
-    override fun getCommands() = arrayOf("-test")
+    override fun getCommands() = arrayOf("!!创建词条", "thesaurus")
 
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
+        if (args[0] == "创建词条") {
+            thesaurusAdd(msg.sender, msg)
+            return true
+        }
+        if (args[1] == "remove") {
+            return thesaurusRemove(msg.sender, msg, args.getOrNull(2)?.toLong())
+        }
         return true
     }
 
-    override fun init() {
-        GlobalEventChannel.subscribeMessages {
-            finding(Regex("^(!!创建词条)\$")) {
-                if (authorityIdentification(sender.id, subject.id, "ThesaurusAdd")) {
-                    subject.sendMessage("请发送question")
-                    val questionA = parseMsgAndSaveImg(nextMessage())
-                    subject.sendMessage("请发送reply")
-                    val replyA = parseMsgAndSaveImg(nextMessage())
+    private suspend fun thesaurusAdd(sender: net.mamoe.mirai.contact.User, msg: MessageEvent) {
+        val subject = msg.subject
+        if (authorityIdentification(sender.id, subject.id, "ThesaurusAdd")) {
+            subject.sendMessage("请发送question")
+            val questionA = parseMsgAndSaveImg(msg.nextMessage())
+            subject.sendMessage("请发送reply")
+            val replyA = parseMsgAndSaveImg(msg.nextMessage())
+            subject.sendMessage(
+                "question: $questionA\n" +
+                    "reply: $replyA\n"
+                    + "请输入[y]以确认"
+            )
+            if (msg.nextMessage().contentToString() == "y") {
+                Thesauru {
+                    question = questionA
+                    reply = replyA
+                    creator = sender.id
+                }.save()
+                subject.sendMessage("添加成功~")
+            } else
+                subject.sendMessage("啊咧, 为啥要取消捏")
+        }
+    }
+
+    private suspend fun thesaurusRemove(
+        sender: net.mamoe.mirai.contact.User,
+        msg: MessageEvent,
+        gidInput: Long? = null
+    ): Boolean {
+        if (sender.isAdmin()) {
+            val subject = msg.subject
+            val gid = when {
+                gidInput != null -> gidInput
+                subject is Group -> subject.id
+                else             -> {
+                    subject.sendMessage("输入值错误")
+                    return false
+                }
+            }
+            subject.sendMessage("请发送question")
+            val entryMassages = Thesauru {
+                question = parseMsg(msg.nextMessage())
+            }.findByQuestion(gid)
+            if (entryMassages.isEmpty()) {
+                subject.sendMessage("好像没有呢")
+            } else {
+                if (entryMassages.size == 1) {
+                    subject.sendMessage(MiraiCode.deserializeMiraiCode(thesaurusRemoveMsg(entryMassages[0])))
+                } else {
                     subject.sendMessage(
-                        "question: $questionA\n" +
-                            "reply: $replyA\n"
-                            + "请输入[y]以确认"
+                        msg.buildForwardMessage {
+                            entryMassages.forEach { da ->
+                                da.question.cMsgToMiraiMsg(subject)
+                                da.reply.cMsgToMiraiMsg(subject)
+                                subject.bot.says(MiraiCode.deserializeMiraiCode(thesaurusRemoveMsg(da)))
+                            }
+                        }
                     )
-                    if (nextMessage().contentToString() == "y") {
-                        Thesauru {
-                            question = questionA
-                            reply = replyA
-                            creator = sender.id
-                        }.save()
-                        subject.sendMessage("添加成功~")
-                    } else
-                        subject.sendMessage("啊咧, 为啥要取消捏")
                 }
-            }
-
-            finding(Command.thesaurusRemove) {
-                if (sender.isAdmin()) {
-                    val gp = it.groups
-                    val gid = when {
-                        subject is Group -> subject.id
-                        gp[3] != null    -> gp[3]!!.value.toLong()
-                        else             -> {
-                            subject.sendMessage("输入值错误")
-                            return@finding
-                        }
-                    }
-                    subject.sendMessage("请发送question")
-                    val entryMassages = Thesauru {
-                        question = parseMsg(nextMessage())
-                    }.findByQuestion(gid)
-                    if (entryMassages.isEmpty()) {
-                        subject.sendMessage("好像没有呢")
-                    } else {
-                        if (entryMassages.size == 1) {
-                            subject.sendMessage(MiraiCode.deserializeMiraiCode(thesaurusRemoveMsg(entryMassages[0])))
-                        } else {
-                            subject.sendMessage(
-                                buildForwardMessage {
-                                    entryMassages.forEach { da ->
-                                        da.question.cMsgToMiraiMsg(subject)
-                                        da.reply.cMsgToMiraiMsg(subject)
-                                        bot.says(MiraiCode.deserializeMiraiCode(thesaurusRemoveMsg(da)))
-                                    }
-                                }
-                            )
-                        }
-                        subject.sendMessage("请发送要删除的词条的下标")
-                        val subscript = nextMessage().contentToString()
-                        if (!(Regex("[0-9]+").containsMatchIn(subscript))) {
-                            subject.sendMessage("已取消")
-                            return@finding
-                        }
-                        val subscriptI = subscript.toInt()
-                        subject.sendMessage(
-                            "确定要删除: \n" +
-                                "${MiraiCode.deserializeMiraiCode(thesaurusRemoveMsg(entryMassages[subscriptI]))}\n" +
-                                "输入[y]以确认    输入[n]以取消"
-                        )
-                        if (nextMessage().contentToString() == "y") {
-                            Thesauru {
-                                id = entryMassages[subscriptI].id
-                            }.deleteById()
-                            subject.sendMessage("成功删除")
-                        } else {
-                            subject.sendMessage("为什么要取消捏")
-                        }
-                    }
+                subject.sendMessage("请发送要删除的词条的下标")
+                val subscript = msg.nextMessage().contentToString()
+                if (!(Regex("[0-9]+").containsMatchIn(subscript))) {
+                    subject.sendMessage("已取消")
+                    return true
+                }
+                val subscriptI = subscript.toInt()
+                subject.sendMessage(
+                    "确定要删除: \n" +
+                        "${MiraiCode.deserializeMiraiCode(thesaurusRemoveMsg(entryMassages[subscriptI]))}\n" +
+                        "输入[y]以确认    输入[n]以取消"
+                )
+                if (msg.nextMessage().contentToString() == "y") {
+                    Thesauru {
+                        id = entryMassages[subscriptI].id
+                    }.deleteById()
+                    subject.sendMessage("成功删除")
+                } else {
+                    subject.sendMessage("为什么要取消捏")
                 }
             }
         }
-        GlobalEventChannel.subscribeGroupMessages {
-            always {
-
-            }
-        }
+        return true
     }
 }
 
