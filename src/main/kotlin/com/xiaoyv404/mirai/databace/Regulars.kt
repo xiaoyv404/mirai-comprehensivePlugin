@@ -15,10 +15,8 @@ object Pixiv {
 }
 
 object Command {
-    val ero = Regex("^((来)([0-9]*)(份涩图))")
     val ban = Regex("^(404 ban ((-h\$|--help\$)|(([0-9]+) ([0-9]+) (([0-9]+)|unban))))\$")
     val join = Regex("^(404 join ((-h\$|--help\$)|( [0-9]+)))\$")
-    val eroRemove = Regex("^((404 ero remove|删除涩图) ([0-9]+))\$")
     val addBot = Regex("^((404 add bot|添加机器人) (@?([0-9]+)))\$")
     val getBiliBiliUpInformation = Regex("^(404 (?i)(获取up信息|(getUpInformation))( ((-h|--help)|([0-9]+)))?)\$")
 

@@ -2,24 +2,18 @@ package com.xiaoyv404.mirai.app.ero.localGallery
 
 import com.xiaoyv404.mirai.PluginMain
 import com.xiaoyv404.mirai.app.accessControl.authorityIdentification
-import com.xiaoyv404.mirai.app.ero.setuAPIUrl
 import com.xiaoyv404.mirai.app.fsh.IFshApp
 import com.xiaoyv404.mirai.core.App
 import com.xiaoyv404.mirai.core.MessageProcessor
 import com.xiaoyv404.mirai.core.NfApp
-import com.xiaoyv404.mirai.databace.Command
 import com.xiaoyv404.mirai.databace.dao.gallery.*
 import com.xiaoyv404.mirai.databace.dao.isAdmin
 import com.xiaoyv404.mirai.databace.dao.isNotBot
-import com.xiaoyv404.mirai.tool.KtorUtils.normalClient
-import io.ktor.client.request.*
-import net.mamoe.mirai.contact.Contact.Companion.sendImage
 import net.mamoe.mirai.event.GlobalEventChannel
 import net.mamoe.mirai.event.events.MessageEvent
 import net.mamoe.mirai.event.subscribeMessages
 import net.mamoe.mirai.message.nextMessage
 import org.apache.commons.cli.Options
-import java.io.InputStream
 
 @App
 class LocalGallery : NfApp(), IFshApp {
@@ -192,38 +186,5 @@ class LocalGallery : NfApp(), IFshApp {
 
 fun localGalleryListener() {
     GlobalEventChannel.subscribeMessages {
-        finding(Command.ero) {
-            if ((authorityIdentification(
-                    sender.id,
-                    subject.id,
-                    "NetworkEro"
-                )) && sender.isNotBot()
-            ) {
-                var num = it.groups[3]!!.value.toInt()
-                when (num) {
-                    0      -> subject.sendMessage("w?你到底想让404干什么呢, 喵")
-                    9      -> subject.sendMessage("9?是这个⑨吗?www")
-                    114514 -> subject.sendMessage("好臭啊啊啊啊")
-                }
-                if (num > 5 && sender.isNotBot()) {
-                    num = if (9 == (5..10).random()) {
-                        subject.sendMessage("去死啊你这个变态, 要看自己去Pixiv看")
-                        0
-                    } else {
-                        5
-                    }
-                }
-                if (num != 0)
-                    subject.sendMessage("少女祈祷中...")
-
-                for (i in 1..num) {
-                    val im = normalClient.get<InputStream?>(setuAPIUrl)
-                    if (im != null)
-                        subject.sendImage(im)
-                    else
-                        subject.sendMessage("`(*>﹏<*)′服务器酱好像不理我惹")
-                }
-            }
-        }
     }
 }
