@@ -2,7 +2,6 @@ package com.xiaoyv404.mirai
 
 import com.xiaoyv404.mirai.app.bilibili.b23ShortLinkEntrance
 import com.xiaoyv404.mirai.app.bilibili.biliVideoEntrance
-import com.xiaoyv404.mirai.app.bilibili.informationEntrance
 import com.xiaoyv404.mirai.app.dice.Dice
 import com.xiaoyv404.mirai.app.someThinkEntrance
 import com.xiaoyv404.mirai.app.webAPI.WebApi
@@ -40,8 +39,6 @@ object PluginMain : KotlinPlugin(
 
         b23ShortLinkEntrance()
         biliVideoEntrance()
-        informationEntrance()
-
 
         someThinkEntrance()
         Dice.entrance()
@@ -59,6 +56,5 @@ object PluginMain : KotlinPlugin(
     }
     override fun onDisable() {
         // 关闭ktor客户端, 防止堵塞线程无法关闭
-        KtorUtils.closeClient()
-    }
+        KtorUtils.closeClient()    }
 }
