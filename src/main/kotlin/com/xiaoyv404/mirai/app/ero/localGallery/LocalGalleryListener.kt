@@ -9,9 +9,7 @@ import com.xiaoyv404.mirai.core.NfApp
 import com.xiaoyv404.mirai.databace.dao.gallery.*
 import com.xiaoyv404.mirai.databace.dao.isAdmin
 import com.xiaoyv404.mirai.databace.dao.isNotBot
-import net.mamoe.mirai.event.GlobalEventChannel
 import net.mamoe.mirai.event.events.MessageEvent
-import net.mamoe.mirai.event.subscribeMessages
 import net.mamoe.mirai.message.nextMessage
 import org.apache.commons.cli.Options
 
@@ -181,10 +179,5 @@ class LocalGallery : NfApp(), IFshApp {
                     "É¾³ý${imgNum}ÕÅÍ¼Æ¬    ${tags.size + 1}Ìõ¼ÇÂ¼"
             )
         }
-    }
-}
-
-fun localGalleryListener() {
-    GlobalEventChannel.subscribeMessages {
     }
 }
