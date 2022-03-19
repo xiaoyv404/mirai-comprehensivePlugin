@@ -1,11 +1,11 @@
 package com.xiaoyv404.mirai.app.fsh
 
 import com.xiaoyv404.mirai.PluginMain
-import com.xiaoyv404.mirai.app.accessControl.authorityIdentification
 import com.xiaoyv404.mirai.app.thesaurus.cMsgToMiraiMsg
 import com.xiaoyv404.mirai.app.thesaurus.parseMsg
 import com.xiaoyv404.mirai.core.*
 import com.xiaoyv404.mirai.databace.dao.Thesauru
+import com.xiaoyv404.mirai.databace.dao.authorityIdentification
 import com.xiaoyv404.mirai.databace.dao.findByQuestion
 import com.xiaoyv404.mirai.databace.dao.isNotBot
 import net.mamoe.mirai.event.events.MessageEvent

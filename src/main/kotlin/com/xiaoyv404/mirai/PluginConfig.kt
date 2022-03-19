@@ -17,24 +17,24 @@ data class DatabaseConfig(
         默认值：localhost
     """
     )
-    val address: String = "localhost",
+    val address: String = "127.0.0.1",
     @Comment(
         """
         数据库登入用户.
-        默认值：root
+        默认值：postgres
     """
     )
-    val user: String = "root",
+    val user: String = "postgres",
     @Comment("数据库登入密码")
     val password: String = "",
     @Comment("数据库表单，表示要将数据存储在这个表单里")
-    var table: String = "",
+    var table: String = "404",
     @Comment("SQL连接的附加参数，记得以&开头")
     val AdditionalParameters: String = "",
     @Comment("最大连接数，也许是连接池的大小？？？")
     var maximumPoolSize: Int? = 10,
     @Comment("本地代理端口")
-    val ProxyPort: Int = 404,
+    val ProxyPort: Int = 7890,
     @Comment("SauceNAOAPIKEY")
     val sauceNaoApiKey: String = ""
 )

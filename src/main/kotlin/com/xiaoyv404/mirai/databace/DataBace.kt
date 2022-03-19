@@ -2,6 +2,7 @@ package com.xiaoyv404.mirai.databace
 
 import com.xiaoyv404.mirai.PluginConfig
 import com.xiaoyv404.mirai.PluginMain
+import com.xiaoyv404.mirai.extension.MyPostgreSqlDialect
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import net.mamoe.mirai.console.util.ConsoleExperimentalApi
@@ -24,7 +25,8 @@ lateinit var db: Database
         try {
             db = Database.connect(
                 hikariDataSourceProvider(),
-                logger = ConsoleLogger(threshold = LogLevel.INFO)
+                logger = ConsoleLogger(threshold = LogLevel.INFO),
+                dialect = MyPostgreSqlDialect()
             )
 //            rdb = genericObjectPoolSourceProvider()
             connectionStatus = ConnectionStatus.CONNECTED
@@ -56,8 +58,8 @@ lateinit var db: Database
             }
         }
         jdbcUrl =
-            "jdbc:mysql://${PluginConfig.database.address}/${PluginConfig.database.table}${PluginConfig.database.AdditionalParameters}"
-        driverClassName = "com.mysql.cj.jdbc.Driver"
+            "jdbc:postgresql://${PluginConfig.database.address}/${PluginConfig.database.table}${PluginConfig.database.AdditionalParameters}"
+        driverClassName = "org.postgresql.Driver"
         username = PluginConfig.database.user
         password = PluginConfig.database.password
         maximumPoolSize = PluginConfig.database.maximumPoolSize!!

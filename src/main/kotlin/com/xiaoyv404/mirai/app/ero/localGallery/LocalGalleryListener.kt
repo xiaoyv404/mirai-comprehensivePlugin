@@ -1,11 +1,11 @@
 package com.xiaoyv404.mirai.app.ero.localGallery
 
 import com.xiaoyv404.mirai.PluginMain
-import com.xiaoyv404.mirai.app.accessControl.authorityIdentification
 import com.xiaoyv404.mirai.app.fsh.IFshApp
 import com.xiaoyv404.mirai.core.App
 import com.xiaoyv404.mirai.core.MessageProcessor
 import com.xiaoyv404.mirai.core.NfApp
+import com.xiaoyv404.mirai.databace.dao.authorityIdentification
 import com.xiaoyv404.mirai.databace.dao.gallery.*
 import com.xiaoyv404.mirai.databace.dao.isAdmin
 import com.xiaoyv404.mirai.databace.dao.isNotBot

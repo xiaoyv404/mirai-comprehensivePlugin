@@ -37,11 +37,11 @@ dependencies {
     compileOnly("net.mamoe.yamlkt:yamlkt-jvm:$yamlKtVersion")
 
     implementation("org.ktorm:ktorm-jackson:$ktorm")
-    implementation("org.ktorm:ktorm-support-mysql:$ktorm")
+    implementation("org.ktorm:ktorm-support-postgresql:3.4.1")
 
     implementation("ch.qos.logback:logback-classic:1.2.11")
 
-    implementation("mysql:mysql-connector-java:8.0.28")
+    implementation("org.postgresql:postgresql:42.3.3")
     implementation("org.ktorm:ktorm-core:$ktorm")
     implementation("com.zaxxer:HikariCP:5.0.1")
 
@@ -69,4 +69,5 @@ dependencies {
 
     implementation("org.reflections:reflections:0.10.2")
     implementation("com.google.guava:guava:31.1-jre")
+    implementation("com.google.code.gson:gson:2.9.0")
 }
