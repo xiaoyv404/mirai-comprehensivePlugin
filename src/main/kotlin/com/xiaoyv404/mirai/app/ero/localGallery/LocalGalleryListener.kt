@@ -24,6 +24,8 @@ class LocalGallery : NfApp(), IFshApp {
         addOption("n", "no-outPut", false, "关闭输出")
     }
 
+    private val log = PluginMain.logger
+
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
         val cmdLine = IFshApp.cmdLine(options, args)
 
@@ -53,6 +55,15 @@ class LocalGallery : NfApp(), IFshApp {
         return true
     }
 
+    /**
+     * 向本地图库添加图片
+     * @author xiaoyv_404
+     * @create 2022/3/19
+     *
+     * @param idData
+     * @param msg
+     * @param noOutPut
+     */
     private suspend fun eroAdd(idData: String?, msg: MessageEvent, noOutPut: Boolean = false) {
         val subject = msg.subject
         val sender = msg.sender
@@ -71,12 +82,12 @@ class LocalGallery : NfApp(), IFshApp {
                     idData
             ).toList()
 
-            PluginMain.logger.info("找到${ids.size}个ID")
+            log.info("找到${ids.size}个ID")
 
             ids.forEachIndexed { index, id ->
-                PluginMain.logger.info("下载编号 ${ids.size - 1}\\$index id ${id.value}")
+                log.info("下载编号 ${ids.size - 1}\\$index id ${id.value}")
                 if (LocalGallerys(subject).unformat(id.value, sender.id, noOutPut)) {
-                    PluginMain.logger.info("下载编号 $index id ${id.value} 失败")
+                    log.info("下载编号 $index id ${id.value} 失败")
                     fail.add(id.value)
                 }
             }
@@ -108,27 +119,27 @@ class LocalGallery : NfApp(), IFshApp {
                 "LocalGallery"
             )) && sender.isNotBot()
         ) {
-            PluginMain.logger.info("[LocalGallerySearch] 尝试从本地图库搜索 Tag 包含 $tagNameA 的图片")
+            log.info("[LocalGallerySearch] 尝试从本地图库搜索 Tag 包含 $tagNameA 的图片")
             val tagidA = GalleryTag {
                 tagname = tagNameA
             }.findTagIdByTagName()
             if (tagidA == null) {
-                PluginMain.logger.info("[LocalGallerySearch] 未搜索到 TagName $tagNameA")
+                log.info("[LocalGallerySearch] 未搜索到 TagName $tagNameA")
                 subject.sendMessage("唔....似乎没有呢")
                 return
             }
 
-            PluginMain.logger.info("[LocalGallerySearch] 搜索到 TagName $tagNameA ID $tagidA")
+            log.info("[LocalGallerySearch] 搜索到 TagName $tagNameA ID $tagidA")
 
             val idAL = GalleryTagMap {
                 tagid = tagidA
             }.findPidByTagId()
 
-            PluginMain.logger.info("[LocalGallerySearch] 搜索到 ID $tagidA 数量 ${idAL.size}")
+            log.info("[LocalGallerySearch] 搜索到 ID $tagidA 数量 ${idAL.size}")
 
             val idA = idAL.random()
 
-            PluginMain.logger.info("[LocalGallerySearch] 随机到 Pid $idA")
+            log.info("[LocalGallerySearch] 随机到 Pid $idA")
 
             val ii = Gallery {
                 id = idA
@@ -137,6 +148,15 @@ class LocalGallery : NfApp(), IFshApp {
         }
     }
 
+
+    /**
+     * 通过 pid 删除本地图库图片
+     * @author xiaoyv_404
+     * @create 2022/3/19
+     *
+     * @param idA
+     * @param msg
+     */
     private suspend fun eroRemove(idA: Long, msg: MessageEvent) {
         val subject = msg.subject
         val sender = msg.sender
