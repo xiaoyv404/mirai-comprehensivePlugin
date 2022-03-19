@@ -5,6 +5,7 @@ import com.xiaoyv404.mirai.app.accessControl.authorityIdentification
 import com.xiaoyv404.mirai.app.ero.setuAPIUrl
 import com.xiaoyv404.mirai.app.fsh.IFshApp
 import com.xiaoyv404.mirai.core.App
+import com.xiaoyv404.mirai.core.MessageProcessor
 import com.xiaoyv404.mirai.core.NfApp
 import com.xiaoyv404.mirai.databace.Command
 import com.xiaoyv404.mirai.databace.dao.gallery.*
@@ -37,6 +38,15 @@ class LocalGallery : NfApp(), IFshApp {
         if (args[1] == "add") {
             eroAdd(args.getOrNull(2), msg, cmdLine.hasOption("no-outPut"))
             return true
+        }
+
+        if (args[1] == "search") {
+            val tagName = args.getOrNull(2)
+            if (tagName == null) {
+                MessageProcessor.reply(msg, "没名字我怎么搜嘛")
+                return true
+            }
+            eroSearch(tagName, msg)
         }
 
         return true
@@ -80,6 +90,51 @@ class LocalGallery : NfApp(), IFshApp {
         }
     }
 
+    /**
+     * 通过 tagName 搜索图片并随机发送
+     * @author xiaoyv_404
+     * @create 2022/3/19
+     *
+     * @param tagNameA
+     * @param msg
+     */
+    private suspend fun eroSearch(tagNameA: String, msg: MessageEvent) {
+        val subject = msg.subject
+        val sender = msg.sender
+        if ((authorityIdentification(
+                sender.id,
+                subject.id,
+                "LocalGallery"
+            )) && sender.isNotBot()
+        ) {
+            PluginMain.logger.info("[LocalGallerySearch] 尝试从本地图库搜索 Tag 包含 $tagNameA 的图片")
+            val tagidA = GalleryTag {
+                tagname = tagNameA
+            }.findTagIdByTagName()
+            if (tagidA == null) {
+                PluginMain.logger.info("[LocalGallerySearch] 未搜索到 TagName $tagNameA")
+                subject.sendMessage("唔....似乎没有呢")
+                return
+            }
+
+            PluginMain.logger.info("[LocalGallerySearch] 搜索到 TagName $tagNameA ID $tagidA")
+
+            val idAL = GalleryTagMap {
+                tagid = tagidA
+            }.findPidByTagId()
+
+            PluginMain.logger.info("[LocalGallerySearch] 搜索到 ID $tagidA 数量 ${idAL.size}")
+
+            val idA = idAL.random()
+
+            PluginMain.logger.info("[LocalGallerySearch] 随机到 Pid $idA")
+
+            val ii = Gallery {
+                id = idA
+            }.findById()
+            LocalGallerys(subject).send(ii!!)
+        }
+    }
 }
 
 fun localGalleryListener() {
@@ -115,43 +170,6 @@ fun localGalleryListener() {
                     else
                         subject.sendMessage("`(*>﹏<*)′服务器酱好像不理我惹")
                 }
-            }
-        }
-        finding(Command.eroSearch) {
-            if ((authorityIdentification(
-                    sender.id,
-                    subject.id,
-                    "LocalGallery"
-                )) && sender.isNotBot()
-            ) {
-                val rd = it.groups
-                val tagNameA = rd[3]!!.value
-                PluginMain.logger.info("[LocalGallerySearch] 尝试从本地图库搜索 Tag 包含 $tagNameA 的图片")
-                val tagidA = GalleryTag {
-                    tagname = tagNameA
-                }.findTagIdByTagName()
-                if (tagidA == null) {
-                    PluginMain.logger.info("[LocalGallerySearch] 未搜索到 TagName $tagNameA")
-                    subject.sendMessage("唔....似乎没有呢")
-                    return@finding
-                }
-
-                PluginMain.logger.info("[LocalGallerySearch] 搜索到 TagName $tagNameA ID $tagidA")
-
-                val idAL = GalleryTagMap {
-                    tagid = tagidA
-                }.findPidByTagId()
-
-                PluginMain.logger.info("[LocalGallerySearch] 搜索到 ID $tagidA 数量 ${idAL.size}")
-
-                val idA = idAL.random()
-
-                PluginMain.logger.info("[LocalGallerySearch] 随机到 Pid $idA")
-
-                val ii = Gallery {
-                    id = idA
-                }.findById()
-                LocalGallerys(subject).send(ii!!)
             }
         }
         finding(Command.eroRemove) {
