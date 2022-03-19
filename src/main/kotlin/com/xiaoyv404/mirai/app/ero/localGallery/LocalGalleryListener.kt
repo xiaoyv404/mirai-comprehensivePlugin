@@ -49,6 +49,15 @@ class LocalGallery : NfApp(), IFshApp {
             eroSearch(tagName, msg)
         }
 
+        if (args[1] == "remove"){
+            val id = args.getOrNull(2)?.toLongOrNull()
+            if (id == null){
+                MessageProcessor.reply(msg, "没ID我怎么删嘛")
+                return true
+            }
+            eroRemove(id,msg)
+        }
+
         return true
     }
 
@@ -135,6 +144,50 @@ class LocalGallery : NfApp(), IFshApp {
             LocalGallerys(subject).send(ii!!)
         }
     }
+
+    private suspend fun eroRemove(idA: Long, msg: MessageEvent) {
+        val subject = msg.subject
+        val sender = msg.sender
+        if (sender.isAdmin()) {
+            subject.sendMessage("正在删除: $idA")
+
+            val tags = GalleryTagMap {
+                pid = idA
+            }.findTagIdByPid()
+
+            tags.forEach { tagidA ->
+                GalleryTag {
+                    tagid = tagidA
+                }.reduceNumByTagId()
+            }
+
+            val information = Gallery {
+                id = idA
+            }.findById()
+
+            val imgNum = information!!.picturesMun
+            val extension = information.extension
+
+            if (imgNum == 1)
+                PluginMain.resolveDataFile("gallery/$idA.$extension").deleteRecursively()
+            else
+                for (i in 1..imgNum) {
+                    PluginMain.resolveDataFile("gallery/$idA-$i.$extension")
+                        .deleteRecursively()
+                }
+            GalleryTagMap {
+                pid = idA
+            }.deleteByPid()
+
+            Gallery {
+                id = idA
+            }.deleteById()
+            subject.sendMessage(
+                "${idA}已删除\n" +
+                    "删除${imgNum}张图片    ${tags.size + 1}条记录"
+            )
+        }
+    }
 }
 
 fun localGalleryListener() {
@@ -170,50 +223,6 @@ fun localGalleryListener() {
                     else
                         subject.sendMessage("`(*>﹏<*)′服务器酱好像不理我惹")
                 }
-            }
-        }
-        finding(Command.eroRemove) {
-            if (sender.isAdmin()) {
-                val rd = it.groups
-                val idA = rd[3]!!.value.toLong()
-                subject.sendMessage("正在删除: $idA")
-
-                val tags = GalleryTagMap {
-                    pid = idA
-                }.findTagIdByPid()
-
-                tags.forEach { tagidA ->
-                    GalleryTag {
-                        tagid = tagidA
-                    }.reduceNumByTagId()
-                }
-
-
-                val information = Gallery {
-                    id = idA
-                }.findById()
-
-                val imgNum = information!!.picturesMun
-                val extension = information.extension
-
-                if (imgNum == 1)
-                    PluginMain.resolveDataFile("gallery/$idA.$extension").deleteRecursively()
-                else
-                    for (i in 1..imgNum) {
-                        PluginMain.resolveDataFile("gallery/$idA-$i.$extension")
-                            .deleteRecursively()
-                    }
-                GalleryTagMap {
-                    pid = idA
-                }.deleteByPid()
-
-                Gallery {
-                    id = idA
-                }.deleteById()
-                subject.sendMessage(
-                    "${idA}已删除\n" +
-                        "删除${imgNum}张图片    ${tags.size + 1}条记录"
-                )
             }
         }
     }
