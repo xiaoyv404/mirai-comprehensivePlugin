@@ -26,7 +26,7 @@ class Thesaurus : NfApp(), IFshApp{
     override fun getAppName() = "Thesaurus"
     override fun getVersion() = "1.0.0"
     override fun getAppDescription() = "词库"
-    override fun getCommands() = arrayOf("!!创建词条", "thesaurus")
+    override fun getCommands() = arrayOf("!!创建词条", "-thesaurus")
 
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
         if (args[0] == "创建词条") {

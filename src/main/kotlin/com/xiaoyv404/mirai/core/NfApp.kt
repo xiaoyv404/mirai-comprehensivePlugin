@@ -55,7 +55,6 @@ abstract class NfApp {
         block: suspend () -> Unit
     ) {
         block()
-
     }
 
     /**
@@ -69,5 +68,4 @@ abstract class NfApp {
 //        template.opsForValue().increment(key)
 //        template.expire(key, getLimitExpiresTime(), TimeUnit.SECONDS)
     }
-
 }
