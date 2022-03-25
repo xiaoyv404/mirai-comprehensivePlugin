@@ -1,14 +1,13 @@
 package com.xiaoyv404.mirai.databace.dao
 
 import com.xiaoyv404.mirai.databace.Database.db
-import com.xiaoyv404.mirai.tool.jsonExtractContains
 import org.ktorm.database.Database
-import org.ktorm.dsl.and
 import org.ktorm.dsl.eq
-import org.ktorm.dsl.isNull
-import org.ktorm.dsl.or
 import org.ktorm.entity.*
-import org.ktorm.schema.*
+import org.ktorm.schema.Table
+import org.ktorm.schema.long
+import org.ktorm.schema.text
+import org.ktorm.schema.varchar
 
 
 interface Thesauru : Entity<Thesauru> {
@@ -66,11 +65,11 @@ fun Thesauru.findById(): Thesauru? {
  */
 fun Thesauru.findByQuestion(gid: String): List<Thesauru> {
     return db.thesauru.filter {
-        it.question eq this.question and (it.scope.jsonExtractContains(
-            "$",
-            gid,
-            VarcharSqlType
-        ) or it.scope.isNull())
+        it.question eq this.question
+//        and (it.scope.jsonExtractContains(
+//            gid,
+//            VarcharSqlType,
+//        ) or it.scope.isNull() )
     }.toList()
 }
 

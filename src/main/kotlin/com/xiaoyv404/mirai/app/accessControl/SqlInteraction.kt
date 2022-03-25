@@ -1,14 +1,44 @@
 package com.xiaoyv404.mirai.app.accessControl
 
-//fun authorityIdentification(uid: Long, gid: Long, func: String): Boolean {
-//    val gp = Groups.permission
-//    val sUid = uid.toString()
+//import com.xiaoyv404.mirai.tool.jsonSearch
+import com.xiaoyv404.mirai.databace.Database
+import com.xiaoyv404.mirai.databace.dao.Groups
+
+fun authorityIdentification(uid: Long, gid: Long, func: String): Boolean {
+    val gp = Groups.permission
+    val sUid = uid.toString()
+
+    Database.db.useConnection { conn ->
+        val sql = """
+SELECT 
+	permission :: jsonb -> ? ->>'all',
+	permission :: jsonb -> ? -> 'white' ?? ?,
+	permission :: jsonb -> ? -> 'black' ?? ? 
+FROM "Groups" 
+WHERE "id" = ?""".trimIndent()
+        conn.prepareStatement(sql).use { statement ->
+            statement.setString(1, func)
+            statement.setString(2, func)
+            statement.setString(3, sUid)
+            statement.setString(4, func)
+            statement.setString(5, sUid)
+            statement.setLong(6, gid)
+            val eq = statement.executeQuery()
+            return if (eq.next()) {
+                if (eq.getBoolean(1)) {
+                    eq.getString(3) != "t"
+                } else
+                    eq.getString(2) == "t"
+            }else
+                false
+        }
+    }
 //    return Database.db
 //        .from(Groups)
 //        .select(
-//            gp.jsonExtract<Boolean>("$.$func.all"),
-//            gp.jsonExtractContains("$.$func.black", sUid, VarcharSqlType),
-//            gp.jsonExtractContains("$.$func.white", sUid, VarcharSqlType),
+//            gp.jsonExtract(BooleanSqlType,func,"all"),
+//            gp.jsonExtractContains(sUid, VarcharSqlType,func,"black"),
+//            gp.jsonExtractContains(sUid, VarcharSqlType,func,"white"),
 //        )
 //        .where(Groups.id eq gid)
 //        .map {
@@ -17,7 +47,7 @@ package com.xiaoyv404.mirai.app.accessControl
 //            else
 //                it.getBoolean(3)
 //        }.first()
-//}
+}
 
 
 //fun permissionSearch(gid: Long, uid: Long, func: String): String? {

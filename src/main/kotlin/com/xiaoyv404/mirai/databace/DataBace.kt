@@ -2,7 +2,6 @@ package com.xiaoyv404.mirai.databace
 
 import com.xiaoyv404.mirai.PluginConfig
 import com.xiaoyv404.mirai.PluginMain
-import com.xiaoyv404.mirai.extension.MyPostgreSqlDialect
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import net.mamoe.mirai.console.util.ConsoleExperimentalApi
@@ -18,7 +17,7 @@ object Database {
         object DISCONNECTED : ConnectionStatus()
     }
 
-lateinit var db: Database
+    lateinit var db: Database
     private var connectionStatus: ConnectionStatus = ConnectionStatus.DISCONNECTED
 
     fun connect() {
@@ -26,7 +25,6 @@ lateinit var db: Database
             db = Database.connect(
                 hikariDataSourceProvider(),
                 logger = ConsoleLogger(threshold = LogLevel.INFO),
-                dialect = MyPostgreSqlDialect()
             )
 //            rdb = genericObjectPoolSourceProvider()
             connectionStatus = ConnectionStatus.CONNECTED
@@ -48,7 +46,7 @@ lateinit var db: Database
             PluginConfig.database.address == ""           -> throw InvalidDatabaseConfigException("Database address is not set in config file ${PluginConfig.saveName}.")
             PluginConfig.database.table == ""             -> {
                 PluginMain.logger.warning { "Database table is not set in config file ${PluginConfig.saveName} and now it will be default value 'sctimetabledb'." }
-                PluginConfig.database.table = "mirai-404"
+                PluginConfig.database.table = "404"
             }
             PluginConfig.database.user == ""              -> throw InvalidDatabaseConfigException("Database user is not set in config file ${PluginConfig.saveName}.")
             PluginConfig.database.password == ""          -> throw InvalidDatabaseConfigException("Database password is not set in config file ${PluginConfig.saveName}.")

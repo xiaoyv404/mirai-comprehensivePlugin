@@ -22,6 +22,10 @@ class MinecraftDataImgGenerator {
                 PluginMain.resolveDataFile("resources/Minecraft/LXGWWenKaiMono-Light.ttf")
             ).deriveFont(Font.PLAIN, 16f)
 
+//            val font = Font("STXingkai",Font.TRUETYPE_FONT,18)
+//            val fontMono = Font("STXingkai",Font.TRUETYPE_FONT,16)
+
+
             val imgWidth = 350
             val imgHeight = 400
 

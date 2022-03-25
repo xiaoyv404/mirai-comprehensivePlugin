@@ -1,7 +1,7 @@
 package com.xiaoyv404.mirai.app.bilibili
 
+import com.xiaoyv404.mirai.app.accessControl.authorityIdentification
 import com.xiaoyv404.mirai.databace.Bilibili
-import com.xiaoyv404.mirai.databace.dao.authorityIdentification
 import com.xiaoyv404.mirai.databace.dao.isNotBot
 import com.xiaoyv404.mirai.tool.KtorUtils
 import com.xiaoyv404.mirai.tool.parsingVideoDataString
