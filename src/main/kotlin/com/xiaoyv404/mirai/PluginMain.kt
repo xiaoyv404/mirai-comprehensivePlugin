@@ -20,7 +20,7 @@ import org.reflections.Reflections
 object Version {
     const val ID = "com.xiaoyv404.ComprehensivePlugin"
     const val NAME = "ComprehensivePlugin"
-    const val PLUGINVERSION = "1.0.0"
+    const val PLUGINVERSION = "1.0.1"
 }
 
 
