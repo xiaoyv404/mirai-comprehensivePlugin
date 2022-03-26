@@ -24,7 +24,7 @@ import java.math.BigInteger
 class Thesaurus : NfApp(), IFshApp{
 
     override fun getAppName() = "Thesaurus"
-    override fun getVersion() = "1.0.0"
+    override fun getVersion() = "1.0.1"
     override fun getAppDescription() = "¥ ø‚"
     override fun getCommands() = arrayOf("!!¥¥Ω®¥ Ãı", "-thesaurus")
 
@@ -125,13 +125,14 @@ class Thesaurus : NfApp(), IFshApp{
 }
 
 suspend fun String.cMsgToMiraiMsg(subject: Contact): String {
+    var msg = this
     Regex("(\\[404:image:(.+)])").findAll(this).forEach {
         val img =
             subject.uploadImage(PluginMain.resolveDataFile("thesaurus/${it.groups[2]!!.value}"))
                 .serializeToMiraiCode()
-        this.replace(it.value, img)
+        msg = msg.replace(it.value, img)
     }
-    return this
+    return msg
 }
 
 fun thesaurusRemoveMsg(da: Thesauru): String {

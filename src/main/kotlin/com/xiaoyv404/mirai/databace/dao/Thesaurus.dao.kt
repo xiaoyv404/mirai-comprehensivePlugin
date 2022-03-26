@@ -1,12 +1,18 @@
 package com.xiaoyv404.mirai.databace.dao
 
 import com.xiaoyv404.mirai.databace.Database.db
+import com.xiaoyv404.mirai.extension.asJson
+import com.xiaoyv404.mirai.extension.findOrNot
+import com.xiaoyv404.mirai.extension.jsonb
 import org.ktorm.database.Database
+import org.ktorm.dsl.and
 import org.ktorm.dsl.eq
+import org.ktorm.dsl.isNull
+import org.ktorm.dsl.or
 import org.ktorm.entity.*
 import org.ktorm.schema.Table
+import org.ktorm.schema.TypeReference
 import org.ktorm.schema.long
-import org.ktorm.schema.text
 import org.ktorm.schema.varchar
 
 
@@ -16,7 +22,7 @@ interface Thesauru : Entity<Thesauru> {
     var question: String
     var reply: String
     var creator: Long
-    var scope: String
+    var scope: List<String>
 }
 
 object Thesaurus : Table<Thesauru>("Thesaurus") {
@@ -24,7 +30,7 @@ object Thesaurus : Table<Thesauru>("Thesaurus") {
     val question = varchar("question").bindTo { it.question }
     val reply = varchar("reply").bindTo { it.reply }
     val creator = long("creator").bindTo { it.creator }
-    val scope = text("scope").bindTo { it.scope }
+    val scope = jsonb("scope", object : TypeReference<List<String>>() {}).bindTo { it.scope }
 }
 
 private val Database.thesauru get() = this.sequenceOf(Thesaurus)
@@ -37,6 +43,7 @@ private val Database.thesauru get() = this.sequenceOf(Thesaurus)
  * @return true Ìí¼Ó false ¸üÐÂ
  */
 fun Thesauru.save(): Boolean {
+
     return if (this.findById() == null) {
         db.thesauru.add(this)
         false
@@ -65,11 +72,7 @@ fun Thesauru.findById(): Thesauru? {
  */
 fun Thesauru.findByQuestion(gid: String): List<Thesauru> {
     return db.thesauru.filter {
-        it.question eq this.question
-//        and (it.scope.jsonExtractContains(
-//            gid,
-//            VarcharSqlType,
-//        ) or it.scope.isNull() )
+        it.question eq this.question and (it.scope.isNull() or (it.scope.asJson().findOrNot(gid)))
     }.toList()
 }
 

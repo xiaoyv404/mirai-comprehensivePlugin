@@ -48,8 +48,6 @@ dependencies {
 
     implementation("com.alibaba:fastjson:1.2.79")
 
-    implementation("org.apache.logging.log4j:log4j-to-slf4j:2.8.2")
-
     implementation("io.ktor:ktor-client-cio:$ktorVersion")
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
     implementation("io.ktor:ktor-jackson:$ktorVersion")

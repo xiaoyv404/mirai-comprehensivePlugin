@@ -2,6 +2,7 @@ package com.xiaoyv404.mirai.databace
 
 import com.xiaoyv404.mirai.PluginConfig
 import com.xiaoyv404.mirai.PluginMain
+import com.xiaoyv404.mirai.extension.MyPostgreSqlDialect
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import net.mamoe.mirai.console.util.ConsoleExperimentalApi
@@ -25,6 +26,7 @@ object Database {
             db = Database.connect(
                 hikariDataSourceProvider(),
                 logger = ConsoleLogger(threshold = LogLevel.INFO),
+                dialect = MyPostgreSqlDialect()
             )
 //            rdb = genericObjectPoolSourceProvider()
             connectionStatus = ConnectionStatus.CONNECTED
