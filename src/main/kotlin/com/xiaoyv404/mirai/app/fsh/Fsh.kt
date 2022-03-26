@@ -1,7 +1,7 @@
 package com.xiaoyv404.mirai.app.fsh
 
 import com.xiaoyv404.mirai.PluginMain
-import com.xiaoyv404.mirai.app.accessControl.authorityIdentification
+import com.xiaoyv404.mirai.databace.dao.authorityIdentification
 import com.xiaoyv404.mirai.app.thesaurus.cMsgToMiraiMsg
 import com.xiaoyv404.mirai.app.thesaurus.parseMsg
 import com.xiaoyv404.mirai.core.*

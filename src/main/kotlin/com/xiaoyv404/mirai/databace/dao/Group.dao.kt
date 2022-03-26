@@ -2,10 +2,11 @@ package com.xiaoyv404.mirai.databace.dao
 
 import com.xiaoyv404.mirai.databace.Database.db
 import com.xiaoyv404.mirai.extension.asJson
+import com.xiaoyv404.mirai.extension.findOrNot
+import com.xiaoyv404.mirai.extension.get
 import com.xiaoyv404.mirai.extension.getAsString
 import org.ktorm.database.Database
-import org.ktorm.dsl.and
-import org.ktorm.dsl.eq
+import org.ktorm.dsl.*
 import org.ktorm.entity.Entity
 import org.ktorm.entity.filter
 import org.ktorm.entity.isNotEmpty
@@ -30,6 +31,24 @@ fun Group.noticeSwitchRead(func: String): Boolean {
     }.isNotEmpty()
 }
 
+fun authorityIdentification(uid: Long, gid: Long, func: String): Boolean {
+    val gp = Groups.permission
+    val sUid = uid.toString()
+    return db
+        .from(Groups)
+        .select(
+            gp.asJson()[func].getAsString("all"),
+            gp.asJson()[func]["white"].findOrNot(sUid),
+            gp.asJson()[func]["white"].findOrNot(sUid)
+        )
+        .where(Groups.id eq gid)
+        .map {
+            if (it.getString(1) == "true")
+                !it.getBoolean(2)
+            else
+                it.getBoolean(3)
+        }.first()
+}
 
 object  Groups : Table<Group>("Groups") {
     val id = long("id").primaryKey().bindTo { it.id  }
