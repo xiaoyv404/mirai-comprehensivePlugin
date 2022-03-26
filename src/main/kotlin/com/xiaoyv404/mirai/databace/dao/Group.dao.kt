@@ -1,10 +1,15 @@
 package com.xiaoyv404.mirai.databace.dao
 
 import com.xiaoyv404.mirai.databace.Database.db
-import com.xiaoyv404.mirai.tool.jsonExtract
-import org.ktorm.dsl.*
+import com.xiaoyv404.mirai.extension.asJson
+import com.xiaoyv404.mirai.extension.getAsString
+import org.ktorm.database.Database
+import org.ktorm.dsl.and
+import org.ktorm.dsl.eq
 import org.ktorm.entity.Entity
-import org.ktorm.schema.BooleanSqlType
+import org.ktorm.entity.filter
+import org.ktorm.entity.isNotEmpty
+import org.ktorm.entity.sequenceOf
 import org.ktorm.schema.Table
 import org.ktorm.schema.long
 import org.ktorm.schema.text
@@ -17,15 +22,12 @@ interface Group : Entity<Group> {
     val salutatory: String
 }
 
-//private val Database.group get() = this.sequenceOf(Groups)
+private val Database.group get() = this.sequenceOf(Groups)
 
 fun Group.noticeSwitchRead(func: String): Boolean {
-    return db.from(Groups)
-        .select(
-            Groups.notice.jsonExtract(BooleanSqlType,func)
-        )
-        .where(Groups.id eq this.id)
-        .map { it.getBoolean(1) }.first()
+    return db.group.filter {
+        it.id eq this.id and (it.notice.asJson().getAsString(func) eq "true")
+    }.isNotEmpty()
 }
 
 
