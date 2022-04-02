@@ -1,6 +1,5 @@
 package com.xiaoyv404.mirai
 
-import com.xiaoyv404.mirai.app.bilibili.b23ShortLinkEntrance
 import com.xiaoyv404.mirai.app.someThinkEntrance
 import com.xiaoyv404.mirai.app.webAPI.WebApi
 import com.xiaoyv404.mirai.core.App
@@ -34,8 +33,6 @@ object PluginMain : KotlinPlugin(
     override fun onEnable() {
         PluginConfig.reload()
         connect()
-
-        b23ShortLinkEntrance()
 
         someThinkEntrance()
         WebApi.entrance()
