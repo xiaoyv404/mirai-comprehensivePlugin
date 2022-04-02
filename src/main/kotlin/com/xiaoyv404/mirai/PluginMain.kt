@@ -1,7 +1,6 @@
 package com.xiaoyv404.mirai
 
 import com.xiaoyv404.mirai.app.bilibili.b23ShortLinkEntrance
-import com.xiaoyv404.mirai.app.bilibili.biliVideoEntrance
 import com.xiaoyv404.mirai.app.someThinkEntrance
 import com.xiaoyv404.mirai.app.webAPI.WebApi
 import com.xiaoyv404.mirai.core.App
@@ -37,7 +36,6 @@ object PluginMain : KotlinPlugin(
         connect()
 
         b23ShortLinkEntrance()
-        biliVideoEntrance()
 
         someThinkEntrance()
         WebApi.entrance()

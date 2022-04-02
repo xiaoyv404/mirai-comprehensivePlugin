@@ -44,7 +44,7 @@ class MinecraftServerStats : NfApp(), IFshApp {
             }.findById()
             if (info != null) {
                 MinecraftServerStatusRequester(group).check(
-                    info,
+                    info,   
                     false,
                     !cmdLine.hasOption("no-infoImg"),
                     cmdLine.hasOption("player")
