@@ -17,6 +17,9 @@ import java.io.BufferedInputStream
 import java.io.InputStream
 
 class LocalGallerys(private val subject: Contact) {
+
+    private val log = PluginMain.logger
+
     suspend fun send(ii: Gallery) {
         if (ii.picturesMun == 1) {
             subject.sendMessage(
@@ -54,7 +57,7 @@ class LocalGallerys(private val subject: Contact) {
                     idA
             )
         } catch (e: Exception) {
-            PluginMain.logger.error(e)
+            log.error(e)
             return true
         }
 
@@ -95,11 +98,14 @@ class LocalGallerys(private val subject: Contact) {
         if (!outPut) {
             send(info)
         } else
-            PluginMain.logger.info("已关闭输出")
+            log.info("已关闭输出")
         return false
     }
 
     object Process {
+
+        private val log = PluginMain.logger
+
         fun linkInfo(ii: Gallery): String = """
                 作品ID: ${ii.id}
                 标题: ${ii.title}
@@ -112,14 +118,14 @@ class LocalGallerys(private val subject: Contact) {
             suspend fun getSave(num: Int, id: String): String {
                 var fe = ""
                 if (num != 1) {
-                    PluginMain.logger.info("含有$num 张图片")
+                    log.info("含有$num 张图片")
                     for (i in 1..num) {
-                        PluginMain.logger.info("正在保存第$i 张图片")
+                        log.info("正在保存第$i 张图片")
                         val `in` = KtorUtils.normalClient.get<InputStream>("https://pixiv.re/$id-$i.png")
                         fe = verifyExtensionAndSaveFile(`in`, "gallery/$id-$i")
                     }
                 } else {
-                    PluginMain.logger.info("含有1 张图片")
+                    log.info("含有1 张图片")
                     val `in` = KtorUtils.normalClient.get<InputStream>("https://pixiv.re/$id.png")
                     fe = verifyExtensionAndSaveFile(`in`, "gallery/$id")
                 }
@@ -130,7 +136,7 @@ class LocalGallerys(private val subject: Contact) {
                 val bSrc = BufferedInputStream(src)
                 bSrc.mark(0)
                 var fe = Tika().detect(bSrc)
-                PluginMain.logger.info("文件格式: $fe")
+                log.info("文件格式: $fe")
                 fe = when (fe) {
                     "image/png"  -> "png"
                     "image/jpeg" -> "jpg"

@@ -68,6 +68,9 @@ class MinecraftServerStats : NfApp(), IFshApp {
 }
 
 class MinecraftServerStatusRequester(private var group: Contact? = null) {
+
+    private val log = PluginMain.logger
+
     suspend fun check(
         si: MinecraftServer,
         automaticallyInitiate: Boolean = true,
@@ -92,9 +95,9 @@ class MinecraftServerStatusRequester(private var group: Contact? = null) {
 
                 if ((statusT == -1 && dStatus != -1) || (statusT == 1 && dStatus == -1)) {
                     if (statusT == 1)
-                        PluginMain.logger.info("服务器 ${si.name} 上线")
+                        log.info("服务器 ${si.name} 上线")
                     else
-                        PluginMain.logger.info("服务器 ${si.name} 离线")
+                        log.info("服务器 ${si.name} 离线")
                     MinecraftServerMap { serverID = si.id }.findByServerId().forEach {
                         groups.add(Bot.getInstance(2079373402).getGroup(it.groupID) ?: return@forEach)
                     }
@@ -155,7 +158,7 @@ class MinecraftServerStatusRequester(private var group: Contact? = null) {
         if (cycles != 0)
             cycles++
 
-        PluginMain.logger.info("尝试获取PlayList次数：${cycles+1}次")
+        log.info("尝试获取PlayList次数：${cycles+1}次")
 
         for (i in 1..cycles) {
             getServerInfo(host, port).serverInformationFormat?.players?.players?.forEach {
@@ -164,7 +167,7 @@ class MinecraftServerStatusRequester(private var group: Contact? = null) {
         }
 
         val playersL = playersML.distinct()
-        PluginMain.logger.info("已获取到玩家列表人数：${playersL.size}")
+        log.info("已获取到玩家列表人数：${playersL.size}")
         return playersL
     }
 

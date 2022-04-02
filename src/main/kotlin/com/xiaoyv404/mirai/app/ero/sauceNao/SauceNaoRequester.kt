@@ -24,6 +24,8 @@ class SauceNaoRequester(private val subject: Contact) {
     }
     private var result: SauceNaoResponse.Result? = null
 
+    private val log = PluginMain.logger
+
     suspend fun search(image: Image) {
         try {
             val json: String =
@@ -39,7 +41,7 @@ class SauceNaoRequester(private val subject: Contact) {
                             }
                         }"
                 )
-            PluginMain.logger.info(json)
+            log.info(json)
             parseJson(json)
         } catch (e: Exception) {
             subject.sendMessage(
@@ -48,7 +50,7 @@ class SauceNaoRequester(private val subject: Contact) {
                     "/$/{APIKEY/}"
                 )
             )
-            PluginMain.logger.error(e)
+            log.error(e)
             throw e
         }
     }

@@ -1,7 +1,6 @@
 package com.xiaoyv404.mirai.app
 
 import com.xiaoyv404.mirai.PluginMain
-import com.xiaoyv404.mirai.databace.dao.authorityIdentification
 import com.xiaoyv404.mirai.databace.Command
 import com.xiaoyv404.mirai.databace.dao.*
 import net.mamoe.mirai.contact.remarkOrNameCardOrNick
@@ -147,10 +146,6 @@ fun someThinkEntrance() {
                     bot.getGroup(gpL)?.sendMessage(msg)
                 }
             }
-        }
-
-        case("test"){
-            println(PluginMain.resolveDataFile("resources/Minecraft/LXGWWenKai-Light.ttf").isFile)
         }
 
         always {
