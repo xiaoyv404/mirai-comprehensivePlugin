@@ -4,6 +4,8 @@ import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm.HMAC256
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.xiaoyv404.mirai.PluginMain
+import com.xiaoyv404.mirai.core.App
+import com.xiaoyv404.mirai.core.NfApp
 import com.xiaoyv404.mirai.databace.dao.*
 import io.ktor.application.*
 import io.ktor.auth.*
@@ -40,41 +42,13 @@ import kotlin.time.Duration.Companion.minutes
 
 
 @OptIn(MiraiExperimentalApi::class)
-object WebApi {
-    private inline val WebSocketServerSession.session: UserSession?
-        get() = try {
-            call.sessions.get(SESSION_REGISTER_NAME) as? UserSession
-        } catch (th: Throwable) {
-            null
-        }
-    private inline val PipelineContext<*, ApplicationCall>.session: UserSession?
-        get() = try {
-            context.sessions.get(SESSION_REGISTER_NAME) as? UserSession
-        } catch (th: Throwable) {
-            null
-        }
+@App
+class WebApi : NfApp() {
+    override fun getAppName() = "WebApi"
+    override fun getVersion() = "1.0.0"
+    override fun getAppDescription() = "ÍøÂçAPI"
 
-    private fun PipelineContext<*, ApplicationCall>.setSession(us: UserSession) =
-        context.sessions.set(SESSION_REGISTER_NAME, us)
-
-    private const val SESSION_REGISTER_NAME = "ktor-404"
-
-    open class SimpleJWT(secret: String) {
-        private val algorithm = HMAC256(secret)
-        val verifier = JWT.require(algorithm).build()!!
-        fun sign(name: String): String = JWT.create().withClaim("name", name).sign(algorithm)
-    }
-
-    class ChatClient(val session: DefaultWebSocketSession) {
-        companion object {
-            var lastId = AtomicInteger(0)
-        }
-
-        val id = lastId.getAndIncrement()
-        val name = "user$id"
-    }
-
-    fun entrance() {
+    override fun init() {
         Thread {
             embeddedServer(Netty, port = 4040) {
 //                install(CORS) {
@@ -292,8 +266,36 @@ object WebApi {
                 }
             }.start(wait = true)
         }.start()
+    }
+    private inline val WebSocketServerSession.session: UserSession?
+        get() = try {
+            call.sessions.get(SESSION_REGISTER_NAME) as? UserSession
+        } catch (th: Throwable) {
+            null
+        }
+    private inline val PipelineContext<*, ApplicationCall>.session: UserSession?
+        get() = try {
+            context.sessions.get(SESSION_REGISTER_NAME) as? UserSession
+        } catch (th: Throwable) {
+            null
+        }
 
+    private fun PipelineContext<*, ApplicationCall>.setSession(us: UserSession) =
+        context.sessions.set(SESSION_REGISTER_NAME, us)
 
+    open class SimpleJWT(secret: String) {
+        private val algorithm = HMAC256(secret)
+        val verifier = JWT.require(algorithm).build()!!
+        fun sign(name: String): String = JWT.create().withClaim("name", name).sign(algorithm)
+    }
+
+    class ChatClient(val session: DefaultWebSocketSession) {
+        companion object {
+            var lastId = AtomicInteger(0)
+        }
+
+        val id = lastId.getAndIncrement()
+        val name = "user$id"
     }
 
     class SendMsg(val targets: List<Long>, val msg: String)
@@ -306,4 +308,8 @@ object WebApi {
         val name: String,
         val qid: Long
     )
+
+    companion object {
+        private const val SESSION_REGISTER_NAME = "ktor-404"
+    }
 }

@@ -1,7 +1,6 @@
 package com.xiaoyv404.mirai
 
 import com.xiaoyv404.mirai.app.someThinkEntrance
-import com.xiaoyv404.mirai.app.webAPI.WebApi
 import com.xiaoyv404.mirai.core.App
 import com.xiaoyv404.mirai.core.NfApp
 import com.xiaoyv404.mirai.core.NfApplicationManager
@@ -35,7 +34,6 @@ object PluginMain : KotlinPlugin(
         connect()
 
         someThinkEntrance()
-        WebApi.entrance()
 
         val f = Reflections("com.xiaoyv404.mirai.app")
         val set: Set<Class<*>> = f.getTypesAnnotatedWith(App::class.java)
