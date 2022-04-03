@@ -10,9 +10,10 @@ import net.mamoe.mirai.contact.MemberPermission
 import net.mamoe.mirai.contact.remarkOrNameCardOrNick
 import net.mamoe.mirai.contact.remarkOrNick
 import net.mamoe.mirai.event.GlobalEventChannel
+import net.mamoe.mirai.event.ListeningStatus
 import net.mamoe.mirai.event.events.BotInvitedJoinGroupRequestEvent
+import net.mamoe.mirai.event.events.FriendMessageEvent
 import net.mamoe.mirai.event.events.MessageEvent
-import net.mamoe.mirai.event.subscribeFriendMessages
 import net.mamoe.mirai.event.subscribeGroupMessages
 import net.mamoe.mirai.message.code.MiraiCode
 import net.mamoe.mirai.message.data.PlainText
@@ -27,7 +28,8 @@ class SomeThing : NfApp(), IFshApp {
     override fun getAppName() = "SomeThing"
     override fun getVersion() = "1.0.0"
     override fun getAppDescription() = "杂七杂八的东西"
-    override fun getCommands(): Array<String> = arrayOf("~me", "-status", "-help", "-sendto", "-bot", "-ban")
+    override fun getCommands(): Array<String> =
+        arrayOf("~me", "-status", "-help", "-sendto", "-bot", "-ban", "!!开启全体广播")
 
     private val banOptions = Options().apply {
         addOption("g", "group", true, "群聊ID")
@@ -37,17 +39,18 @@ class SomeThing : NfApp(), IFshApp {
 
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
         when (args[0]) {
-            "~me"     -> debuMe(args.getOrNull(2), msg)
-            "-status" -> status(msg)
-            "-help"   -> help(msg)
-            "-sendto" -> sendto(msg)
-            "-bot"    -> {
+            "~me"      -> debuMe(args.getOrNull(2), msg)
+            "-status"  -> status(msg)
+            "-help"    -> help(msg)
+            "-sendto"  -> sendto(msg)
+            "-bot"     -> {
                 if (args[1] == "add")
                     addBot(args.getOrNull(2) ?: return false, msg)
             }
-            "-ban"    -> {
+            "-ban"     -> {
                 ban((args.getOrNull(1) ?: return false).toLong(), IFshApp.cmdLine(banOptions, args), msg)
             }
+            "!!开启全体广播" -> adminBroadcast(msg)
         }
         return true
     }
@@ -153,7 +156,37 @@ class SomeThing : NfApp(), IFshApp {
             target.mute(time)
     }
 
-    private var broadcastStatus = false
+    private suspend fun adminBroadcast(msg: MessageEvent) {
+        val sender = msg.sender
+        val subject = msg.subject
+        if (!sender.isAdmin()) {
+            return
+        }
+        subject.sendMessage("全体广播已开启")
+        GlobalEventChannel.subscribe<FriendMessageEvent> {
+            if (sender.id == it.sender.id) {
+                val entryMassage = it.message.serializeToMiraiCode()
+                if (entryMassage == "!!关闭全体广播") {
+                    subject.sendMessage("全体广播已关闭")
+                    return@subscribe ListeningStatus.STOPPED
+                }
+                if (entryMassage != "") {
+                    bot.groups.forEach { gp ->
+                        val status = Group {
+                            id = gp.id
+                        }.noticeSwitchRead("AdminBroadcast")
+                        if (status) {
+                            bot.getGroup(gp.id)
+                                ?.sendMessage(
+                                    MiraiCode.deserializeMiraiCode(entryMassage)
+                                )
+                        }
+                    }
+                }
+            }
+            return@subscribe ListeningStatus.LISTENING
+        }
+    }
 
     override fun init() {
         GlobalEventChannel.subscribeAlways(
@@ -167,7 +200,6 @@ class SomeThing : NfApp(), IFshApp {
                 )
             accept()
         }
-
         GlobalEventChannel.subscribeGroupMessages {
             at(2083664136L).invoke {
                 var chain = buildMessageChain {
@@ -199,42 +231,5 @@ class SomeThing : NfApp(), IFshApp {
                 bot.getFriend(3068755284)?.sendMessage(chain)
             }
         }
-        GlobalEventChannel.subscribeFriendMessages {
-            always {
-                if (sender.isAdmin()) {
-                    when (message.contentToString()) {
-                        "!!开关全体广播" -> {
-                            broadcastStatus = !broadcastStatus
-                            friend.sendMessage(
-                                "全体广播已" +
-                                    if (broadcastStatus)
-                                        "开启"
-                                    else
-                                        "关闭"
-                            )
-                        }
-                        else       -> {
-                            when {
-                                broadcastStatus -> {
-                                    val entryMassage = message.serializeToMiraiCode()
-                                    if (entryMassage != "") {
-                                        bot.groups.forEach {
-                                            val status = Group {
-                                                id = it.id
-                                            }.noticeSwitchRead("AdminBroadcast")
-                                            if (status) {
-                                                bot.getGroup(it.id)
-                                                    ?.sendMessage(
-                                                        MiraiCode.deserializeMiraiCode(entryMassage)
-                                                    )
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }    }
+    }
 }
