@@ -1,13 +1,17 @@
 package com.xiaoyv404.mirai.app
 
 import com.xiaoyv404.mirai.PluginMain
+import com.xiaoyv404.mirai.app.fsh.IFshApp
 import com.xiaoyv404.mirai.core.App
 import com.xiaoyv404.mirai.core.NfApp
 import com.xiaoyv404.mirai.databace.Command
 import com.xiaoyv404.mirai.databace.dao.*
+import net.mamoe.mirai.contact.Member
 import net.mamoe.mirai.contact.remarkOrNameCardOrNick
+import net.mamoe.mirai.contact.remarkOrNick
 import net.mamoe.mirai.event.GlobalEventChannel
 import net.mamoe.mirai.event.events.BotInvitedJoinGroupRequestEvent
+import net.mamoe.mirai.event.events.MessageEvent
 import net.mamoe.mirai.event.subscribeFriendMessages
 import net.mamoe.mirai.event.subscribeGroupMessages
 import net.mamoe.mirai.message.code.MiraiCode
@@ -17,10 +21,35 @@ import net.mamoe.mirai.message.nextMessage
 import kotlin.coroutines.EmptyCoroutineContext
 
 @App
-class SomeThing : NfApp(){
+class SomeThing : NfApp(), IFshApp {
     override fun getAppName() = "SomeThing"
     override fun getVersion() = "1.0.0"
     override fun getAppDescription() = "杂七杂八的东西"
+    override fun getCommands(): Array<String> = arrayOf("~me")
+
+    override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
+        if (args[1] == "~me") {
+            debuMe(args.getOrNull(2), msg)
+        }
+        return true
+    }
+
+    private suspend fun debuMe(data: String?, msg: MessageEvent) {
+        val subject = msg.subject
+        val sender = msg.sender
+        if (sender.isNotBot() && authorityIdentification(
+                sender.id,
+                subject.id,
+                "DebuMe"
+            )
+        ) {
+            val name = data ?: if (sender is Member) {
+                sender.remarkOrNameCardOrNick
+            } else
+                sender.remarkOrNick
+            subject.sendMessage("*${name}坐在地上哭着说道「可怜哒${name}什么时候才有大佬们百分之一厉害呀……」")
+        }
+    }
 
     private var broadcastStatus = false
 
@@ -55,21 +84,6 @@ class SomeThing : NfApp(){
                         else "关"
                             + "的哦"
                 )
-            }
-            matching(Command.debuMe) {
-                if (sender.isNotBot() && authorityIdentification(
-                        sender.id,
-                        group.id,
-                        "DebuMe"
-                    )
-                ) {
-                    val rd = it.groups
-                    val name = if (rd[2]!!.value == "")
-                        sender.remarkOrNameCardOrNick
-                    else
-                        rd[2]!!.value
-                    group.sendMessage("*${name}坐在地上哭着说道「可怜哒${name}什么时候才有大佬们百分之一厉害呀……」")
-                }
             }
             finding(Command.addBot) {
                 val rd = it.groups

@@ -18,5 +18,4 @@ object Command {
     val ban = Regex("^(404 ban ((-h\$|--help\$)|(([0-9]+) ([0-9]+) (([0-9]+)|unban))))\$")
     val join = Regex("^(404 join ((-h\$|--help\$)|( [0-9]+)))\$")
     val addBot = Regex("^((404 add bot|Ìí¼Ó»úÆ÷ÈË) (@?([0-9]+)))\$")
-    val debuMe= Regex("^(~me(.*))$")
 }
