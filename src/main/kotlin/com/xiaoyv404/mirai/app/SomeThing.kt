@@ -4,9 +4,9 @@ import com.xiaoyv404.mirai.PluginMain
 import com.xiaoyv404.mirai.app.fsh.IFshApp
 import com.xiaoyv404.mirai.core.App
 import com.xiaoyv404.mirai.core.NfApp
-import com.xiaoyv404.mirai.databace.Command
 import com.xiaoyv404.mirai.databace.dao.*
 import net.mamoe.mirai.contact.Member
+import net.mamoe.mirai.contact.MemberPermission
 import net.mamoe.mirai.contact.remarkOrNameCardOrNick
 import net.mamoe.mirai.contact.remarkOrNick
 import net.mamoe.mirai.event.GlobalEventChannel
@@ -18,6 +18,8 @@ import net.mamoe.mirai.message.code.MiraiCode
 import net.mamoe.mirai.message.data.PlainText
 import net.mamoe.mirai.message.data.buildMessageChain
 import net.mamoe.mirai.message.nextMessage
+import org.apache.commons.cli.CommandLine
+import org.apache.commons.cli.Options
 import kotlin.coroutines.EmptyCoroutineContext
 
 @App
@@ -25,7 +27,13 @@ class SomeThing : NfApp(), IFshApp {
     override fun getAppName() = "SomeThing"
     override fun getVersion() = "1.0.0"
     override fun getAppDescription() = "杂七杂八的东西"
-    override fun getCommands(): Array<String> = arrayOf("~me", "-status", "-help", "-sendto", "-bot")
+    override fun getCommands(): Array<String> = arrayOf("~me", "-status", "-help", "-sendto", "-bot", "-ban")
+
+    private val banOptions = Options().apply {
+        addOption("g", "group", true, "群聊ID")
+        addOption("u", "unBan", false, "取消禁言")
+        addOption("t", "time", true, "禁言时间")
+    }
 
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
         when (args[0]) {
@@ -36,6 +44,9 @@ class SomeThing : NfApp(), IFshApp {
             "-bot"    -> {
                 if (args[1] == "add")
                     addBot(args.getOrNull(2) ?: return false, msg)
+            }
+            "-ban"    -> {
+                ban((args.getOrNull(1) ?: return false).toLong(), IFshApp.cmdLine(banOptions, args), msg)
             }
         }
         return true
@@ -100,6 +111,48 @@ class SomeThing : NfApp(), IFshApp {
         }
     }
 
+    private suspend fun ban(uid: Long, data: CommandLine, msg: MessageEvent) {
+        val sender = msg.sender
+        val subject = msg.subject
+
+        if (!sender.isAdmin())
+            return
+
+        val gid = if (data.hasOption("group"))
+            data.getOptionValue("group").toLong()
+        else if (subject is net.mamoe.mirai.contact.Group)
+            subject.id
+        else {
+            subject.sendMessage("缺少参数: groupId")
+            return
+        }
+
+
+        val time = if (data.hasOption("time"))
+            data.getOptionValue("time").toInt()
+        else
+            60
+
+        val target = try {
+            val group = subject.bot
+                .getGroupOrFail(gid)
+            if (group.botAsMember.permission == MemberPermission.MEMBER) {
+                subject.sendMessage("404没有权限qwq")
+                return
+            }
+            group.getOrFail(uid)
+        } catch (e: NoSuchElementException) {
+            subject.sendMessage("无效的群或成员")
+            return
+        }
+
+
+        if (data.hasOption("unBan"))
+            target.unmute()
+        else
+            target.mute(time)
+    }
+
     private var broadcastStatus = false
 
     override fun init() {
@@ -147,34 +200,6 @@ class SomeThing : NfApp(), IFshApp {
             }
         }
         GlobalEventChannel.subscribeFriendMessages {
-            matching(Command.ban) {
-                if (sender.isAdmin()) {
-                    val rd = it.groups
-                    when {
-                        (rd[3]!!.value == "-h") or (rd[3]!!.value == "--help") -> friend.sendMessage("help")
-                        rd[7]!!.value == "unban"                               -> {
-                            try {
-                                bot
-                                    .getGroupOrFail(rd[5]!!.value.toLong())
-                                    .getOrFail(rd[6]!!.value.toLong())
-                                    .unmute()
-                            } catch (e: NoSuchElementException) {
-                                friend.sendMessage("无效的群或成员")
-                            }
-                        }
-                        else                                                   -> {
-                            try {
-                                bot
-                                    .getGroupOrFail(rd[5]!!.value.toLong())
-                                    .getOrFail(rd[6]!!.value.toLong())
-                                    .mute(rd[8]!!.value.toInt())
-                            } catch (e: NoSuchElementException) {
-                                friend.sendMessage("无效的群或成员")
-                            }
-                        }
-                    }
-                }
-            }
             always {
                 if (sender.isAdmin()) {
                     when (message.contentToString()) {
