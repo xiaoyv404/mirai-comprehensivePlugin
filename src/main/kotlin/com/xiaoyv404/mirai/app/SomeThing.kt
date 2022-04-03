@@ -25,11 +25,12 @@ class SomeThing : NfApp(), IFshApp {
     override fun getAppName() = "SomeThing"
     override fun getVersion() = "1.0.0"
     override fun getAppDescription() = "杂七杂八的东西"
-    override fun getCommands(): Array<String> = arrayOf("~me")
+    override fun getCommands(): Array<String> = arrayOf("~me", "-status")
 
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
-        if (args[1] == "~me") {
-            debuMe(args.getOrNull(2), msg)
+        when (args[1]) {
+            "~me"     -> debuMe(args.getOrNull(2), msg)
+            "-status" -> status(msg)
         }
         return true
     }
@@ -49,6 +50,15 @@ class SomeThing : NfApp(), IFshApp {
                 sender.remarkOrNick
             subject.sendMessage("*${name}坐在地上哭着说道「可怜哒${name}什么时候才有大佬们百分之一厉害呀……」")
         }
+    }
+
+    private suspend fun status(msg: MessageEvent) {
+        val subject = msg.subject
+        val bot = msg.bot
+        subject.sendMessage(
+            "Bot: ${bot.nick}(${bot.id})\n" +
+                "status: Online "
+        )
     }
 
     private var broadcastStatus = false
