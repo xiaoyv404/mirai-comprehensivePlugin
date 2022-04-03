@@ -76,15 +76,6 @@ class SomeThing : NfApp(), IFshApp {
                         "status: Online "
                 )
             }
-            case("BiliBili解析功能") {
-                group.sendMessage(
-                    "w, BiliBili解析功能现在是" +
-                        if (authorityIdentification(0L, group.id, "BiliBiliParsing"))
-                            "开"
-                        else "关"
-                            + "的哦"
-                )
-            }
             finding(Command.addBot) {
                 val rd = it.groups
                 val idL = rd[4]!!.value.toLong()
