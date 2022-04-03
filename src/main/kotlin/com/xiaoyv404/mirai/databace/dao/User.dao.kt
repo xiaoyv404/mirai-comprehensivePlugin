@@ -15,7 +15,6 @@ interface User : Entity<User> {
     var id: Long
     val admin: Boolean
     var bot: Boolean
-    val setu: Boolean
 }
 
 private val Database.users get() = this.sequenceOf(Users)
@@ -82,5 +81,4 @@ object Users : Table<User>("Users") {
     val id = long("id").primaryKey().bindTo { it.id }
     val admin = boolean("admin").bindTo { it.admin }
     val bot = boolean("bot").bindTo { it.bot }
-    val setu = boolean("setu").bindTo { it.setu }
 }
