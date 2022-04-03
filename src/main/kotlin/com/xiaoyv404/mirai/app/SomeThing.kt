@@ -25,12 +25,18 @@ class SomeThing : NfApp(), IFshApp {
     override fun getAppName() = "SomeThing"
     override fun getVersion() = "1.0.0"
     override fun getAppDescription() = "杂七杂八的东西"
-    override fun getCommands(): Array<String> = arrayOf("~me", "-status")
+    override fun getCommands(): Array<String> = arrayOf("~me", "-status", "-help", "-sendto", "-bot")
 
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
         when (args[1]) {
             "~me"     -> debuMe(args.getOrNull(2), msg)
             "-status" -> status(msg)
+            "-help"   -> help(msg)
+            "-sendto" -> sendto(msg)
+            "-bot"    -> {
+                if (args[2] == "add")
+                    addBot(args.getOrNull(3) ?: return false, msg)
+            }
         }
         return true
     }
@@ -61,6 +67,39 @@ class SomeThing : NfApp(), IFshApp {
         )
     }
 
+    private suspend fun help(msg: MessageEvent) {
+        val subject = msg.subject
+        subject.sendMessage("https://www.xiaoyv404.top/archives/404.html")
+    }
+
+    private suspend fun sendto(msg: MessageEvent) {
+        val subject = msg.subject
+        val sender = msg.sender
+        if (sender.isAdmin()) {
+            subject.sendMessage("请发送群id")
+            val gpIds = Regex("\\d+").findAll(msg.nextMessage().contentToString()).toList()
+            PluginMain.logger.info("群聊个数${gpIds.size}")
+            subject.sendMessage("请发送msg")
+            val nextMsg = msg.nextMessage()
+            gpIds.forEach {
+                msg.bot.getGroup(it.value.toLong())?.sendMessage(nextMsg)
+            }
+        }
+    }
+
+    private suspend fun addBot(data: String, msg: MessageEvent) {
+        val subject = msg.subject
+        val sender = msg.sender
+        if (sender.isAdmin()) {
+            val idA = (Regex("\\d+").find(data) ?: return).value.toLong()
+            User {
+                id = idA
+                bot = true
+            }.save()
+            subject.sendMessage("添加成功~")
+        }
+    }
+
     private var broadcastStatus = false
 
     override fun init() {
@@ -77,25 +116,6 @@ class SomeThing : NfApp(), IFshApp {
         }
 
         GlobalEventChannel.subscribeGroupMessages {
-            case("404 help"){
-                group.sendMessage("https://www.xiaoyv404.top/archives/404.html")
-            }
-            case("404 status") {
-                group.sendMessage(
-                    "Bot: ${bot.nick}(${bot.id})\n" +
-                        "status: Online "
-                )
-            }
-            finding(Command.addBot) {
-                val rd = it.groups
-                val idL = rd[4]!!.value.toLong()
-                User{
-                    id = idL
-                    bot = true
-                }.save()
-                group.sendMessage("添加成功~")
-            }
-
             at(2083664136L).invoke {
                 var chain = buildMessageChain {
                     +PlainText("${sender.nick}(${sender.id})在${group.name}(${group.id})中对主人说：\n")
@@ -155,22 +175,6 @@ class SomeThing : NfApp(), IFshApp {
                     }
                 }
             }
-            matching(Command.join) {}
-
-            matching(Regex("404 sendto")) {
-                if (sender.isAdmin()) {
-                    subject.sendMessage("请发送群id")
-                    val gp = nextMessage().contentToString().split("\n")
-                    PluginMain.logger.info("群聊个数${gp.size}")
-                    subject.sendMessage("请发送msg")
-                    val msg = nextMessage()
-                    gp.forEach {
-                        val gpL = it.toLong()
-                        bot.getGroup(gpL)?.sendMessage(msg)
-                    }
-                }
-            }
-
             always {
                 if (sender.isAdmin()) {
                     when (message.contentToString()) {
