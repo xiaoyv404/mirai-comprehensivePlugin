@@ -28,14 +28,14 @@ class SomeThing : NfApp(), IFshApp {
     override fun getCommands(): Array<String> = arrayOf("~me", "-status", "-help", "-sendto", "-bot")
 
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
-        when (args[1]) {
+        when (args[0]) {
             "~me"     -> debuMe(args.getOrNull(2), msg)
             "-status" -> status(msg)
             "-help"   -> help(msg)
             "-sendto" -> sendto(msg)
             "-bot"    -> {
-                if (args[2] == "add")
-                    addBot(args.getOrNull(3) ?: return false, msg)
+                if (args[1] == "add")
+                    addBot(args.getOrNull(2) ?: return false, msg)
             }
         }
         return true
