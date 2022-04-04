@@ -7,6 +7,7 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import net.mamoe.mirai.contact.Contact
+import net.mamoe.mirai.contact.Contact.Companion.sendImage
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.contact.recallMessage
 import net.mamoe.mirai.event.GlobalEventChannel
@@ -14,6 +15,7 @@ import net.mamoe.mirai.event.events.MessageEvent
 import net.mamoe.mirai.event.events.MessageRecallEvent
 import net.mamoe.mirai.message.MessageReceipt
 import net.mamoe.mirai.message.data.*
+import java.io.InputStream
 
 object MessageProcessor {
     private val log = PluginMain.logger
@@ -68,19 +70,29 @@ object MessageProcessor {
         Database.rdb.async().set(redisKey, sentIdentity, setArgs)
     }
 
-    suspend fun reply(src: MessageEvent, msg: MessageChain, quote: Boolean): MessageReceipt<Contact> {
-        val contact = src.subject
-        val toSend = if (quote && (contact is Group)) QuoteReply(src.source).plus(msg) else msg
-        val sent = contact.sendMessage(toSend)
+    private suspend fun replyImg(src: MessageEvent, input: InputStream, type: String?): MessageReceipt<Contact> {
+        val sent = src.subject.sendImage(input, type)
         markSent(src, sent)
         return sent
     }
 
-    suspend fun reply(src: MessageEvent, msg: Message, quote: Boolean): MessageReceipt<Contact> {
-        return reply(src, msg.toMessageChain(), quote)
+    suspend fun MessageEvent.replayImg(input: InputStream, type: String?): MessageReceipt<Contact> {
+        return replyImg(this, input, type)
+    }
+
+    suspend fun MessageEvent.reply(msg: MessageChain, quote: Boolean): MessageReceipt<Contact> {
+        val contact = this.subject
+        val toSend = if (quote && (contact is Group)) QuoteReply(this.source).plus(msg) else msg
+        val sent = contact.sendMessage(toSend)
+        markSent(this, sent)
+        return sent
+    }
+
+    suspend fun MessageEvent.reply(msg: Message, quote: Boolean): MessageReceipt<Contact> {
+        return this.reply( msg.toMessageChain(), quote)
     }
 
     suspend fun MessageEvent.reply(msg: String, quote: Boolean = false): MessageReceipt<Contact> {
-        return reply(this, PlainText(msg), quote)
+        return this.reply(PlainText(msg), quote)
     }
 }

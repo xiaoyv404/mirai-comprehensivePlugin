@@ -95,7 +95,7 @@ class Fsh : NfAppMessageHandler(){
                 if (replyC.isEmpty())
                     return
                 val reply = replyC.random().reply.cMsgToMiraiMsg(msg.subject)
-                reply(msg, MiraiCode.deserializeMiraiCode(reply), quote = false)
+                msg.reply(MiraiCode.deserializeMiraiCode(reply), quote = false)
             }
         }
     }
