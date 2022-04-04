@@ -5,6 +5,8 @@ import com.xiaoyv404.mirai.app.fsh.IFshApp
 import com.xiaoyv404.mirai.core.App
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
 import com.xiaoyv404.mirai.core.NfApp
+import com.xiaoyv404.mirai.core.gid
+import com.xiaoyv404.mirai.core.uid
 import com.xiaoyv404.mirai.databace.dao.*
 import net.mamoe.mirai.contact.Member
 import net.mamoe.mirai.contact.MemberPermission
@@ -59,11 +61,11 @@ class SomeThing : NfApp(), IFshApp {
     }
 
     private suspend fun debuMe(data: String?, msg: MessageEvent) {
-        val subject = msg.subject
         val sender = msg.sender
+
         if (authorityIdentification(
-                sender.id,
-                subject.id,
+                msg.uid(),
+                msg.gid(),
                 "DebuMe"
             )
         ) {
@@ -90,42 +92,40 @@ class SomeThing : NfApp(), IFshApp {
     }
 
     private suspend fun sendto(msg: MessageEvent) {
-        val sender = msg.sender
-        if (sender.isAdmin()) {
-            msg.reply("请发送群id")
-            val gpIds = Regex("\\d+").findAll(msg.nextMessage().contentToString()).toList()
-            log.info("群聊个数${gpIds.size}")
-            msg.reply("请发送msg")
-            val nextMsg = msg.nextMessage()
-            gpIds.forEach {
-                msg.bot.getGroup(it.value.toLong())?.sendMessage(nextMsg)
-            }
+        if (msg.isNotAdmin())
+            return
+
+        msg.reply("请发送群id")
+        val gpIds = Regex("\\d+").findAll(msg.nextMessage().contentToString()).toList()
+        log.info("群聊个数${gpIds.size}")
+        msg.reply("请发送msg")
+        val nextMsg = msg.nextMessage()
+        gpIds.forEach {
+            msg.bot.getGroup(it.value.toLong())?.sendMessage(nextMsg)
         }
     }
 
     private suspend fun addBot(data: String, msg: MessageEvent) {
-        val sender = msg.sender
-        if (sender.isAdmin()) {
-            val idA = (Regex("\\d+").find(data) ?: return).value.toLong()
-            User {
-                id = idA
-                bot = true
-            }.save()
-            msg.reply("添加成功~")
-        }
+        if (msg.isNotAdmin())
+            return
+
+        val idA = (Regex("\\d+").find(data) ?: return).value.toLong()
+        User {
+            id = idA
+            bot = true
+        }.save()
+        msg.reply("添加成功~")
+
     }
 
     private suspend fun ban(uid: Long, data: CommandLine, msg: MessageEvent) {
-        val sender = msg.sender
-        val subject = msg.subject
-
-        if (!sender.isAdmin())
+        if (msg.isNotAdmin())
             return
 
         val gid = if (data.hasOption("group"))
             data.getOptionValue("group").toLong()
-        else if (subject is net.mamoe.mirai.contact.Group)
-            subject.id
+        else if (msg.gid() != 0L)
+            msg.gid()
         else {
             msg.reply("缺少参数: groupId")
             return
@@ -138,7 +138,7 @@ class SomeThing : NfApp(), IFshApp {
             60
 
         val target = try {
-            val group = subject.bot
+            val group = msg.subject.bot
                 .getGroupOrFail(gid)
             if (group.botAsMember.permission == MemberPermission.MEMBER) {
                 msg.reply("404没有权限qwq")
@@ -158,13 +158,12 @@ class SomeThing : NfApp(), IFshApp {
     }
 
     private suspend fun adminBroadcast(msg: MessageEvent) {
-        val sender = msg.sender
-        if (!sender.isAdmin()) {
+        if (msg.isNotAdmin())
             return
-        }
+
         msg.reply("全体广播已开启")
         GlobalEventChannel.subscribe<FriendMessageEvent> {
-            if (sender.id == it.sender.id) {
+            if (msg.uid() == it.sender.id) {
                 val entryMassage = it.message.serializeToMiraiCode()
                 if (entryMassage == "!!关闭全体广播") {
                     msg.reply("全体广播已关闭")

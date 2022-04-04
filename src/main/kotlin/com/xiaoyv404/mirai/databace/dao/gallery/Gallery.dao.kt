@@ -50,6 +50,7 @@ fun Gallery.deleteById(){
     db.gallerys.removeIf { it.id eq this.id }
 }
 
+
 object Gallerys : Table<Gallery>("Gallerys") {
     val id = long("id").primaryKey().bindTo { it.id }
     val title = varchar("title").bindTo { it.title }
