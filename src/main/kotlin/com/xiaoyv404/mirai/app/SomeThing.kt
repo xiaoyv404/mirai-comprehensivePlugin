@@ -3,6 +3,7 @@ package com.xiaoyv404.mirai.app
 import com.xiaoyv404.mirai.PluginMain
 import com.xiaoyv404.mirai.app.fsh.IFshApp
 import com.xiaoyv404.mirai.core.App
+import com.xiaoyv404.mirai.core.MessageProcessor.reply
 import com.xiaoyv404.mirai.core.NfApp
 import com.xiaoyv404.mirai.databace.dao.*
 import net.mamoe.mirai.contact.Member
@@ -37,6 +38,8 @@ class SomeThing : NfApp(), IFshApp {
         addOption("t", "time", true, "禁言时间")
     }
 
+    private val log = PluginMain.logger
+
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
         when (args[0]) {
             "~me"      -> debuMe(args.getOrNull(2), msg)
@@ -68,32 +71,31 @@ class SomeThing : NfApp(), IFshApp {
                 sender.remarkOrNameCardOrNick
             } else
                 sender.remarkOrNick
-            subject.sendMessage("*${name}坐在地上哭着说道「可怜哒${name}什么时候才有大佬们百分之一厉害呀……」")
+            msg.reply(
+                "*${name}坐在地上哭着说道「可怜哒${name}什么时候才有大佬们百分之一厉害呀……」"
+            )
         }
     }
 
     private suspend fun status(msg: MessageEvent) {
-        val subject = msg.subject
         val bot = msg.bot
-        subject.sendMessage(
+        msg.reply(
             "Bot: ${bot.nick}(${bot.id})\n" +
                 "status: Online "
         )
     }
 
     private suspend fun help(msg: MessageEvent) {
-        val subject = msg.subject
-        subject.sendMessage("https://www.xiaoyv404.top/archives/404.html")
+        msg.reply("https://www.xiaoyv404.top/archives/404.html")
     }
 
     private suspend fun sendto(msg: MessageEvent) {
-        val subject = msg.subject
         val sender = msg.sender
         if (sender.isAdmin()) {
-            subject.sendMessage("请发送群id")
+            msg.reply("请发送群id")
             val gpIds = Regex("\\d+").findAll(msg.nextMessage().contentToString()).toList()
-            PluginMain.logger.info("群聊个数${gpIds.size}")
-            subject.sendMessage("请发送msg")
+            log.info("群聊个数${gpIds.size}")
+            msg.reply("请发送msg")
             val nextMsg = msg.nextMessage()
             gpIds.forEach {
                 msg.bot.getGroup(it.value.toLong())?.sendMessage(nextMsg)
@@ -102,7 +104,6 @@ class SomeThing : NfApp(), IFshApp {
     }
 
     private suspend fun addBot(data: String, msg: MessageEvent) {
-        val subject = msg.subject
         val sender = msg.sender
         if (sender.isAdmin()) {
             val idA = (Regex("\\d+").find(data) ?: return).value.toLong()
@@ -110,7 +111,7 @@ class SomeThing : NfApp(), IFshApp {
                 id = idA
                 bot = true
             }.save()
-            subject.sendMessage("添加成功~")
+            msg.reply("添加成功~")
         }
     }
 
@@ -126,7 +127,7 @@ class SomeThing : NfApp(), IFshApp {
         else if (subject is net.mamoe.mirai.contact.Group)
             subject.id
         else {
-            subject.sendMessage("缺少参数: groupId")
+            msg.reply("缺少参数: groupId")
             return
         }
 
@@ -140,12 +141,12 @@ class SomeThing : NfApp(), IFshApp {
             val group = subject.bot
                 .getGroupOrFail(gid)
             if (group.botAsMember.permission == MemberPermission.MEMBER) {
-                subject.sendMessage("404没有权限qwq")
+                msg.reply("404没有权限qwq")
                 return
             }
             group.getOrFail(uid)
         } catch (e: NoSuchElementException) {
-            subject.sendMessage("无效的群或成员")
+            msg.reply("无效的群或成员")
             return
         }
 
@@ -158,16 +159,15 @@ class SomeThing : NfApp(), IFshApp {
 
     private suspend fun adminBroadcast(msg: MessageEvent) {
         val sender = msg.sender
-        val subject = msg.subject
         if (!sender.isAdmin()) {
             return
         }
-        subject.sendMessage("全体广播已开启")
+        msg.reply("全体广播已开启")
         GlobalEventChannel.subscribe<FriendMessageEvent> {
             if (sender.id == it.sender.id) {
                 val entryMassage = it.message.serializeToMiraiCode()
                 if (entryMassage == "!!关闭全体广播") {
-                    subject.sendMessage("全体广播已关闭")
+                    msg.reply("全体广播已关闭")
                     return@subscribe ListeningStatus.STOPPED
                 }
                 if (entryMassage != "") {

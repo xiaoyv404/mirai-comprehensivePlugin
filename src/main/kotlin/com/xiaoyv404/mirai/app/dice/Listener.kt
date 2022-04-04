@@ -3,6 +3,7 @@ package com.xiaoyv404.mirai.app.dice
 import com.xiaoyv404.mirai.PluginMain
 import com.xiaoyv404.mirai.app.fsh.IFshApp
 import com.xiaoyv404.mirai.core.App
+import com.xiaoyv404.mirai.core.MessageProcessor.reply
 import com.xiaoyv404.mirai.core.NfApp
 import net.mamoe.mirai.event.events.MessageEvent
 
@@ -16,8 +17,6 @@ class Dice : NfApp(), IFshApp {
     private val log = PluginMain.logger
 
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
-        val subject = msg.subject
-
         val rd = args.getOrNull(1)?.let { Regex("^((\\d+)((\\((\\d+)\\))|(:(\\d+)))?)\$").find(it) }?.groups
 
         val start = rd?.get(2)?.value?.toLong() ?: 1L
@@ -30,7 +29,7 @@ class Dice : NfApp(), IFshApp {
             6L
 
         if (start == end) {
-            subject.sendMessage("有什么意义呢，恼")
+            msg.reply("有什么意义呢，恼")
             return true
         }
 
@@ -45,7 +44,8 @@ class Dice : NfApp(), IFshApp {
                     end: $end
                 """.trimIndent()
         )
-        subject.sendMessage("result: $result")
+
+        msg.reply("result: $result")
 
         return true
     }

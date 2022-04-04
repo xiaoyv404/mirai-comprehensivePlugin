@@ -3,7 +3,11 @@ package com.xiaoyv404.mirai.app.fsh
 import com.xiaoyv404.mirai.PluginMain
 import com.xiaoyv404.mirai.app.thesaurus.cMsgToMiraiMsg
 import com.xiaoyv404.mirai.app.thesaurus.parseMsg
-import com.xiaoyv404.mirai.core.*
+import com.xiaoyv404.mirai.core.App
+import com.xiaoyv404.mirai.core.MessageProcessor.reply
+import com.xiaoyv404.mirai.core.NfApp
+import com.xiaoyv404.mirai.core.NfAppMessageHandler
+import com.xiaoyv404.mirai.core.NfApplicationManager
 import com.xiaoyv404.mirai.databace.dao.Thesauru
 import com.xiaoyv404.mirai.databace.dao.authorityIdentification
 import com.xiaoyv404.mirai.databace.dao.findByQuestion
@@ -76,7 +80,7 @@ class Fsh : NfAppMessageHandler(){
                         fshApp.submitCallLimiter(uid, gid)
                     }
                 } catch (e: Exception) {
-                    MessageProcessor.reply(msg, "执行时发生内部错误", quote = true)
+                    msg.reply("执行时发生内部错误", quote = true)
                     log.warning("处理${argsList[0]}命令发生异常\n$e")
                 }
             }
@@ -91,7 +95,7 @@ class Fsh : NfAppMessageHandler(){
                 if (replyC.isEmpty())
                     return
                 val reply = replyC.random().reply.cMsgToMiraiMsg(msg.subject)
-                MessageProcessor.reply(msg, MiraiCode.deserializeMiraiCode(reply), quote = false)
+                reply(msg, MiraiCode.deserializeMiraiCode(reply), quote = false)
             }
         }
     }

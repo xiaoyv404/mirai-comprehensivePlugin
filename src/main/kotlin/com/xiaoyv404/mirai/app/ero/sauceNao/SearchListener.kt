@@ -2,6 +2,7 @@ package com.xiaoyv404.mirai.app.ero.sauceNao
 
 import com.xiaoyv404.mirai.app.fsh.IFshApp
 import com.xiaoyv404.mirai.core.App
+import com.xiaoyv404.mirai.core.MessageProcessor.reply
 import com.xiaoyv404.mirai.core.NfApp
 import com.xiaoyv404.mirai.databace.dao.authorityIdentification
 import net.mamoe.mirai.event.events.MessageEvent
@@ -33,7 +34,7 @@ class SauceNaoImgSearch : NfApp(), IFshApp {
             val sauceNao = SauceNaoRequester(subject)
             val image = msg.message[Image]
             if (image == null) {
-                subject.sendMessage(msg.message.quote() + "没有图片的说,请在60s内发送图片")
+                msg.reply("没有图片的说,请在60s内发送图片",true)
                 val nextMsg = msg.nextMessage()
                 //判断发送的时间
                 if (nextMsg.time - msg.time < 60) {

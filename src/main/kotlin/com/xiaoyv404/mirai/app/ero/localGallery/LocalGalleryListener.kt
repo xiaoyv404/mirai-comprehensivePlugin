@@ -3,7 +3,7 @@ package com.xiaoyv404.mirai.app.ero.localGallery
 import com.xiaoyv404.mirai.PluginMain
 import com.xiaoyv404.mirai.app.fsh.IFshApp
 import com.xiaoyv404.mirai.core.App
-import com.xiaoyv404.mirai.core.MessageProcessor
+import com.xiaoyv404.mirai.core.MessageProcessor.reply
 import com.xiaoyv404.mirai.core.NfApp
 import com.xiaoyv404.mirai.databace.dao.authorityIdentification
 import com.xiaoyv404.mirai.databace.dao.gallery.*
@@ -36,7 +36,7 @@ class LocalGallery : NfApp(), IFshApp {
         if (args[1] == "search") {
             val tagName = args.getOrNull(2)
             if (tagName == null) {
-                MessageProcessor.reply(msg, "没名字我怎么搜嘛")
+                msg.reply("没名字我怎么搜嘛")
                 return true
             }
             eroSearch(tagName, msg)
@@ -45,7 +45,7 @@ class LocalGallery : NfApp(), IFshApp {
         if (args[1] == "remove"){
             val id = args.getOrNull(2)?.toLongOrNull()
             if (id == null){
-                MessageProcessor.reply(msg, "没ID我怎么删嘛")
+                msg.reply("没ID我怎么删嘛")
                 return true
             }
             eroRemove(id,msg)
@@ -75,7 +75,7 @@ class LocalGallery : NfApp(), IFshApp {
             val fail = mutableListOf<String>()
             val ids = Regex("\\d+").findAll(
                 if (idData == null) {
-                    subject.sendMessage("没找到图片ID捏，请发送图片ID")
+                    msg.reply("没找到图片ID捏，请发送图片ID", true)
                     msg.nextMessage().contentToString()
                 } else
                     idData
@@ -92,11 +92,11 @@ class LocalGallery : NfApp(), IFshApp {
             }
 
             if (fail.isNotEmpty()) {
-                subject.sendMessage("下载失败 Id 列表")
-                subject.sendMessage(fail.joinToString("，"))
+                msg.reply("下载失败 Id 列表")
+                msg.reply(fail.joinToString("，"))
             }
             if (ids.size >= 5) {
-                subject.sendMessage("完成啦w!")
+                msg.reply("完成啦w!")
             }
         }
     }
@@ -124,7 +124,7 @@ class LocalGallery : NfApp(), IFshApp {
             }.findTagIdByTagName()
             if (tagidA == null) {
                 log.info("[LocalGallerySearch] 未搜索到 TagName $tagNameA")
-                subject.sendMessage("唔....似乎没有呢")
+                msg.reply("唔....似乎没有呢",true)
                 return
             }
 
@@ -160,7 +160,7 @@ class LocalGallery : NfApp(), IFshApp {
         val subject = msg.subject
         val sender = msg.sender
         if (sender.isAdmin()) {
-            subject.sendMessage("正在删除: $idA")
+            msg.reply("正在删除: $idA")
 
             val tags = GalleryTagMap {
                 pid = idA
@@ -193,7 +193,7 @@ class LocalGallery : NfApp(), IFshApp {
             Gallery {
                 id = idA
             }.deleteById()
-            subject.sendMessage(
+            msg.reply(
                 "${idA}已删除\n" +
                     "删除${imgNum}张图片    ${tags.size + 1}条记录"
             )
