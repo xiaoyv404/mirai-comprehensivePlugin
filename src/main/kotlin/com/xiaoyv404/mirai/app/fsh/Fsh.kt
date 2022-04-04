@@ -11,7 +11,7 @@ import com.xiaoyv404.mirai.core.NfApplicationManager
 import com.xiaoyv404.mirai.databace.dao.Thesauru
 import com.xiaoyv404.mirai.databace.dao.authorityIdentification
 import com.xiaoyv404.mirai.databace.dao.findByQuestion
-import com.xiaoyv404.mirai.databace.dao.isNotBot
+import com.xiaoyv404.mirai.databace.dao.isBot
 import net.mamoe.mirai.event.events.MessageEvent
 import net.mamoe.mirai.message.code.MiraiCode
 import net.mamoe.mirai.message.data.OnlineMessageSource
@@ -65,9 +65,9 @@ class Fsh : NfAppMessageHandler(){
             argsList[0] = "-${argsList[0]}"
         }
 
-        if (!uid.isNotBot()) {
+        if (uid.isBot())
             return
-        }
+
 
         // 最后参数的结果
         val fshApp = NfApplicationManager.fshCommands[argsList[0]]

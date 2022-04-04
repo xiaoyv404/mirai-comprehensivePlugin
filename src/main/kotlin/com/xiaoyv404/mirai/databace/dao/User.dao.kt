@@ -41,7 +41,7 @@ fun User.findById(): User?{
     return db.users.find { it.id eq this.id }
 }
 
-fun User.isNotBot(): Boolean {
+fun User.isBot(): Boolean {
     return this.findById()?.bot != true
 }
 
@@ -55,10 +55,10 @@ fun Long.isNotAdmin(): Boolean {
     }.isNotAdmin()
 }
 
-fun Long.isNotBot(): Boolean {
+fun Long.isBot(): Boolean {
     return User {
-        id = this@isNotBot
-    }.isNotBot()
+        id = this@isBot
+    }.isBot()
 }
 
 fun MessageEvent.isNotAdmin(): Boolean {
