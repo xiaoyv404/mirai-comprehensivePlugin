@@ -13,8 +13,8 @@ object PluginConfig : AutoSavePluginConfig("404.404ComprehensiveBotConfig") {
 data class DatabaseConfig(
     @Comment(
         """
-        数据库地址，支持MySQL数据库.
-        默认值：localhost
+        数据库地址，支持postgres数据库.
+        默认值：127.0.0.1
     """
     )
     val address: String = "127.0.0.1",
@@ -33,6 +33,10 @@ data class DatabaseConfig(
     val AdditionalParameters: String = "",
     @Comment("最大连接数，也许是连接池的大小？？？")
     var maximumPoolSize: Int? = 10,
+    @Comment("Redis Ip")
+    val redisAddress: String = "127.0.0.1",
+    @Comment("Redis password")
+    val redisPassword: String = "",
     @Comment("本地代理端口")
     val ProxyPort: Int = 7890,
     @Comment("SauceNAOAPIKEY")

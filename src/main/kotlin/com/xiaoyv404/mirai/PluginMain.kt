@@ -1,6 +1,7 @@
 package com.xiaoyv404.mirai
 
 import com.xiaoyv404.mirai.core.App
+import com.xiaoyv404.mirai.core.MessageProcessor
 import com.xiaoyv404.mirai.core.NfApp
 import com.xiaoyv404.mirai.core.NfApplicationManager
 import com.xiaoyv404.mirai.databace.Database.connect
@@ -31,6 +32,9 @@ object PluginMain : KotlinPlugin(
     override fun onEnable() {
         PluginConfig.reload()
         connect()
+
+        logger.info("×¢²áfmp")
+        MessageProcessor.init()
 
         val f = Reflections("com.xiaoyv404.mirai.app")
         val set: Set<Class<*>> = f.getTypesAnnotatedWith(App::class.java)
