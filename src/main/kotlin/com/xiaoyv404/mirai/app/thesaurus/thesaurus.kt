@@ -1,17 +1,17 @@
 package com.xiaoyv404.mirai.app.thesaurus
 
 import com.xiaoyv404.mirai.PluginMain
-import com.xiaoyv404.mirai.databace.dao.authorityIdentification
 import com.xiaoyv404.mirai.app.fsh.IFshApp
 import com.xiaoyv404.mirai.core.App
+import com.xiaoyv404.mirai.core.MessageProcessor.reply
 import com.xiaoyv404.mirai.core.NfApp
+import com.xiaoyv404.mirai.core.gid
 import com.xiaoyv404.mirai.databace.dao.*
 import com.xiaoyv404.mirai.tool.FileUtils
 import com.xiaoyv404.mirai.tool.KtorUtils
 import io.ktor.client.request.*
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Contact.Companion.uploadImage
-import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.event.events.MessageEvent
 import net.mamoe.mirai.message.code.MiraiCode
 import net.mamoe.mirai.message.data.*
@@ -30,16 +30,16 @@ class Thesaurus : NfApp(), IFshApp{
 
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
         if (args[0] == "创建词条") {
-            thesaurusAdd(msg.sender, msg)
+            add(msg.sender, msg)
             return true
         }
         if (args[1] == "remove") {
-            return thesaurusRemove(msg.sender, msg, args.getOrNull(2)?.toLong())
+            return remove(msg, args.getOrNull(2)?.toLong())
         }
         return true
     }
 
-    private suspend fun thesaurusAdd(sender: net.mamoe.mirai.contact.User, msg: MessageEvent) {
+    private suspend fun add(sender: net.mamoe.mirai.contact.User, msg: MessageEvent) {
         val subject = msg.subject
         if (authorityIdentification(sender.id, subject.id, "ThesaurusAdd")) {
             subject.sendMessage("请发送question")
@@ -63,63 +63,69 @@ class Thesaurus : NfApp(), IFshApp{
         }
     }
 
-    private suspend fun thesaurusRemove(
-        sender: net.mamoe.mirai.contact.User,
+    private suspend fun remove(
         msg: MessageEvent,
         gidInput: Long? = null
     ): Boolean {
-        if (sender.isAdmin()) {
-            val subject = msg.subject
-            val gid = when {
-                gidInput != null -> gidInput
-                subject is Group -> subject.id
-                else             -> {
-                    subject.sendMessage("输入值错误")
-                    return false
-                }
-            }
-            subject.sendMessage("请发送question")
-            val entryMassages = Thesauru {
-                question = parseMsg(msg.nextMessage())
-            }.findByQuestion(gid)
-            if (entryMassages.isEmpty()) {
-                subject.sendMessage("好像没有呢")
-            } else {
-                if (entryMassages.size == 1) {
-                    subject.sendMessage(MiraiCode.deserializeMiraiCode(thesaurusRemoveMsg(entryMassages[0])))
-                } else {
-                    subject.sendMessage(
-                        msg.buildForwardMessage {
-                            entryMassages.forEach { da ->
-                                da.question.cMsgToMiraiMsg(subject)
-                                da.reply.cMsgToMiraiMsg(subject)
-                                subject.bot.says(MiraiCode.deserializeMiraiCode(thesaurusRemoveMsg(da)))
-                            }
-                        }
-                    )
-                }
-                subject.sendMessage("请发送要删除的词条的下标")
-                val subscript = msg.nextMessage().contentToString()
-                if (!(Regex("[0-9]+").containsMatchIn(subscript))) {
-                    subject.sendMessage("已取消")
-                    return true
-                }
-                val subscriptI = subscript.toInt()
-                subject.sendMessage(
-                    "确定要删除: \n" +
-                        "${MiraiCode.deserializeMiraiCode(thesaurusRemoveMsg(entryMassages[subscriptI]))}\n" +
-                        "输入[y]以确认    输入[n]以取消"
-                )
-                if (msg.nextMessage().contentToString() == "y") {
-                    Thesauru {
-                        id = entryMassages[subscriptI].id
-                    }.deleteById()
-                    subject.sendMessage("成功删除")
-                } else {
-                    subject.sendMessage("为什么要取消捏")
-                }
+        if (msg.isNotAdmin())
+            return false
+
+        val subject = msg.subject
+        val gid = when {
+            gidInput != null -> gidInput
+            msg.gid() != 0L  -> msg.gid()
+            else             -> {
+                msg.reply("输入值错误", true)
+                return false
             }
         }
+        msg.reply("请发送question")
+
+        val entryMassages = Thesauru {
+            question = parseMsg(msg.nextMessage())
+        }.findByQuestion(gid)
+        if (entryMassages.isEmpty()) {
+            subject.sendMessage("好像没有呢")
+            return true
+        }
+
+        if (entryMassages.size == 1) {
+            subject.sendMessage(MiraiCode.deserializeMiraiCode(thesaurusRemoveMsg(entryMassages[0])))
+        } else {
+            subject.sendMessage(
+                msg.buildForwardMessage {
+                    entryMassages.forEach { da ->
+                        da.question.cMsgToMiraiMsg(subject)
+                        da.reply.cMsgToMiraiMsg(subject)
+                        subject.bot.says(MiraiCode.deserializeMiraiCode(thesaurusRemoveMsg(da)))
+                    }
+                }
+            )
+        }
+
+        subject.sendMessage("请发送要删除的词条的下标")
+        val subscript = msg.nextMessage().contentToString()
+        if (!(Regex("[0-9]+").containsMatchIn(subscript))) {
+            subject.sendMessage("已取消")
+            return true
+        }
+
+        val subscriptI = subscript.toInt()
+        subject.sendMessage(
+            "确定要删除: \n" +
+                "${MiraiCode.deserializeMiraiCode(thesaurusRemoveMsg(entryMassages[subscriptI]))}\n" +
+                "输入[y]以确认    输入[n]以取消"
+        )
+
+        if (msg.nextMessage().contentToString() == "y") {
+            Thesauru {
+                id = entryMassages[subscriptI].id
+            }.deleteById()
+            subject.sendMessage("成功删除")
+        } else {
+            subject.sendMessage("为什么要取消捏")
+        }
+
         return true
     }
 }
