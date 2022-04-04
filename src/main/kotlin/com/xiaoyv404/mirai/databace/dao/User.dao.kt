@@ -1,5 +1,6 @@
 package com.xiaoyv404.mirai.databace.dao
 
+import com.xiaoyv404.mirai.core.uid
 import com.xiaoyv404.mirai.databace.Database.db
 import net.mamoe.mirai.event.events.MessageEvent
 import org.ktorm.database.Database
@@ -44,8 +45,14 @@ fun User.isNotBot(): Boolean {
     return this.findById()?.bot != true
 }
 
-fun User.isAdmin(): Boolean {
-    return this.findById()?.admin == true
+fun User.isNotAdmin(): Boolean {
+    return this.findById()?.admin == false
+}
+
+fun Long.isNotAdmin(): Boolean {
+    return User {
+        id = this@isNotAdmin
+    }.isNotAdmin()
 }
 
 fun Long.isNotBot(): Boolean {
@@ -54,18 +61,8 @@ fun Long.isNotBot(): Boolean {
     }.isNotBot()
 }
 
-fun Long.isAdmin(): Boolean {
-    return User {
-        id = this@isAdmin
-    }.isAdmin()
-}
-
-fun net.mamoe.mirai.contact.User.isAdmin(): Boolean {
-    return this@isAdmin.id.isAdmin()
-}
-
-fun MessageEvent.isNotAdmin():Boolean{
-    return !this@isNotAdmin.sender.isAdmin()
+fun MessageEvent.isNotAdmin(): Boolean {
+    return !this@isNotAdmin.uid().isNotAdmin()
 }
 
 object Users : Table<User>("Users") {
