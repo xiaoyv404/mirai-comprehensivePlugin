@@ -157,7 +157,6 @@ class LocalGallery : NfApp(), IFshApp {
      * @param msg
      */
     private suspend fun eroRemove(idA: Long, msg: MessageEvent) {
-        val subject = msg.subject
         val sender = msg.sender
         if (sender.isAdmin()) {
             msg.reply("ÕıÔÚÉ¾³ı: $idA")
