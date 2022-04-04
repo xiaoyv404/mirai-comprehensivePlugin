@@ -4,6 +4,7 @@ import com.xiaoyv404.mirai.PluginMain
 import com.xiaoyv404.mirai.app.fsh.IFshApp
 import com.xiaoyv404.mirai.core.App
 import com.xiaoyv404.mirai.core.NfApp
+import com.xiaoyv404.mirai.core.gid
 import com.xiaoyv404.mirai.databace.dao.*
 import com.xiaoyv404.mirai.tool.KtorUtils
 import io.ktor.client.request.*
@@ -34,17 +35,15 @@ class MinecraftServerStats : NfApp(), IFshApp {
 
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
         val cmdLine = IFshApp.cmdLine(options, args)
-        val group = msg.subject
-
         MinecraftServerMap {
-            groupID = group.id
+            groupID = msg.gid()
         }.findByGroupId().forEach { si ->
             val info = MinecraftServer {
                 id = si.serverID
             }.findById()
             if (info != null) {
-                MinecraftServerStatusRequester(group).check(
-                    info,   
+                MinecraftServerStatusRequester(msg.subject).check(
+                    info,
                     false,
                     !cmdLine.hasOption("no-infoImg"),
                     cmdLine.hasOption("player")
