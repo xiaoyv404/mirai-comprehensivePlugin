@@ -1,6 +1,8 @@
 package com.xiaoyv404.mirai.core
 
 import net.mamoe.mirai.event.events.MessageEvent
+import net.mamoe.mirai.event.events.MessageRecallEvent
+import net.mamoe.mirai.message.data.MessageSource
 import net.mamoe.mirai.message.data.OnlineMessageSource
 
 fun MessageEvent.uid(): Long {
@@ -14,3 +16,9 @@ fun MessageEvent.gid(): Long {
         0L
     }
 }
+
+fun MessageSource.rgwMsgIdentity() =
+    "${ids.joinToString(",")}#${internalIds.joinToString(",")}#${time}"
+
+fun MessageRecallEvent.rgwMsgIdentity() =
+    "${messageIds.joinToString(",")}#${messageInternalIds.joinToString(",")}#${messageTime}"
