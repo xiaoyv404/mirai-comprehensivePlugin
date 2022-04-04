@@ -42,7 +42,7 @@ fun User.findById(): User?{
 }
 
 fun User.isBot(): Boolean {
-    return this.findById()?.bot != true
+    return this.findById()?.bot == true
 }
 
 fun User.isNotAdmin(): Boolean {
