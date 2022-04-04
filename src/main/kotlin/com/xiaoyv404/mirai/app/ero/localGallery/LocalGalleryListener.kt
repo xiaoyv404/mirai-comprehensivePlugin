@@ -5,9 +5,11 @@ import com.xiaoyv404.mirai.app.fsh.IFshApp
 import com.xiaoyv404.mirai.core.App
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
 import com.xiaoyv404.mirai.core.NfApp
+import com.xiaoyv404.mirai.core.gid
+import com.xiaoyv404.mirai.core.uid
 import com.xiaoyv404.mirai.databace.dao.authorityIdentification
 import com.xiaoyv404.mirai.databace.dao.gallery.*
-import com.xiaoyv404.mirai.databace.dao.isAdmin
+import com.xiaoyv404.mirai.databace.dao.isNotAdmin
 import net.mamoe.mirai.event.events.MessageEvent
 import net.mamoe.mirai.message.nextMessage
 import org.apache.commons.cli.Options
@@ -28,27 +30,25 @@ class LocalGallery : NfApp(), IFshApp {
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
         val cmdLine = IFshApp.cmdLine(options, args)
 
-        if (args[1] == "add") {
-            eroAdd(args.getOrNull(2), msg, cmdLine.hasOption("no-outPut"))
-            return true
-        }
-
-        if (args[1] == "search") {
-            val tagName = args.getOrNull(2)
-            if (tagName == null) {
-                msg.reply("没名字我怎么搜嘛")
-                return true
+        when (args[1]) {
+            "add"    -> eroAdd(args.getOrNull(2), msg, cmdLine.hasOption("no-outPut"))
+            "search" -> {
+                val tagName = args.getOrNull(2)
+                if (tagName == null) {
+                    msg.reply("没名字我怎么搜嘛")
+                    return true
+                }
+                eroSearch(tagName, msg)
             }
-            eroSearch(tagName, msg)
-        }
-
-        if (args[1] == "remove"){
-            val id = args.getOrNull(2)?.toLongOrNull()
-            if (id == null){
-                msg.reply("没ID我怎么删嘛")
-                return true
+            "remove" -> {
+                val id = args.getOrNull(2)?.toLongOrNull()
+                if (id == null) {
+                    msg.reply("没ID我怎么删嘛")
+                    return true
+                }
+                eroRemove(id, msg)
             }
-            eroRemove(id,msg)
+
         }
 
         return true
@@ -64,14 +64,7 @@ class LocalGallery : NfApp(), IFshApp {
      * @param noOutPut
      */
     private suspend fun eroAdd(idData: String?, msg: MessageEvent, noOutPut: Boolean = false) {
-        val subject = msg.subject
-        val sender = msg.sender
-        if (authorityIdentification(
-                sender.id,
-                subject.id,
-                "LocalGallery"
-            )
-        ) {
+        if (authorityIdentification(msg.uid(), msg.gid(), "LocalGallery")) {
             val fail = mutableListOf<String>()
             val ids = Regex("\\d+").findAll(
                 if (idData == null) {
@@ -85,7 +78,7 @@ class LocalGallery : NfApp(), IFshApp {
 
             ids.forEachIndexed { index, id ->
                 log.info("下载编号 ${ids.size - 1}\\$index id ${id.value}")
-                if (LocalGallerys(subject).unformat(id.value, sender.id, noOutPut)) {
+                if (LocalGallerys(msg.subject).unformat(id.value, msg.uid(), noOutPut)) {
                     log.info("下载编号 $index id ${id.value} 失败")
                     fail.add(id.value)
                 }
@@ -110,14 +103,7 @@ class LocalGallery : NfApp(), IFshApp {
      * @param msg
      */
     private suspend fun eroSearch(tagNameA: String, msg: MessageEvent) {
-        val subject = msg.subject
-        val sender = msg.sender
-        if (authorityIdentification(
-                sender.id,
-                subject.id,
-                "LocalGallery"
-            )
-        ) {
+        if (authorityIdentification(msg.uid(), msg.gid(), "LocalGallery")) {
             log.info("[LocalGallerySearch] 尝试从本地图库搜索 Tag 包含 $tagNameA 的图片")
             val tagidA = GalleryTag {
                 tagname = tagNameA
@@ -143,7 +129,7 @@ class LocalGallery : NfApp(), IFshApp {
             val ii = Gallery {
                 id = idA
             }.findById()
-            LocalGallerys(subject).send(ii!!)
+            LocalGallerys(msg.subject).send(ii!!)
         }
     }
 
@@ -157,45 +143,45 @@ class LocalGallery : NfApp(), IFshApp {
      * @param msg
      */
     private suspend fun eroRemove(idA: Long, msg: MessageEvent) {
-        val sender = msg.sender
-        if (sender.isAdmin()) {
-            msg.reply("正在删除: $idA")
+        if (msg.isNotAdmin())
+            return
+        msg.reply("正在删除: $idA")
 
-            val tags = GalleryTagMap {
-                pid = idA
-            }.findTagIdByPid()
+        val tags = GalleryTagMap {
+            pid = idA
+        }.findTagIdByPid()
 
-            tags.forEach { tagidA ->
-                GalleryTag {
-                    tagid = tagidA
-                }.reduceNumByTagId()
+        tags.forEach { tagidA ->
+            GalleryTag {
+                tagid = tagidA
+            }.reduceNumByTagId()
+        }
+
+        val information = Gallery {
+            id = idA
+        }.findById()
+
+        val imgNum = information!!.picturesMun
+        val extension = information.extension
+
+        if (imgNum == 1)
+            PluginMain.resolveDataFile("gallery/$idA.$extension").deleteRecursively()
+        else
+            for (i in 1..imgNum) {
+                PluginMain.resolveDataFile("gallery/$idA-$i.$extension")
+                    .deleteRecursively()
             }
 
-            val information = Gallery {
-                id = idA
-            }.findById()
+        GalleryTagMap {
+            pid = idA
+        }.deleteByPid()
 
-            val imgNum = information!!.picturesMun
-            val extension = information.extension
-
-            if (imgNum == 1)
-                PluginMain.resolveDataFile("gallery/$idA.$extension").deleteRecursively()
-            else
-                for (i in 1..imgNum) {
-                    PluginMain.resolveDataFile("gallery/$idA-$i.$extension")
-                        .deleteRecursively()
-                }
-            GalleryTagMap {
-                pid = idA
-            }.deleteByPid()
-
-            Gallery {
-                id = idA
-            }.deleteById()
-            msg.reply(
-                "${idA}已删除\n" +
-                    "删除${imgNum}张图片    ${tags.size + 1}条记录"
-            )
-        }
+        Gallery {
+            id = idA
+        }.deleteById()
+        msg.reply(
+            "${idA}已删除\n" +
+                "删除${imgNum}张图片    ${tags.size + 1}条记录"
+        )
     }
 }
