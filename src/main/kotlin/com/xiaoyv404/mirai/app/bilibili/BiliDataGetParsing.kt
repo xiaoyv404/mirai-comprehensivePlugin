@@ -4,7 +4,6 @@ import com.xiaoyv404.mirai.core.App
 import com.xiaoyv404.mirai.core.NfApp
 import com.xiaoyv404.mirai.databace.Bilibili
 import com.xiaoyv404.mirai.databace.dao.authorityIdentification
-import com.xiaoyv404.mirai.databace.dao.isNotBot
 import com.xiaoyv404.mirai.tool.KtorUtils
 import com.xiaoyv404.mirai.tool.parsingVideoDataString
 import io.ktor.client.request.*
@@ -30,31 +29,31 @@ class BiliBiliVideoParse : NfApp(){
         GlobalEventChannel.subscribeGroupMessages {
             finding(Bilibili.biliBvFind){
                 val bv = it.value
-                if ((authorityIdentification(
+                if (authorityIdentification(
                         sender.id,
                         group.id,
                         "BiliBiliParsing"
-                    )) && sender.isNotBot()
+                    )
                 ) {
                     uJsonVideo(
                         KtorUtils.normalClient.get(
                             "https://api.bilibili.com/x/web-interface/view?bvid=$bv"
-                        ),group
+                        ), group
                     )
                 }
             }
             finding(Bilibili.biliAvFind) {
                 val av = it.groups[2]!!.value
-                if ((authorityIdentification(
+                if (authorityIdentification(
                         sender.id,
                         group.id,
                         "BiliBiliParsing"
-                    )) && sender.isNotBot()
+                    )
                 ) {
                     uJsonVideo(
                         KtorUtils.normalClient.get(
                             "https://api.bilibili.com/x/web-interface/view?aid=$av"
-                        ),group
+                        ), group
                     )
                 }
             }

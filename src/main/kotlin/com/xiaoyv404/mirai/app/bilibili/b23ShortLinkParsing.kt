@@ -4,7 +4,6 @@ import com.xiaoyv404.mirai.core.App
 import com.xiaoyv404.mirai.core.NfApp
 import com.xiaoyv404.mirai.databace.Bilibili
 import com.xiaoyv404.mirai.databace.dao.authorityIdentification
-import com.xiaoyv404.mirai.databace.dao.isNotBot
 import com.xiaoyv404.mirai.tool.KtorUtils
 import io.ktor.client.*
 import io.ktor.client.request.*
@@ -24,8 +23,7 @@ class B23ShortLinkParse : NfApp(){
                         sender.id,
                         group.id,
                         "BiliBiliParsing"
-                    ) && sender.isNotBot()
-                ) {
+                    )) {
                     val b23 = it.value
                     val b23Data = b23DataGet(b23)
                     when {

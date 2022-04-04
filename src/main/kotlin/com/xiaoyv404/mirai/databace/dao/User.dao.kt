@@ -1,8 +1,6 @@
 package com.xiaoyv404.mirai.databace.dao
 
 import com.xiaoyv404.mirai.databace.Database.db
-import net.mamoe.mirai.contact.Member
-import net.mamoe.mirai.event.events.MessageEvent
 import org.ktorm.database.Database
 import org.ktorm.dsl.eq
 import org.ktorm.entity.*
@@ -61,20 +59,8 @@ fun Long.isAdmin(): Boolean {
     }.isAdmin()
 }
 
-fun Member.isNotBot(): Boolean {
-    return this@isNotBot.id.isNotBot()
-}
-
-fun net.mamoe.mirai.contact.User.isNotBot(): Boolean {
-    return this@isNotBot.id.isNotBot()
-}
-
 fun net.mamoe.mirai.contact.User.isAdmin(): Boolean {
     return this@isAdmin.id.isAdmin()
-}
-
-fun MessageEvent.isNotBot(): Boolean{
-    return this.sender.isNotBot()
 }
 
 object Users : Table<User>("Users") {

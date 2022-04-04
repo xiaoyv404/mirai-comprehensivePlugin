@@ -58,7 +58,7 @@ class SomeThing : NfApp(), IFshApp {
     private suspend fun debuMe(data: String?, msg: MessageEvent) {
         val subject = msg.subject
         val sender = msg.sender
-        if (sender.isNotBot() && authorityIdentification(
+        if (authorityIdentification(
                 sender.id,
                 subject.id,
                 "DebuMe"

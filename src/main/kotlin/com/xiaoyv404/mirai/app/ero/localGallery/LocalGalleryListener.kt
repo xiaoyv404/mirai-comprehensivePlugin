@@ -1,14 +1,13 @@
 package com.xiaoyv404.mirai.app.ero.localGallery
 
 import com.xiaoyv404.mirai.PluginMain
-import com.xiaoyv404.mirai.databace.dao.authorityIdentification
 import com.xiaoyv404.mirai.app.fsh.IFshApp
 import com.xiaoyv404.mirai.core.App
 import com.xiaoyv404.mirai.core.MessageProcessor
 import com.xiaoyv404.mirai.core.NfApp
+import com.xiaoyv404.mirai.databace.dao.authorityIdentification
 import com.xiaoyv404.mirai.databace.dao.gallery.*
 import com.xiaoyv404.mirai.databace.dao.isAdmin
-import com.xiaoyv404.mirai.databace.dao.isNotBot
 import net.mamoe.mirai.event.events.MessageEvent
 import net.mamoe.mirai.message.nextMessage
 import org.apache.commons.cli.Options
@@ -71,7 +70,7 @@ class LocalGallery : NfApp(), IFshApp {
                 sender.id,
                 subject.id,
                 "LocalGallery"
-            ) && sender.isNotBot()
+            )
         ) {
             val fail = mutableListOf<String>()
             val ids = Regex("\\d+").findAll(
@@ -113,11 +112,11 @@ class LocalGallery : NfApp(), IFshApp {
     private suspend fun eroSearch(tagNameA: String, msg: MessageEvent) {
         val subject = msg.subject
         val sender = msg.sender
-        if ((authorityIdentification(
+        if (authorityIdentification(
                 sender.id,
                 subject.id,
                 "LocalGallery"
-            )) && sender.isNotBot()
+            )
         ) {
             log.info("[LocalGallerySearch] ³¢ÊÔ´Ó±¾µØÍ¼¿âËÑË÷ Tag °üº¬ $tagNameA µÄÍ¼Æ¬")
             val tagidA = GalleryTag {

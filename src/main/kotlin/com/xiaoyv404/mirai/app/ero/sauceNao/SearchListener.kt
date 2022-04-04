@@ -1,10 +1,9 @@
 package com.xiaoyv404.mirai.app.ero.sauceNao
 
-import com.xiaoyv404.mirai.databace.dao.authorityIdentification
 import com.xiaoyv404.mirai.app.fsh.IFshApp
 import com.xiaoyv404.mirai.core.App
 import com.xiaoyv404.mirai.core.NfApp
-import com.xiaoyv404.mirai.databace.dao.isNotBot
+import com.xiaoyv404.mirai.databace.dao.authorityIdentification
 import net.mamoe.mirai.event.events.MessageEvent
 import net.mamoe.mirai.message.data.Image
 import net.mamoe.mirai.message.data.MessageSource.Key.quote
@@ -23,11 +22,11 @@ class SauceNaoImgSearch : NfApp(), IFshApp {
             return true
         }
 
-        if ((authorityIdentification(
+        if (authorityIdentification(
                 msg.sender.id,
                 msg.subject.id,
                 "SauceNaoSearch"
-            )) && msg.isNotBot()
+            )
         ) {
             val subject = msg.subject
 

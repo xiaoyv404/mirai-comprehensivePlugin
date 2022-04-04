@@ -61,6 +61,9 @@ class Fsh : NfAppMessageHandler(){
             argsList[0] = "-${argsList[0]}"
         }
 
+        if (!uid.isNotBot()) {
+            return
+        }
 
         // 最后参数的结果
         val fshApp = NfApplicationManager.fshCommands[argsList[0]]
@@ -78,7 +81,7 @@ class Fsh : NfAppMessageHandler(){
                 }
             }
         } else {
-            if (uid.isNotBot() && authorityIdentification(
+            if (authorityIdentification(
                     uid, gid, "ThesaurusResponse"
                 )
             ) {
