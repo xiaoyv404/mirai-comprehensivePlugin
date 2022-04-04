@@ -45,6 +45,8 @@ dependencies {
     implementation("org.ktorm:ktorm-core:$ktorm")
     implementation("com.zaxxer:HikariCP:5.0.1")
 
+    implementation("br.com.devsrsouza:redissed:1.1.0")
+    implementation("io.lettuce:lettuce-core:6.1.8.RELEASE")
 
     implementation("com.alibaba:fastjson:1.2.80")
 
