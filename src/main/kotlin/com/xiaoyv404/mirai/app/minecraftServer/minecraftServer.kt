@@ -68,10 +68,7 @@ class MinecraftServerStats : NfApp(), IFshApp {
         }, Date(), 60000)
     }
 
-    private suspend fun sendInfo(
-        msg: MessageEvent, info: MinecraftServer,
-        playerList: Boolean = false
-    ) {
+    private suspend fun sendInfo(msg: MessageEvent, info: MinecraftServer, playerList: Boolean = false) {
         val infoD = getServerInfo(info.host, info.port)
         val bot = msg.bot
         val players = infoD.serverInformationFormat!!.players
@@ -144,9 +141,10 @@ class MinecraftServerStats : NfApp(), IFshApp {
             buildForwardMessage(msg.subject) {
                 players.forEach { player ->
                     msg.subject.bot.says(
-                        "name: ${player.name}\n" +
-                            "id: ${player.id}"
-                    )
+                        """
+                        name: ${player.name}
+                        d: ${player.id}
+                        """.trimIndent())
                 }
             }.toMessageChain(), quote = false
         )
