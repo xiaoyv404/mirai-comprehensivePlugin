@@ -28,7 +28,7 @@ class SauceNaoImgSearch : NfApp(), IFshApp {
         if (authorityIdentification(msg.uid(), msg.gid(), "SauceNaoSearch")) {
             val subject = msg.subject
 
-            val sauceNao = SauceNaoRequester(subject)
+            val sauceNao = SauceNaoRequester(msg)
             val image = msg.message[Image]
             if (image == null) {
                 msg.reply("没有图片的说,请在60s内发送图片",true)

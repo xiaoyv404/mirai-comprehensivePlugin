@@ -2,6 +2,7 @@ package com.xiaoyv404.mirai.app.ero.sauceNao
 
 import com.xiaoyv404.mirai.PluginConfig
 import com.xiaoyv404.mirai.PluginMain
+import com.xiaoyv404.mirai.core.MessageProcessor.reply
 import com.xiaoyv404.mirai.tool.KtorUtils
 import io.ktor.client.request.*
 import kotlinx.coroutines.Dispatchers
@@ -9,7 +10,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
-import net.mamoe.mirai.contact.Contact
+import net.mamoe.mirai.event.events.MessageEvent
 import net.mamoe.mirai.message.data.Image
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
 import net.mamoe.mirai.message.data.PlainText
@@ -17,7 +18,7 @@ import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
 import java.io.InputStream
 import java.net.URLDecoder
 
-class SauceNaoRequester(private val subject: Contact) {
+class SauceNaoRequester(private val msg: MessageEvent) {
     private val jsonBuild = Json {
         ignoreUnknownKeys = true
         isLenient = true
@@ -44,11 +45,11 @@ class SauceNaoRequester(private val subject: Contact) {
             log.info(json)
             parseJson(json)
         } catch (e: Exception) {
-            subject.sendMessage(
+            msg.reply(
                 "出现错误＞﹏＜请阁下到控制台查看\n" + e.message?.replace(
                     PluginConfig.database.sauceNaoApiKey,
                     "/$/{APIKEY/}"
-                )
+                ), true
             )
             log.error(e)
             throw e
@@ -62,12 +63,12 @@ class SauceNaoRequester(private val subject: Contact) {
     }
 
     suspend fun sendResult() {
-        val image = KtorUtils.normalClient.get<InputStream>(result!!.header.thumbnail).uploadAsImage(subject)
+        val image = KtorUtils.normalClient.get<InputStream>(result!!.header.thumbnail).uploadAsImage(msg.subject)
         if (result!!.header.similarity.toFloat() < 60){
-            subject.sendMessage("找不到捏，匹配度只有${result!!.header.similarity}")
+            msg.reply("找不到捏，匹配度只有${result!!.header.similarity}", true)
             return
         }
-        val msg = when (result!!.header.index_id) {
+        val message = when (result!!.header.index_id) {
             // Index #5: Pixiv Images
             5    -> {
                 "来源：Pixiv Images\n" +
@@ -103,6 +104,6 @@ class SauceNaoRequester(private val subject: Contact) {
             }
             else -> "暂时无法解析的参数, 数据库：${result!!.header.index_name}\n 请把开发者揪出来给他看看结果"
         }
-        subject.sendMessage(PlainText(msg) + image)
+        msg.reply(PlainText(message) + image, true)
     }
 }
