@@ -61,7 +61,7 @@ class MinecraftServerStats : NfApp(), IFshApp {
             override fun run() {
                 PluginMain.launch {
                     getAll().forEach {
-                        MinecraftServerStatusRequester().check(it)
+                        check(it)
                     }
                 }
             }
@@ -76,12 +76,13 @@ class MinecraftServerStats : NfApp(), IFshApp {
         val bot = msg.bot
         val players = infoD.serverInformationFormat!!.players
 
+        //判断当前服务器状态
         val statusT = if (infoD.status != 1 && info.status == 1)
-            0
+            -1
         else
             1
 
-
+        //通过状态生成提示语
         val msgA =
             if (statusT == 1)
                 msg.subject.uploadImage(
@@ -103,6 +104,7 @@ class MinecraftServerStats : NfApp(), IFshApp {
                     """.trimIndent()
                 )
 
+        //获取服务器关联群，并发送提示
         if (statusT != info.status)
             MinecraftServerMap {
                 serverID = info.id
@@ -112,6 +114,7 @@ class MinecraftServerStats : NfApp(), IFshApp {
         else
             msg.reply(msgA, false)
 
+        //如果有需求并且服务器在线，发送玩家列表
         if (statusT == 1 && playerList) {
             sendPlayerList(msg, getPlayerList(info.host, info.port, players))
         }
@@ -149,92 +152,87 @@ class MinecraftServerStats : NfApp(), IFshApp {
         )
     }
 
-    class MinecraftServerStatusRequester(private var group: Contact? = null) {
+    suspend fun check(info: MinecraftServer) {
+        PluginMain.launch {
+            val information = getServerInfo(info.host, info.port)
+            val groups = mutableListOf<Contact>()
+            val bot = Bot.getInstance(2079373402)
 
-        private val log = PluginMain.logger
+            val statusD = information.status
+            val players = information.serverInformationFormat?.players
 
-        suspend fun check(
-            si: MinecraftServer,
-            automaticallyInitiate: Boolean = true,
-        ) {
-            PluginMain.launch {
-                val dStatus = si.status
-                if (dStatus != -2) {
-                    val information = getServerInfo(si.host, si.port)
-                    val players = information.serverInformationFormat?.players
-                    val groups = mutableListOf<Contact>()
-                    val statusD = information.status
+            //判断服务器现在是什么状态
+            val statusT = if (statusD != 1)
+                if (info.status == 1)
+                    0
+                else
+                    -1
+            else
+                1
 
-                    val statusT = if (statusD != 1)
-                        if (dStatus == 1 && automaticallyInitiate)
-                            0
-                        else
-                            -1
-                    else
-                        1
-
-                    if ((statusT == -1 && dStatus != -1) || (statusT == 1 && dStatus == -1)) {
-                        if (statusT == 1)
-                            log.info("服务器 ${si.name} 上线")
-                        else
-                            log.info("服务器 ${si.name} 离线")
-                        MinecraftServerMap { serverID = si.id }.findByServerId().forEach {
-                            groups.add(Bot.getInstance(2079373402).getGroup(it.groupID) ?: return@forEach)
-                        }
-                    } else
-                        group?.let { groups.add(it) }
-
-                    if (statusT != dStatus) {
-                        MinecraftServer {
-                            id = si.id
-                            status = statusT
-                        }.update()
-                    }
-
-                    groups.forEach {
-                        if (statusT == 1) {
-                            players?.let { it1 ->
-                                it.sendImage(
-                                    MinecraftDataImgGenerator.getImg(
-                                        it1.players,
-                                        "${players.online}/${players.max}",
-                                        si.host,
-                                        si.port.toString()
-                                    )
-                                )
-                            }
-                        } else
-                            it.sendMessage(
-                                """
-                                :(
-                                ${si.name} is Offline
-                                IP: ${si.host}:${si.port}
-                            """.trimIndent()
-                            )
-                    }
+            //发送log并获取服务器的关联群
+            if ((statusT == -1 && info.status != -1) || (statusT == 1 && info.status == -1)) {
+                if (statusT == 1)
+                    log.info("服务器 ${info.name} 上线")
+                else
+                    log.info("服务器 ${info.name} 离线")
+                MinecraftServerMap { serverID = info.id }.findByServerId().forEach {
+                    groups.add(bot.getGroup(it.groupID) ?: return@forEach)
                 }
             }
+
+            //更新数据库内状态
+            if (statusT != info.status) {
+                MinecraftServer {
+                    id = info.id
+                    status = statusT
+                }.update()
+            }
+
+            //发送状态提示
+            groups.forEach {
+                if (statusT == 1)
+                    players?.let { it1 ->
+                        it.sendImage(
+                            MinecraftDataImgGenerator.getImg(
+                                it1.players,
+                                "${players.online}/${players.max}",
+                                info.host,
+                                info.port.toString()
+                            )
+                        )
+                    }
+                else
+                    it.sendMessage(
+                        """
+                    :(
+                    ${info.name} is Offline
+                    IP: ${info.host}:${info.port}
+                    """.trimIndent()
+                    )
+            }
+        }
+    }
+
+    @OptIn(ExperimentalSerializationApi::class)
+    private suspend fun getServerInfo(host: String, port: Int): ServerInformationFormatAndStatus {
+        val pJ = ServerInformationFormatAndStatus()
+        return try {
+            pJ.serverInformationFormat = Json.decodeFromString(
+                KtorUtils.normalClient.get(
+                    "http://127.0.0.1:8080/server?" +
+                        "host=$host&" +
+                        "port=$port"
+                )
+            )
+            pJ
+        } catch (e: Exception) {
+            PluginMain.logger.debug(e.message)
+            pJ.status = 0
+            pJ
         }
     }
 }
 
 
 
-@OptIn(ExperimentalSerializationApi::class)
-suspend fun getServerInfo(host: String, port: Int): ServerInformationFormatAndStatus {
-    val pJ = ServerInformationFormatAndStatus()
-    return try {
-        pJ.serverInformationFormat = Json.decodeFromString(
-            KtorUtils.normalClient.get(
-                "http://127.0.0.1:8080/server?" +
-                    "host=$host&" +
-                    "port=$port"
-            )
-        )
-        pJ
-    } catch (e: Exception) {
-        PluginMain.logger.debug(e.message)
-        pJ.status = 0
-        pJ
-    }
-}
