@@ -8,7 +8,12 @@ import java.io.ByteArrayOutputStream
 import javax.imageio.ImageIO
 import kotlin.math.roundToInt
 
-
+/**
+ * 用于生成Info图片
+ * @author xiaoyv_404
+ * @create 2022/4/8
+ *
+ */
 class MinecraftDataImgGenerator {
     companion object {
         fun getImg(playerList: List<Player>, playerNum: String, ip: String, port: String): ByteArrayInputStream {
