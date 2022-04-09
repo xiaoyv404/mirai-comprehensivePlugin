@@ -31,7 +31,6 @@ import net.mamoe.mirai.event.GlobalEventChannel
 import net.mamoe.mirai.event.events.FriendMessageEvent
 import net.mamoe.mirai.event.nextEvent
 import net.mamoe.mirai.message.code.MiraiCode
-import net.mamoe.mirai.utils.MiraiExperimentalApi
 import org.apache.http.auth.InvalidCredentialsException
 import org.mindrot.jbcrypt.BCrypt
 import java.util.*
@@ -41,7 +40,6 @@ import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.time.Duration.Companion.minutes
 
 
-@OptIn(MiraiExperimentalApi::class)
 @App
 class WebApi : NfApp() {
     override fun getAppName() = "WebApi"
