@@ -3,6 +3,7 @@ package com.xiaoyv404.mirai.core
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
 import com.xiaoyv404.mirai.databace.Database
 import net.mamoe.mirai.event.events.MessageEvent
+import java.util.concurrent.TimeUnit
 
 
 abstract class NfApp {
@@ -61,7 +62,7 @@ abstract class NfApp {
      */
     fun getCallLimiterRemainCount(caller: Long, place: Long, app: String = getAppName()): Int {
         val key = "${app}_${place}_${caller}"
-        val remain = rdb.sync().get(key)
+        val remain = rdb.get(key).get(1,TimeUnit.MINUTES)
         return if (remain == null) {
             getLimitCount()
         } else {
@@ -108,7 +109,7 @@ abstract class NfApp {
      */
     fun submitCallLimiter(caller: Long, place: Long) {
         val key = "${getAppName()}_${place}_${caller}"
-        val num = rdb.sync().get(key)?.toIntOrNull() ?:0
+        val num = rdb.get(key).get(1,TimeUnit.MINUTES)?.toIntOrNull() ?:0
 
-        rdb.async().setex(key,getLimitExpiresTime(),(num+1).toString()) }
+        rdb.setex(key,getLimitExpiresTime(),(num+1).toString()) }
 }
