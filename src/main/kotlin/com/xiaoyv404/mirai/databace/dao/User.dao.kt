@@ -62,7 +62,7 @@ fun Long.isBot(): Boolean {
 }
 
 fun MessageEvent.isNotAdmin(): Boolean {
-    return !this@isNotAdmin.uid().isNotAdmin()
+    return this@isNotAdmin.uid().isNotAdmin()
 }
 
 object Users : Table<User>("Users") {
