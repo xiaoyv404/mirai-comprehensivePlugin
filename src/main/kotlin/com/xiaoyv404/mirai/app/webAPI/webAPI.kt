@@ -124,7 +124,7 @@ class WebApi : NfApp() {
                             }
 
                             val get = call.receive<Chat>()
-                            println(get.token)
+                            log.info(get.token)
                             val client = ChatClient(this)
                             clients += client
                             try {

@@ -86,7 +86,6 @@ abstract class NfApp {
         when {
             remainCount > 0 -> block()
             remainCount > -2 -> {
-                println(remainCount)
                 if (replyOnLimited) {
                     msg.reply("404∫√¿€»«qwq", quote = true)
                 }

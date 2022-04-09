@@ -41,7 +41,6 @@ fun GalleryTag.reduceNumByTagId() {
     val num = this.findNumByTagId() ?: return
     if (num > 0) {
         this.num = num-1
-        println(this.num)
         this.update()
     }
 }
