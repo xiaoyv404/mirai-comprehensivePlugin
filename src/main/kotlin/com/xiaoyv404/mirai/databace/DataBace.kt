@@ -74,7 +74,7 @@ object Database {
         withHost(PluginConfig.database.redisAddress)
         withPort(6379)
         withTimeout(Duration.of(10, ChronoUnit.SECONDS))
-        withPassword(PluginConfig.database.redisPassword)
+        withPassword(PluginConfig.database.redisPassword.toCharArray())
     }.build())
 }
 

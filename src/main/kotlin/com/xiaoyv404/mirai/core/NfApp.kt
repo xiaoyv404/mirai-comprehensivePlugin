@@ -1,8 +1,14 @@
 package com.xiaoyv404.mirai.core
 
+import com.xiaoyv404.mirai.core.MessageProcessor.reply
+import com.xiaoyv404.mirai.databace.Database
+import io.lettuce.core.SetArgs
 import net.mamoe.mirai.event.events.MessageEvent
 
+
 abstract class NfApp {
+
+    private val rdb = Database.rdb
 
     /**
      * 应用名称
@@ -22,12 +28,12 @@ abstract class NfApp {
     /**
      * 一定时间内限制调用次数
      */
-    open fun getLimitCount(): Int = 0
+    open fun getLimitCount(): Int = 1000
 
     /**
      * 限制调用计次过期时间(秒)
      */
-    open fun getLimitExpiresTime(): Long = 0
+    open fun getLimitExpiresTime(): Long = 60
 
     /**
      * 应用使用说明
@@ -39,6 +45,24 @@ abstract class NfApp {
      * 在应用被禁用时不会被调用
      */
     open fun init() {
+    }
+
+    /**
+     * 取限制调用剩余次数
+     *
+     * @param caller 调用者
+     * @param place 调用地点
+     * @param app 限制的应用名 默认是当前应用
+     * @return 当前剩余可调用次数
+     */
+    fun getCallLimiterRemainCount(caller: Long, place: Long, app: String = getAppName()): Int {
+        val key = "${app}_${place}_${caller}"
+        val remain = rdb.sync().get(key)
+        return if (remain == null) {
+            getLimitCount()
+        } else {
+            getLimitCount() - remain.toInt()
+        }
     }
 
     /**
@@ -54,7 +78,23 @@ abstract class NfApp {
         replyOnLimited: Boolean = true,
         block: suspend () -> Unit
     ) {
-        block()
+        val remainCount = getCallLimiterRemainCount(caller, place)
+        when {
+            remainCount > 0 -> block()
+            remainCount > -2 -> {
+                println(remainCount)
+                if (replyOnLimited) {
+                    msg.reply("404好累惹qwq", quote = true)
+                }
+                submitCallLimiter(caller, place)
+            }
+            remainCount > -3 -> {
+                if (replyOnLimited) {
+                    msg.reply( "去死啊", quote = true)
+                }
+                submitCallLimiter(caller, place)
+            }
+        }
     }
 
     /**
@@ -64,8 +104,9 @@ abstract class NfApp {
      * @param place 调用地点
      */
     fun submitCallLimiter(caller: Long, place: Long) {
-//        val key = "${getAppName()}_${place}_${caller}"
-//        template.opsForValue().increment(key)
-//        template.expire(key, getLimitExpiresTime(), TimeUnit.SECONDS)
-    }
+        val key = "${getAppName()}_${place}_${caller}"
+        val num = rdb.sync().get(key)?.toIntOrNull() ?:0
+
+        val setArgs = SetArgs.Builder.nx().ex(getLimitExpiresTime())
+        rdb.async().set(key,(num+1).toString(),setArgs) }
 }

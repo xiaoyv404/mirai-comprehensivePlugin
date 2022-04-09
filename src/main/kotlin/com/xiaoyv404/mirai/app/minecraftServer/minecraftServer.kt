@@ -32,6 +32,7 @@ class MinecraftServerStats : NfApp(), IFshApp {
     override fun getCommands() =
         arrayOf("-服务器熟了没", "-服务器状态", "-土豆熟了没", "-土豆状态", "-破推头熟了没", "-破推头状态", "-ServerStatus", "-PotatoStatus")
 
+
     private val options = Options().apply {
         addOption("p", "player", false, "获取玩家列表")
     }
@@ -68,6 +69,7 @@ class MinecraftServerStats : NfApp(), IFshApp {
         }, Date(), 60000)
     }
 
+    @OptIn(ExperimentalSerializationApi::class)
     private suspend fun sendInfo(msg: MessageEvent, info: MinecraftServer, playerList: Boolean = false) {
         val infoD = getServerInfo(info.host, info.port)
         val bot = msg.bot
@@ -117,6 +119,7 @@ class MinecraftServerStats : NfApp(), IFshApp {
         }
     }
 
+    @OptIn(ExperimentalSerializationApi::class)
     private suspend fun getPlayerList(host: String, port: Int, players: Players): List<Player> {
         val playersML = players.players.toMutableList()
         var cycles = players.online / 12
@@ -150,6 +153,7 @@ class MinecraftServerStats : NfApp(), IFshApp {
         )
     }
 
+    @OptIn(ExperimentalSerializationApi::class)
     suspend fun check(info: MinecraftServer) {
         PluginMain.launch {
             val information = getServerInfo(info.host, info.port)
@@ -212,7 +216,7 @@ class MinecraftServerStats : NfApp(), IFshApp {
         }
     }
 
-    @OptIn(ExperimentalSerializationApi::class)
+    @ExperimentalSerializationApi
     private suspend fun getServerInfo(host: String, port: Int): ServerInformationFormatAndStatus {
         val pJ = ServerInformationFormatAndStatus()
         return try {
