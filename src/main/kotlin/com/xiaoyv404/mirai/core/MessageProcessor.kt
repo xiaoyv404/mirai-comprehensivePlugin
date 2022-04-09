@@ -2,7 +2,6 @@ package com.xiaoyv404.mirai.core
 
 import com.xiaoyv404.mirai.PluginMain
 import com.xiaoyv404.mirai.databace.Database
-import io.lettuce.core.SetArgs
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -66,8 +65,7 @@ object MessageProcessor {
         log.info("触发原消息标识$originIdentity  发送消息标识$sentIdentity")
         val redisKey = "fmp:replied:$originIdentity:$sentIdentity"
 
-        val setArgs = SetArgs.Builder.nx().ex(180)
-        Database.rdb.async().set(redisKey, sentIdentity, setArgs)
+        Database.rdb.async().setex(redisKey,1800L, sentIdentity)
     }
 
     private suspend fun replyImg(src: MessageEvent, input: InputStream, type: String?): MessageReceipt<Contact> {
