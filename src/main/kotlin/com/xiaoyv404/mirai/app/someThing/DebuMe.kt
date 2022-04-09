@@ -18,8 +18,9 @@ class DebuMe :NfApp(),IFshApp {
     override fun getAppDescription() = "Œ“ «≤ÀƒÒ£°"
     override fun getVersion() = "1.0.0"
     override fun getCommands()= arrayOf("~me")
-    override fun getLimitCount() = 4
+    override fun getLimitCount() = 2
     override fun getLimitExpiresTime() = 60L
+    override fun getLimitHint() = false
 
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
         debuMe(args.getOrNull(2), msg)

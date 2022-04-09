@@ -73,7 +73,7 @@ class Fsh : NfAppMessageHandler(){
         val fshApp = NfApplicationManager.fshCommands[argsList[0]]
         if (fshApp != null) {
             fshApp as NfApp
-            fshApp.requireCallLimiter(msg, uid, gid) {
+            fshApp.requireCallLimiter(msg, uid, gid,fshApp.getLimitHint()) {
                 try {
                     if (fshApp.executeRsh(argsList.toTypedArray(), msg)) {
                         // 调用成功进行限制计次

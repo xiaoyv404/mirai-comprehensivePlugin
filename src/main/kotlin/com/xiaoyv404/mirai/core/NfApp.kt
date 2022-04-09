@@ -35,6 +35,11 @@ abstract class NfApp {
     open fun getLimitExpiresTime(): Long = 60
 
     /**
+     * 超过限制调用提示语开关
+     */
+    open fun getLimitHint(): Boolean = true
+
+    /**
      * 应用使用说明
      */
     open fun getAppUsage(): String? = null
@@ -74,7 +79,7 @@ abstract class NfApp {
         msg: MessageEvent,
         caller: Long,
         place: Long,
-        replyOnLimited: Boolean = true,
+        replyOnLimited: Boolean,
         block: suspend () -> Unit
     ) {
         val remainCount = getCallLimiterRemainCount(caller, place)
