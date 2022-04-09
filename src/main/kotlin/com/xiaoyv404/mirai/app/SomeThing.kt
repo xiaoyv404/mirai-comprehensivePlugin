@@ -8,10 +8,7 @@ import com.xiaoyv404.mirai.core.NfApp
 import com.xiaoyv404.mirai.core.gid
 import com.xiaoyv404.mirai.core.uid
 import com.xiaoyv404.mirai.databace.dao.*
-import net.mamoe.mirai.contact.Member
 import net.mamoe.mirai.contact.MemberPermission
-import net.mamoe.mirai.contact.remarkOrNameCardOrNick
-import net.mamoe.mirai.contact.remarkOrNick
 import net.mamoe.mirai.event.GlobalEventChannel
 import net.mamoe.mirai.event.ListeningStatus
 import net.mamoe.mirai.event.events.BotInvitedJoinGroupRequestEvent
@@ -32,7 +29,7 @@ class SomeThing : NfApp(), IFshApp {
     override fun getVersion() = "1.0.0"
     override fun getAppDescription() = "杂七杂八的东西"
     override fun getCommands(): Array<String> =
-        arrayOf("~me", "-status", "-help", "-sendto", "-bot", "-ban", "!!开启全体广播")
+        arrayOf("-status", "-help", "-sendto", "-bot", "-ban", "!!开启全体广播")
 
     private val banOptions = Options().apply {
         addOption("g", "group", true, "群聊ID")
@@ -44,7 +41,6 @@ class SomeThing : NfApp(), IFshApp {
 
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
         when (args[0]) {
-            "~me"      -> debuMe(args.getOrNull(2), msg)
             "-status"  -> status(msg)
             "-help"    -> help(msg)
             "-sendto"  -> sendto(msg)
@@ -58,25 +54,6 @@ class SomeThing : NfApp(), IFshApp {
             "!!开启全体广播" -> adminBroadcast(msg)
         }
         return true
-    }
-
-    private suspend fun debuMe(data: String?, msg: MessageEvent) {
-        val sender = msg.sender
-
-        if (authorityIdentification(
-                msg.uid(),
-                msg.gid(),
-                "DebuMe"
-            )
-        ) {
-            val name = data ?: if (sender is Member) {
-                sender.remarkOrNameCardOrNick
-            } else
-                sender.remarkOrNick
-            msg.reply(
-                "*${name}坐在地上哭着说道「可怜哒${name}什么时候才有大佬们百分之一厉害呀……」"
-            )
-        }
     }
 
     private suspend fun status(msg: MessageEvent) {
