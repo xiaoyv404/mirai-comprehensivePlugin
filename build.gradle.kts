@@ -71,4 +71,7 @@ dependencies {
     implementation("org.reflections:reflections:0.10.2")
     implementation("com.google.guava:guava:31.1-jre")
     implementation("com.google.code.gson:gson:2.9.0")
+
+    implementation("net.sf.cssbox:cssbox:4.12")
+    implementation("freemarker:freemarker:2.3.8")
 }
