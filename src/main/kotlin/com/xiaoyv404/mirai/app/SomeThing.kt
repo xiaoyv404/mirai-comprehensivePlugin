@@ -49,7 +49,6 @@ class SomeThing : NfApp(), IFshApp {
             "-help"    -> help(msg)
             "-sendto"  -> sendto(msg)
             "-bot"     -> {
-                println(args.getOrNull(2))
                 if (args[1] == "add")
                     addBot(args.getOrNull(2) ?: return false, msg)
             }
