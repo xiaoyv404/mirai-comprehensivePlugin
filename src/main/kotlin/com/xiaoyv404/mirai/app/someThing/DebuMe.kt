@@ -23,7 +23,7 @@ class DebuMe :NfApp(),IFshApp {
     override fun getLimitHint() = false
 
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
-        debuMe(args.getOrNull(2), msg)
+        debuMe(args.getOrNull(1), msg)
         return true
     }
     private suspend fun debuMe(data: String?, msg: MessageEvent) {
