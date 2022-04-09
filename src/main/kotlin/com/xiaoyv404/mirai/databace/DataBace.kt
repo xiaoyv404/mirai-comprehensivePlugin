@@ -7,7 +7,7 @@ import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import io.lettuce.core.RedisClient
 import io.lettuce.core.RedisURI
-import io.lettuce.core.api.StatefulRedisConnection
+import io.lettuce.core.api.async.RedisAsyncCommands
 import net.mamoe.mirai.console.util.ConsoleExperimentalApi
 import net.mamoe.mirai.utils.info
 import net.mamoe.mirai.utils.warning
@@ -24,7 +24,7 @@ object Database {
     }
 
     lateinit var db: Database
-    lateinit var rdb: StatefulRedisConnection<String, String>
+    lateinit var rdb: RedisAsyncCommands<String, String>
     private var connectionStatus: ConnectionStatus = ConnectionStatus.DISCONNECTED
 
     fun connect() {
@@ -34,7 +34,7 @@ object Database {
                 logger = ConsoleLogger(threshold = LogLevel.INFO),
                 dialect = MyPostgreSqlDialect()
             )
-            rdb = lettuceDataSourceProvider().connect()
+            rdb = lettuceDataSourceProvider().connect().async()
             connectionStatus = ConnectionStatus.CONNECTED
             PluginMain.logger.info { "Database ${PluginConfig.database.table} is connected." }
         } catch (ex: Exception) {

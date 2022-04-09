@@ -15,6 +15,7 @@ import net.mamoe.mirai.event.events.MessageRecallEvent
 import net.mamoe.mirai.message.MessageReceipt
 import net.mamoe.mirai.message.data.*
 import java.io.InputStream
+import java.util.concurrent.TimeUnit
 
 object MessageProcessor {
     private val log = PluginMain.logger
@@ -28,8 +29,8 @@ object MessageProcessor {
     @DelicateCoroutinesApi
     private fun onRecall(event: MessageRecallEvent) {
         val bot = event.bot
-        Database.rdb.sync().keys("fmp:replied:${event.rgwMsgIdentity()}:*").forEach { key ->
-            val sentIdentity = Database.rdb.sync().get(key)
+        Database.rdb.keys("fmp:replied:${event.rgwMsgIdentity()}:*").get(1, TimeUnit.MINUTES).forEach { key ->
+            val sentIdentity = Database.rdb.get(key).get(1,TimeUnit.MINUTES)
             if (sentIdentity != null) {
                 val split = sentIdentity.split("#")
                 if (split.size == 5) {
@@ -65,7 +66,7 @@ object MessageProcessor {
         log.info("触发原消息标识$originIdentity  发送消息标识$sentIdentity")
         val redisKey = "fmp:replied:$originIdentity:$sentIdentity"
 
-        Database.rdb.async().setex(redisKey,1800L, sentIdentity)
+        Database.rdb.setex(redisKey,1800L, sentIdentity)
     }
 
     private suspend fun replyImg(src: MessageEvent, input: InputStream, type: String?): MessageReceipt<Contact> {
