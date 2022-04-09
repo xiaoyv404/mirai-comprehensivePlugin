@@ -2,7 +2,6 @@ package com.xiaoyv404.mirai.core
 
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
 import com.xiaoyv404.mirai.databace.Database
-import io.lettuce.core.SetArgs
 import net.mamoe.mirai.event.events.MessageEvent
 
 
@@ -107,6 +106,5 @@ abstract class NfApp {
         val key = "${getAppName()}_${place}_${caller}"
         val num = rdb.sync().get(key)?.toIntOrNull() ?:0
 
-        val setArgs = SetArgs.Builder.nx().ex(getLimitExpiresTime())
-        rdb.async().set(key,(num+1).toString(),setArgs) }
+        rdb.async().setex(key,getLimitExpiresTime(),(num+1).toString()) }
 }
