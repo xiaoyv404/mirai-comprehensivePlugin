@@ -24,6 +24,7 @@ import net.mamoe.mirai.message.data.toMessageChain
 import org.apache.commons.cli.Options
 import java.util.*
 
+@ExperimentalSerializationApi
 @App
 class MinecraftServerStats : NfApp(), IFshApp {
     override fun getAppName() = "MinecraftServerStats"
@@ -58,18 +59,24 @@ class MinecraftServerStats : NfApp(), IFshApp {
     }
 
     override fun init() {
-        Timer().schedule(object : TimerTask() {
-            override fun run() {
-                PluginMain.launch {
-                    getAll().forEach {
-                        check(it)
-                    }
-                }
-            }
-        }, Date(), 60000)
+        timer.schedule(task, Date(), 60000)
     }
 
-    @OptIn(ExperimentalSerializationApi::class)
+    override fun uninit() {
+        timer.cancel()
+    }
+
+    private val timer = Timer()
+    private val task = object : TimerTask() {
+        override fun run() {
+            PluginMain.launch {
+                getAll().forEach {
+                    check(it)
+                }
+            }
+        }
+    }
+
     private suspend fun sendInfo(msg: MessageEvent, info: MinecraftServer, playerList: Boolean = false) {
         val infoD = getServerInfo(info.host, info.port)
         val bot = msg.bot
@@ -119,7 +126,6 @@ class MinecraftServerStats : NfApp(), IFshApp {
         }
     }
 
-    @OptIn(ExperimentalSerializationApi::class)
     private suspend fun getPlayerList(host: String, port: Int, players: Players): List<Player> {
         val playersML = players.players.toMutableList()
         var cycles = players.online / 12
@@ -153,7 +159,6 @@ class MinecraftServerStats : NfApp(), IFshApp {
         )
     }
 
-    @OptIn(ExperimentalSerializationApi::class)
     suspend fun check(info: MinecraftServer) {
         PluginMain.launch {
             val information = getServerInfo(info.host, info.port)
@@ -216,7 +221,6 @@ class MinecraftServerStats : NfApp(), IFshApp {
         }
     }
 
-    @ExperimentalSerializationApi
     private suspend fun getServerInfo(host: String, port: Int): ServerInformationFormatAndStatus {
         val pJ = ServerInformationFormatAndStatus()
         return try {
@@ -235,6 +239,3 @@ class MinecraftServerStats : NfApp(), IFshApp {
         }
     }
 }
-
-
-

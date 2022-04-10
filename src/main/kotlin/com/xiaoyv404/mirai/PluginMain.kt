@@ -46,6 +46,9 @@ object PluginMain : KotlinPlugin(
         logger.info { "综合插件加载完成，版本：$version Java版本:${System.getProperty("java.version")}" }
     }
     override fun onDisable() {
-        // 关闭ktor客户端, 防止堵塞线程无法关闭
-        KtorUtils.closeClient()    }
+        KtorUtils.closeClient()
+        NfApplicationManager.nfApps.forEach{
+            it.uninit()
+        }
+    }
 }
