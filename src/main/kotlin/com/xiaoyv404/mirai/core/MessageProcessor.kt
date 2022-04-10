@@ -40,8 +40,8 @@ object MessageProcessor {
         return sent
     }
 
-    suspend fun MessageEvent.reply(msg: Message, quote: Boolean): MessageReceipt<Contact> {
-        return this.reply( msg.toMessageChain(), quote)
+    suspend fun MessageEvent.reply(msg: Message, quote: Boolean = false): MessageReceipt<Contact> {
+        return this.reply(msg.toMessageChain(), quote)
     }
 
     suspend fun MessageEvent.reply(msg: String, quote: Boolean = false): MessageReceipt<Contact> {

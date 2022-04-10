@@ -10,6 +10,7 @@ import com.xiaoyv404.mirai.core.uid
 import com.xiaoyv404.mirai.databace.dao.authorityIdentification
 import com.xiaoyv404.mirai.databace.dao.gallery.*
 import com.xiaoyv404.mirai.databace.dao.isNotAdmin
+import kotlinx.serialization.ExperimentalSerializationApi
 import net.mamoe.mirai.event.events.MessageEvent
 import net.mamoe.mirai.message.nextMessage
 import org.apache.commons.cli.Options
@@ -61,6 +62,7 @@ class LocalGallery : NfApp(), IFshApp {
      * @param msg
      * @param noOutPut
      */
+    @OptIn(ExperimentalSerializationApi::class)
     private suspend fun eroAdd(idData: String?, msg: MessageEvent, noOutPut: Boolean = false) {
         if (authorityIdentification(msg.uid(), msg.gid(), "LocalGallery")) {
             val fail = mutableListOf<String>()
@@ -76,7 +78,7 @@ class LocalGallery : NfApp(), IFshApp {
 
             ids.forEachIndexed { index, id ->
                 log.info("œ¬‘ÿ±‡∫≈ ${ids.size - 1}\\$index id ${id.value}")
-                if (LocalGallerys(msg.subject).unformat(id.value, msg.uid(), noOutPut)) {
+                if (LocalGallerys(msg).unformat(id.value, msg.uid(), noOutPut)) {
                     log.info("œ¬‘ÿ±‡∫≈ $index id ${id.value}  ß∞‹")
                     fail.add(id.value)
                 }
@@ -127,7 +129,7 @@ class LocalGallery : NfApp(), IFshApp {
             val ii = Gallery {
                 id = idA
             }.findById()
-            LocalGallerys(msg.subject).send(ii!!)
+            LocalGallerys(msg).send(ii!!)
         }
     }
 
