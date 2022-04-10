@@ -1,5 +1,6 @@
 package com.xiaoyv404.mirai.core
 
+import com.xiaoyv404.mirai.PluginMain
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
 import com.xiaoyv404.mirai.databace.Database
 import net.mamoe.mirai.event.events.MessageEvent
@@ -8,7 +9,9 @@ import java.util.concurrent.TimeUnit
 
 abstract class NfApp {
 
-    private val rdb = Database.rdb
+    val rdb = Database.rdb
+
+    val log = PluginMain.logger
 
     /**
      * Ó¦ÓÃÃû³Æ

@@ -25,8 +25,6 @@ class LocalGallery : NfApp(), IFshApp {
         addOption("n", "no-outPut", false, "¹Ø±ÕÊä³ö")
     }
 
-    private val log = PluginMain.logger
-
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
         val cmdLine = IFshApp.cmdLine(options, args)
 

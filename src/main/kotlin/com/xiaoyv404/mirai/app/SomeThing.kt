@@ -1,6 +1,5 @@
 package com.xiaoyv404.mirai.app
 
-import com.xiaoyv404.mirai.PluginMain
 import com.xiaoyv404.mirai.app.fsh.IFshApp
 import com.xiaoyv404.mirai.core.App
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
@@ -36,8 +35,6 @@ class SomeThing : NfApp(), IFshApp {
         addOption("u", "unBan", false, "取消禁言")
         addOption("t", "time", true, "禁言时间")
     }
-
-    private val log = PluginMain.logger
 
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
         when (args[0]) {

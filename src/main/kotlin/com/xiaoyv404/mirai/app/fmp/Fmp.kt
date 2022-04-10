@@ -1,6 +1,5 @@
 package com.xiaoyv404.mirai.app.fmp
 
-import com.xiaoyv404.mirai.PluginMain
 import com.xiaoyv404.mirai.core.App
 import com.xiaoyv404.mirai.core.NfApp
 import com.xiaoyv404.mirai.core.rgwMsgIdentity
@@ -21,8 +20,6 @@ class Fmp : NfApp() {
     override fun getVersion() = "1.0.0"
     override fun getAppDescription() = "命令系统的撤回事件实现"
 
-    private val log = PluginMain.logger
-
     override fun init() {
         GlobalEventChannel.subscribeAlways(MessageRecallEvent::class.java) { onRecall(it) }
     }
@@ -30,7 +27,7 @@ class Fmp : NfApp() {
     @OptIn(DelicateCoroutinesApi::class)
     private fun onRecall(event: MessageRecallEvent) {
         val bot = event.bot
-        Database.rdb.keys("fmp:replied:${event.rgwMsgIdentity()}:*").get(1, TimeUnit.MINUTES).forEach { key ->
+        rdb.keys("fmp:replied:${event.rgwMsgIdentity()}:*").get(1, TimeUnit.MINUTES).forEach { key ->
             val sentIdentity = Database.rdb.get(key).get(1, TimeUnit.MINUTES)
             if (sentIdentity != null) {
                 val split = sentIdentity.split("#")

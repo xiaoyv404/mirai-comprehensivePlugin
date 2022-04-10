@@ -1,6 +1,5 @@
 package com.xiaoyv404.mirai.app.dice
 
-import com.xiaoyv404.mirai.PluginMain
 import com.xiaoyv404.mirai.app.fsh.IFshApp
 import com.xiaoyv404.mirai.core.App
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
@@ -13,8 +12,6 @@ class Dice : NfApp(), IFshApp {
     override fun getVersion() = "1.0.1"
     override fun getAppDescription() = "В╩вс"
     override fun getCommands() = arrayOf(".r")
-
-    private val log = PluginMain.logger
 
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
         val rd = args.getOrNull(1)?.let { Regex("^((\\d+)((\\((\\d+)\\))|(:(\\d+)))?)\$").find(it) }?.groups

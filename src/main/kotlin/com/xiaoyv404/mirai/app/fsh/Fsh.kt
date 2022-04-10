@@ -1,6 +1,5 @@
 package com.xiaoyv404.mirai.app.fsh
 
-import com.xiaoyv404.mirai.PluginMain
 import com.xiaoyv404.mirai.app.thesaurus.cMsgToMiraiMsg
 import com.xiaoyv404.mirai.app.thesaurus.parseMsg
 import com.xiaoyv404.mirai.core.App
@@ -24,8 +23,6 @@ class Fsh : NfAppMessageHandler(){
     override fun getVersion() = "1.0"
     override fun getAppDescription() = "命令系统的底层实现"
     override fun getAppUsage() = "命令系统的底层实现模块, 具体使用见命令"
-
-    private val log = PluginMain.logger
 
     private val argsSplitPattern = Pattern.compile("([^\"]\\S*|\".+?(?<!\\\\)\")\\s*")
 
