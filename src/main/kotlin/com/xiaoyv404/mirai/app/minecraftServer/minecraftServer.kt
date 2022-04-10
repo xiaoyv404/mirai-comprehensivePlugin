@@ -163,7 +163,7 @@ class MinecraftServerStats : NfApp(), IFshApp {
         PluginMain.launch {
             val information = getServerInfo(info.host, info.port)
             val groups = mutableListOf<Contact>()
-            val bot = Bot.getInstance(2079373402)
+            val bot = Bot.getInstanceOrNull(2079373402) ?: return@launch
 
             val statusD = information.status
             val players = information.serverInformationFormat?.players
