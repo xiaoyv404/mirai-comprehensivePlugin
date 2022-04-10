@@ -9,7 +9,6 @@ import net.mamoe.mirai.event.GlobalEventChannel
 import net.mamoe.mirai.event.events.MessageEvent
 
 object NfApplicationManager {
-
     private val log = PluginMain.logger
     val nfApps: MutableSet<NfApp> = HashSet()
     val fshCommands = HashMap<String, IFshApp>()

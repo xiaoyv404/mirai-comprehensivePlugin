@@ -38,8 +38,6 @@ class MinecraftServerStats : NfApp(), IFshApp {
         addOption("p", "player", false, "获取玩家列表")
     }
 
-    private val log = PluginMain.logger
-
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
         val cmdLine = IFshApp.cmdLine(options, args)
         MinecraftServerMap {
