@@ -1,6 +1,7 @@
 package com.xiaoyv404.mirai.app.ero.localGallery
 
 import com.xiaoyv404.mirai.PluginMain
+import com.xiaoyv404.mirai.core.MessageProcessor.reply
 import com.xiaoyv404.mirai.databace.Pixiv
 import com.xiaoyv404.mirai.databace.dao.gallery.*
 import com.xiaoyv404.mirai.tool.FileUtils
@@ -9,25 +10,28 @@ import io.ktor.client.request.*
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
-import net.mamoe.mirai.contact.Contact
+import net.mamoe.mirai.event.events.MessageEvent
 import net.mamoe.mirai.message.data.buildForwardMessage
 import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
 import org.apache.tika.Tika
 import java.io.BufferedInputStream
 import java.io.InputStream
 
-class LocalGallerys(private val subject: Contact) {
+class LocalGallerys(val msg: MessageEvent) {
 
     private val log = PluginMain.logger
 
+    private val subject = msg.subject
+
+
     suspend fun send(ii: Gallery) {
         if (ii.picturesMun == 1) {
-            subject.sendMessage(
+            msg.reply(
                 PluginMain.resolveDataFile("gallery/${ii.id}.${ii.extension}")
                     .uploadAsImage(subject).plus(Process.linkInfo(ii))
-            )   
+            )
         } else {
-            subject.sendMessage(
+            msg.reply(
                 buildForwardMessage(subject) {
                     subject.bot.says(Process.linkInfo(ii))
                     for (i in 1..ii.picturesMun) {
@@ -49,7 +53,7 @@ class LocalGallerys(private val subject: Contact) {
      *
      *  @return false 表示未报错, true 表示报错
      */
-    @OptIn(ExperimentalSerializationApi::class)
+    @ExperimentalSerializationApi
     suspend fun unformat(idA: String, senderId: Long, outPut: Boolean): Boolean {
         val formatInfo = try {
             KtorUtils.normalClient.get<String>(
