@@ -1,33 +1,29 @@
 package com.xiaoyv404.mirai.app.fmp
 
 import com.xiaoyv404.mirai.core.App
-import com.xiaoyv404.mirai.core.NfApp
+import com.xiaoyv404.mirai.core.NfAppMessageRecallHandler
 import com.xiaoyv404.mirai.core.rgwMsgIdentity
 import com.xiaoyv404.mirai.databace.Database
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import net.mamoe.mirai.contact.recallMessage
-import net.mamoe.mirai.event.GlobalEventChannel
 import net.mamoe.mirai.event.events.MessageRecallEvent
 import net.mamoe.mirai.message.data.MessageSourceBuilder
 import net.mamoe.mirai.message.data.MessageSourceKind
 import java.util.concurrent.TimeUnit
 
 @App
-class Fmp : NfApp() {
+class Fmp : NfAppMessageRecallHandler() {
     override fun getAppName() = "fmp"
     override fun getVersion() = "1.0.0"
     override fun getAppDescription() = "命令系统的撤回事件实现"
 
-    override fun init() {
-        GlobalEventChannel.subscribeAlways(MessageRecallEvent::class.java) { onRecall(it) }
-    }
-
     @OptIn(DelicateCoroutinesApi::class)
-    private fun onRecall(event: MessageRecallEvent) {
+    override suspend fun handleMessage(event: MessageRecallEvent){
         val bot = event.bot
-        rdb.keys("fmp:replied:${event.rgwMsgIdentity()}:*").get(1, TimeUnit.MINUTES).forEach { key ->
+        val data = rdb.keys("fmp:replied:${event.rgwMsgIdentity()}:*")
+        withContext(Dispatchers.IO) {
+            data.get(1, TimeUnit.MINUTES)
+        }.forEach { key ->
             val sentIdentity = Database.rdb.get(key).get(1, TimeUnit.MINUTES)
             if (sentIdentity != null) {
                 val split = sentIdentity.split("#")

@@ -7,6 +7,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import net.mamoe.mirai.event.GlobalEventChannel
 import net.mamoe.mirai.event.events.MessageEvent
+import net.mamoe.mirai.event.events.MessageRecallEvent
 
 object NfApplicationManager {
     private val log = PluginMain.logger
@@ -32,6 +33,14 @@ object NfApplicationManager {
                 }
             }
             log.info("注册消息处理器${app.getAppName()}")
+        }
+
+        if (app is NfAppMessageRecallHandler){
+            GlobalEventChannel.subscribeAlways(MessageRecallEvent::class.java){
+                GlobalScope.launch {
+                    app.handleMessage(it)
+                }
+            }
         }
         if (app is IFshApp) {
             for (command in app.getCommands()) {
