@@ -9,7 +9,7 @@ import javax.imageio.ImageIO
 import kotlin.math.roundToInt
 
 /**
- * ÓÃÓÚÉú³ÉInfoÍ¼Æ¬
+ * ç”¨äºç”ŸæˆInfoå›¾ç‰‡
  * @author xiaoyv_404
  * @create 2022/4/8
  *
@@ -36,9 +36,9 @@ class MinecraftDataImgGenerator {
 
             g2d.font = font
 
-            //Ïû³ı»­Í¼¾â³İ
+            //æ¶ˆé™¤ç”»å›¾é”¯é½¿
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
-            //Ïû³ıÎÄ×Ö¾â³İ
+            //æ¶ˆé™¤æ–‡å­—é”¯é½¿
             g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON)
 
             g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY)
@@ -57,13 +57,13 @@ class MinecraftDataImgGenerator {
 
             val xSize: Double = (xMax - xMin) / 2.0
 
-            //»æÖÆ±³¾°
+            //ç»˜åˆ¶èƒŒæ™¯
             g2d.drawImage(
                 ImageIO.read(PluginMain.resolveDataFile("resources/Minecraft/background.png")),
                 0, 0, 350, 400, null
             )
 
-            //»æÖÆ×´Ì¬
+            //ç»˜åˆ¶çŠ¶æ€
             g2d.drawImage(
                 ImageIO.read(PluginMain.resolveDataFile("resources/Minecraft/Running.png")),
                 (xMin + xSize + 50).roundToInt(),
@@ -71,7 +71,7 @@ class MinecraftDataImgGenerator {
                 null
             )
 
-            //»æÖÆlogo
+            //ç»˜åˆ¶logo
             g2d.drawImage(
                 ImageIO.read(PluginMain.resolveDataFile("resources/Minecraft/logo.png")),
                 (xMin + 20),
@@ -83,18 +83,18 @@ class MinecraftDataImgGenerator {
             val yData = 120
             val yDataSize = 40
 
-            //»æÖÆ»ù±¾ĞÅÏ¢
+            //ç»˜åˆ¶åŸºæœ¬ä¿¡æ¯
             g2d.drawString(playerNum, (xPeople + xSize).roundToInt(), yData)
             g2d.drawString(ip, xSize.roundToInt(), yData + yDataSize)
             g2d.drawString(port, (xPeople + xSize).roundToInt(), yData + yDataSize * 2)
 
             g2d.paint = Color.decode("#CCCCCC")
 
-            g2d.drawString("ÈËÊı", xPeople, yData)
+            g2d.drawString("äººæ•°", xPeople, yData)
             g2d.drawString("IP", xPeople, yData + yDataSize)
             g2d.drawString("Port", xPeople, yData + yDataSize * 2)
 
-            //»æÖÆĞéÏß
+            //ç»˜åˆ¶è™šçº¿
             g2d.paint = Color.decode("#999999")
             val st: Stroke = g2d.stroke
             val bs: Stroke
@@ -107,7 +107,7 @@ class MinecraftDataImgGenerator {
             g2d.stroke = st
 
 
-            //»æÖÆÍæ¼ÒÁĞ±í
+            //ç»˜åˆ¶ç©å®¶åˆ—è¡¨
             g2d.font = fontMono
             g2d.paint = Color.decode("#FFFFFF")
             var i = 3

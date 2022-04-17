@@ -39,7 +39,7 @@ object Database {
             PluginMain.logger.info { "Database ${PluginConfig.database.table} is connected." }
         } catch (ex: Exception) {
             when (ex) {
-                //当配置文件的配置不符合要求时throw
+                //褰撻厤缃枃浠剁殑閰嶇疆涓嶇鍚堣姹傛椂throw
                 is InvalidDatabaseConfigException -> {
                     throw ex
                 }

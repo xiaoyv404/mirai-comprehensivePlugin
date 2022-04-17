@@ -21,8 +21,8 @@ import java.util.regex.Pattern
 class Fsh : NfAppMessageHandler(){
     override fun getAppName() = "fsh"
     override fun getVersion() = "1.0"
-    override fun getAppDescription() = "ÃüÁîÏµÍ³µÄµ×²ãÊµÏÖ"
-    override fun getAppUsage() = "ÃüÁîÏµÍ³µÄµ×²ãÊµÏÖÄ£¿é, ¾ßÌåÊ¹ÓÃ¼ûÃüÁî"
+    override fun getAppDescription() = "å‘½ä»¤ç³»ç»Ÿçš„åº•å±‚å®ç°"
+    override fun getAppUsage() = "å‘½ä»¤ç³»ç»Ÿçš„åº•å±‚å®ç°æ¨¡å—, å…·ä½“ä½¿ç”¨è§å‘½ä»¤"
 
     private val argsSplitPattern = Pattern.compile("([^\"]\\S*|\".+?(?<!\\\\)\")\\s*")
 
@@ -45,7 +45,7 @@ class Fsh : NfAppMessageHandler(){
         }
         val line = msg.message.contentToString().trim()
 
-        // ·Ö¸î²ÎÊı
+        // åˆ†å‰²å‚æ•°
         val matcher = argsSplitPattern.matcher(line)
         val argsList: ArrayList<String> = ArrayList()
         while (matcher.find()) {
@@ -68,19 +68,19 @@ class Fsh : NfAppMessageHandler(){
         if (uid.isBot())
             return
 
-        // ×îºó²ÎÊıµÄ½á¹û
+        // æœ€åå‚æ•°çš„ç»“æœ
         val fshApp = NfApplicationManager.fshCommands[argsList[0]]
         if (fshApp != null) {
             fshApp as NfApp
             fshApp.requireCallLimiter(msg, uid, gid,fshApp.getLimitHint()) {
                 try {
                     if (fshApp.executeRsh(argsList.toTypedArray(), msg)) {
-                        // µ÷ÓÃ³É¹¦½øĞĞÏŞÖÆ¼Æ´Î
+                        // è°ƒç”¨æˆåŠŸè¿›è¡Œé™åˆ¶è®¡æ¬¡
                         fshApp.submitCallLimiter(uid, gid)
                     }
                 } catch (e: Exception) {
-                    msg.reply("Ö´ĞĞÊ±·¢ÉúÄÚ²¿´íÎó", quote = true)
-                    log.warning("´¦Àí${argsList[0]}ÃüÁî·¢ÉúÒì³£\n$e")
+                    msg.reply("æ‰§è¡Œæ—¶å‘ç”Ÿå†…éƒ¨é”™è¯¯", quote = true)
+                    log.warning("å¤„ç†${argsList[0]}å‘½ä»¤å‘ç”Ÿå¼‚å¸¸\n$e")
                 }
             }
         } else {

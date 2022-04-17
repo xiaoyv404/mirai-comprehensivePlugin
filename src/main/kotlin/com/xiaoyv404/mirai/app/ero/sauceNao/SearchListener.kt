@@ -17,8 +17,8 @@ import net.mamoe.mirai.message.nextMessage
 class SauceNaoImgSearch : NfApp(), IFshApp {
     override fun getAppName() = "SauceNaoImgSearch"
     override fun getVersion() = "1.0.0"
-    override fun getAppDescription() = "SauceNaoÍ¼Æ¬ËÑË÷Æ÷"
-    override fun getCommands() = arrayOf("ËÑÍ¼", "-img")
+    override fun getAppDescription() = "SauceNaoå›¾ç‰‡æœç´¢å™¨"
+    override fun getCommands() = arrayOf("æœå›¾", "-img")
 
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
         if (args[0] == "img" && !args[1].startsWith("search")) {
@@ -31,13 +31,13 @@ class SauceNaoImgSearch : NfApp(), IFshApp {
             val sauceNao = SauceNaoRequester(msg)
             val image = msg.message[Image]
             if (image == null) {
-                msg.reply("Ã»ÓĞÍ¼Æ¬µÄËµ,ÇëÔÚ60sÄÚ·¢ËÍÍ¼Æ¬",true)
+                msg.reply("æ²¡æœ‰å›¾ç‰‡çš„è¯´,è¯·åœ¨60så†…å‘é€å›¾ç‰‡",true)
                 val nextMsg = msg.nextMessage()
-                //ÅĞ¶Ï·¢ËÍµÄÊ±¼ä
+                //åˆ¤æ–­å‘é€çš„æ—¶é—´
                 if (nextMsg.time - msg.time < 60) {
                     val nextImage = nextMsg[Image]
                     if (nextImage == null) {
-                        subject.sendMessage(nextMsg.quote() + "Ã»ÓĞ»ñÈ¡Í¼Æ¬")
+                        subject.sendMessage(nextMsg.quote() + "æ²¡æœ‰è·å–å›¾ç‰‡")
                     } else {
                         sauceNao.search(nextImage)
                         sauceNao.sendResult()

@@ -3,22 +3,22 @@ package com.xiaoyv404.mirai.tool
 import com.xiaoyv404.mirai.app.bilibili.VideoDataJson
 import com.xiaoyv404.mirai.app.bilibili.tID
 
-//¸ñÊ½»¯ÊÓÆµĞÅÏ¢
+//æ ¼å¼åŒ–è§†é¢‘ä¿¡æ¯
 fun parsingVideoDataString(pJson: VideoDataJson): String {
     val data = pJson.data
     return (
 """${data.pic}
 
-±êÌâ: ${data.title}
-ÊÓÆµ·ÖÇø: ${tID[data.tid]}
+æ ‡é¢˜: ${data.title}
+è§†é¢‘åˆ†åŒº: ${tID[data.tid]}
 
-ÊÓÆµ¼ò½é: ${data.desc}
+è§†é¢‘ç®€ä»‹: ${data.desc}
 
-${data.stat.view}²¥·Å, ${data.videos}·Öp, ${data.stat.danmaku}µ¯Ä», ${data.stat.reply}ÆÀÂÛ
-${data.stat.favorite}ÊÕ²Ø, ${data.stat.share}·ÖÏí, ${data.stat.coin}Í¶±Ò, ${data.stat.like}µãÔŞ
+${data.stat.view}æ’­æ”¾, ${data.videos}åˆ†p, ${data.stat.danmaku}å¼¹å¹•, ${data.stat.reply}è¯„è®º
+${data.stat.favorite}æ”¶è—, ${data.stat.share}åˆ†äº«, ${data.stat.coin}æŠ•å¸, ${data.stat.like}ç‚¹èµ
 
 UP: ${data.owner.name}  UID: ${data.owner.mid}
-¿Õ¼äÁ´½Ó: https://space.bilibili.com/${data.owner.mid}
+ç©ºé—´é“¾æ¥: https://space.bilibili.com/${data.owner.mid}
 
 av${data.aid}  ${data.bvid}
 https://www.bilibili.com/video/av${data.aid}""")

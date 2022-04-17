@@ -20,7 +20,7 @@ import java.time.ZoneOffset
 class History : NfApp(){
     override fun getAppName() = "History"
     override fun getVersion() = "1.0.0"
-    override fun getAppDescription() = "ÏûÏ¢¼ÇÂ¼Æ÷"
+    override fun getAppDescription() = "æ¶ˆæ¯è®°å½•å™¨"
     override fun init() {
         GlobalEventChannel.subscribeGroupMessages {
             always {

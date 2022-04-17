@@ -23,7 +23,7 @@ val format = Json { ignoreUnknownKeys = true }
 class BiliBiliVideoParse : NfApp(){
     override fun getAppName() = "BiliBiliVideoParse"
     override fun getVersion() = "1.0.0"
-    override fun getAppDescription() = "bÕ¾ÊÓÆµ½âÎö"
+    override fun getAppDescription() = "bç«™è§†é¢‘è§£æ"
 
     override fun init() {
         GlobalEventChannel.subscribeGroupMessages {
@@ -61,13 +61,13 @@ class BiliBiliVideoParse : NfApp(){
     }
 }
 
-//ÓÃÓÚ¸ñÊ½»¯Json²¢·¢ËÍ
+//ç”¨äºæ ¼å¼åŒ–Jsonå¹¶å‘é€
 @OptIn(ExperimentalSerializationApi::class)
 suspend fun uJsonVideo(uJsonVideo: String, group: Contact) {
     /**
-     * Èç¹ûpJsonÖĞº¬ÓĞdata×Ö¶ÎÊ±²»»áÅ×³ö[SerializationException]£¬²»º¬ÓĞÔò·´Ö®
-     * µ±Î´Å×³ö[SerializationException]Òì³£Ê±£¬Õı³£Ö´ĞĞ£¬Ê¹ÓÃ[VideoDataJson]¸ñÊ½»¯²¢·¢ËÍ
-     * µ±Å×³ö[SerializationException]Òì³£Ê±£¬±»catch×¥×¡²¢Ê¹ÓÃ[AbnormalVideoDataJson]¸ñÊ½»¯²¢·¢ËÍ
+     * å¦‚æœpJsonä¸­å«æœ‰dataå­—æ®µæ—¶ä¸ä¼šæŠ›å‡º[SerializationException]ï¼Œä¸å«æœ‰åˆ™åä¹‹
+     * å½“æœªæŠ›å‡º[SerializationException]å¼‚å¸¸æ—¶ï¼Œæ­£å¸¸æ‰§è¡Œï¼Œä½¿ç”¨[VideoDataJson]æ ¼å¼åŒ–å¹¶å‘é€
+     * å½“æŠ›å‡º[SerializationException]å¼‚å¸¸æ—¶ï¼Œè¢«catchæŠ“ä½å¹¶ä½¿ç”¨[AbnormalVideoDataJson]æ ¼å¼åŒ–å¹¶å‘é€
      */
     try {
         val pJson = format.decodeFromString<VideoDataJson>(uJsonVideo)
@@ -79,10 +79,10 @@ suspend fun uJsonVideo(uJsonVideo: String, group: Contact) {
     } catch (e: SerializationException) {
         val pJson = format.decodeFromString<AbnormalVideoDataJson>(uJsonVideo)
         when (pJson.code) {
-            -404  -> group.sendMessage("ß÷, ÊÓÆµ²»´æÔÚÅ¶")
-            -400  -> group.sendMessage("404ÓÖ³öBugÈÇ, ¿ìÈ¥½ĞÖ÷ÈËÀ´ĞŞ°È")
-            -403  -> group.sendMessage("404µÄÈ¨ÏŞ²»×ãÅ¶")
-            62002 -> group.sendMessage("ÊÓÆµ²»¿É¼ûÈÇ, Õâ¸öËÀÒÑ»éÓÖ¸ÉÁËĞ©Ê²Ã´°¡")
+            -404  -> group.sendMessage("å–µ, è§†é¢‘ä¸å­˜åœ¨å“¦")
+            -400  -> group.sendMessage("404åˆå‡ºBugæƒ¹, å¿«å»å«ä¸»äººæ¥ä¿®å­")
+            -403  -> group.sendMessage("404çš„æƒé™ä¸è¶³å“¦")
+            62002 -> group.sendMessage("è§†é¢‘ä¸å¯è§æƒ¹, è¿™ä¸ªæ­»å·²å©šåˆå¹²äº†äº›ä»€ä¹ˆå•Š")
         }
     }
 }

@@ -6,17 +6,17 @@ import io.ktor.client.engine.*
 import io.ktor.client.engine.okhttp.*
 
 object KtorUtils {
-    // Ê¹ÓÃ´úÀíµÄktor¿Í»§¶Ë
+    // ä½¿ç”¨ä»£ç†çš„ktorå®¢æˆ·ç«¯
     val proxyClient = HttpClient(OkHttp) {
         engine {
             proxy = ProxyBuilder.socks("127.0.0.1", PluginConfig.database.ProxyPort)
         }
     }
 
-    // Î´Ê¹ÓÃ´úÀíµÄKtor¿Í»§¶Ë
+    // æœªä½¿ç”¨ä»£ç†çš„Ktorå®¢æˆ·ç«¯
     val normalClient = HttpClient(OkHttp)
 
-    // °²È«µÄ¹Ø±Õ¿Í»§¶Ë, ·ÀÖ¹¶ÂÈûÖ÷Ïß³Ì
+    // å®‰å…¨çš„å…³é—­å®¢æˆ·ç«¯, é˜²æ­¢å µå¡ä¸»çº¿ç¨‹
     fun closeClient() {
         proxyClient.close()
         normalClient.close()

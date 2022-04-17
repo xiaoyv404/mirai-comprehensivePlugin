@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit
 class Fmp : NfAppMessageRecallHandler() {
     override fun getAppName() = "fmp"
     override fun getVersion() = "1.0.0"
-    override fun getAppDescription() = "ÃüÁîÏµÍ³µÄ³·»ØÊÂ¼şÊµÏÖ"
+    override fun getAppDescription() = "å‘½ä»¤ç³»ç»Ÿçš„æ’¤å›äº‹ä»¶å®ç°"
 
     @OptIn(DelicateCoroutinesApi::class)
     override suspend fun handleMessage(event: MessageRecallEvent){
@@ -41,7 +41,7 @@ class Fmp : NfAppMessageRecallHandler() {
                     recallSource.fromId = split[3].toLong()
                     recallSource.targetId = split[4].toLong()
 
-                    log.info("³·»Ø´¥·¢¹ıµÄÏûÏ¢$sentIdentity")
+                    log.info("æ’¤å›è§¦å‘è¿‡çš„æ¶ˆæ¯$sentIdentity")
                     GlobalScope.launch {
                         if (event is MessageRecallEvent.GroupRecall) {
                             event.group.recallMessage(recallSource.build(bot.id, MessageSourceKind.GROUP))

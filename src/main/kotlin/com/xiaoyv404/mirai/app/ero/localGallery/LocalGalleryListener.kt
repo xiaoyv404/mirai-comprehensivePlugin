@@ -19,11 +19,11 @@ import org.apache.commons.cli.Options
 class LocalGallery : NfApp(), IFshApp {
     override fun getAppName() = "LocalGallery"
     override fun getVersion() = "1.0.0"
-    override fun getAppDescription() = "±¾µØÍ¼¿â"
+    override fun getAppDescription() = "æœ¬åœ°å›¾åº“"
     override fun getCommands() = arrayOf("-ero")
 
     private val options = Options().apply {
-        addOption("n", "no-outPut", false, "¹Ø±ÕÊä³ö")
+        addOption("n", "no-outPut", false, "å…³é—­è¾“å‡º")
     }
 
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
@@ -34,7 +34,7 @@ class LocalGallery : NfApp(), IFshApp {
             "search" -> {
                 val tagName = args.getOrNull(2)
                 if (tagName == null) {
-                    msg.reply("Ã»Ãû×ÖÎÒÔõÃ´ËÑÂï")
+                    msg.reply("æ²¡åå­—æˆ‘æ€ä¹ˆæœå˜›")
                     return true
                 }
                 eroSearch(tagName, msg)
@@ -42,7 +42,7 @@ class LocalGallery : NfApp(), IFshApp {
             "remove" -> {
                 val id = args.getOrNull(2)?.toLongOrNull()
                 if (id == null) {
-                    msg.reply("Ã»IDÎÒÔõÃ´É¾Âï")
+                    msg.reply("æ²¡IDæˆ‘æ€ä¹ˆåˆ å˜›")
                     return true
                 }
                 eroRemove(id, msg)
@@ -54,7 +54,7 @@ class LocalGallery : NfApp(), IFshApp {
     }
 
     /**
-     * Ïò±¾µØÍ¼¿âÌí¼ÓÍ¼Æ¬
+     * å‘æœ¬åœ°å›¾åº“æ·»åŠ å›¾ç‰‡
      * @author xiaoyv_404
      * @create 2022/3/19
      *
@@ -68,34 +68,34 @@ class LocalGallery : NfApp(), IFshApp {
             val fail = mutableListOf<String>()
             val ids = Regex("\\d+").findAll(
                 if (idData == null) {
-                    msg.reply("Ã»ÕÒµ½Í¼Æ¬IDÄó£¬Çë·¢ËÍÍ¼Æ¬ID", true)
+                    msg.reply("æ²¡æ‰¾åˆ°å›¾ç‰‡IDæï¼Œè¯·å‘é€å›¾ç‰‡ID", true)
                     msg.nextMessage().contentToString()
                 } else
                     idData
             ).toList()
 
-            log.info("ÕÒµ½${ids.size}¸öID")
+            log.info("æ‰¾åˆ°${ids.size}ä¸ªID")
 
             ids.forEachIndexed { index, id ->
-                log.info("ÏÂÔØ±àºÅ ${ids.size - 1}\\$index id ${id.value}")
+                log.info("ä¸‹è½½ç¼–å· ${ids.size - 1}\\$index id ${id.value}")
                 if (LocalGallerys(msg).unformat(id.value, msg.uid(), noOutPut)) {
-                    log.info("ÏÂÔØ±àºÅ $index id ${id.value} Ê§°Ü")
+                    log.info("ä¸‹è½½ç¼–å· $index id ${id.value} å¤±è´¥")
                     fail.add(id.value)
                 }
             }
 
             if (fail.isNotEmpty()) {
-                msg.reply("ÏÂÔØÊ§°Ü Id ÁĞ±í")
-                msg.reply(fail.joinToString("£¬"))
+                msg.reply("ä¸‹è½½å¤±è´¥ Id åˆ—è¡¨")
+                msg.reply(fail.joinToString("ï¼Œ"))
             }
             if (ids.size >= 5) {
-                msg.reply("Íê³ÉÀ²w!")
+                msg.reply("å®Œæˆå•¦w!")
             }
         }
     }
 
     /**
-     * Í¨¹ı tagName ËÑË÷Í¼Æ¬²¢Ëæ»ú·¢ËÍ
+     * é€šè¿‡ tagName æœç´¢å›¾ç‰‡å¹¶éšæœºå‘é€
      * @author xiaoyv_404
      * @create 2022/3/19
      *
@@ -104,27 +104,27 @@ class LocalGallery : NfApp(), IFshApp {
      */
     private suspend fun eroSearch(tagNameA: String, msg: MessageEvent) {
         if (authorityIdentification(msg.uid(), msg.gid(), "LocalGallery")) {
-            log.info("[LocalGallerySearch] ³¢ÊÔ´Ó±¾µØÍ¼¿âËÑË÷ Tag °üº¬ $tagNameA µÄÍ¼Æ¬")
+            log.info("[LocalGallerySearch] å°è¯•ä»æœ¬åœ°å›¾åº“æœç´¢ Tag åŒ…å« $tagNameA çš„å›¾ç‰‡")
             val tagidA = GalleryTag {
                 tagname = tagNameA
             }.findTagIdByTagName()
             if (tagidA == null) {
-                log.info("[LocalGallerySearch] Î´ËÑË÷µ½ TagName $tagNameA")
-                msg.reply("ßí....ËÆºõÃ»ÓĞÄØ",true)
+                log.info("[LocalGallerySearch] æœªæœç´¢åˆ° TagName $tagNameA")
+                msg.reply("å””....ä¼¼ä¹æ²¡æœ‰å‘¢",true)
                 return
             }
 
-            log.info("[LocalGallerySearch] ËÑË÷µ½ TagName $tagNameA ID $tagidA")
+            log.info("[LocalGallerySearch] æœç´¢åˆ° TagName $tagNameA ID $tagidA")
 
             val idAL = GalleryTagMap {
                 tagid = tagidA
             }.findPidByTagId()
 
-            log.info("[LocalGallerySearch] ËÑË÷µ½ ID $tagidA ÊıÁ¿ ${idAL.size}")
+            log.info("[LocalGallerySearch] æœç´¢åˆ° ID $tagidA æ•°é‡ ${idAL.size}")
 
             val idA = idAL.random()
 
-            log.info("[LocalGallerySearch] Ëæ»úµ½ Pid $idA")
+            log.info("[LocalGallerySearch] éšæœºåˆ° Pid $idA")
 
             val ii = Gallery {
                 id = idA
@@ -135,7 +135,7 @@ class LocalGallery : NfApp(), IFshApp {
 
 
     /**
-     * Í¨¹ı pid É¾³ı±¾µØÍ¼¿âÍ¼Æ¬
+     * é€šè¿‡ pid åˆ é™¤æœ¬åœ°å›¾åº“å›¾ç‰‡
      * @author xiaoyv_404
      * @create 2022/3/19
      *
@@ -145,7 +145,7 @@ class LocalGallery : NfApp(), IFshApp {
     private suspend fun eroRemove(idA: Long, msg: MessageEvent) {
         if (msg.isNotAdmin())
             return
-        msg.reply("ÕıÔÚÉ¾³ı: $idA")
+        msg.reply("æ­£åœ¨åˆ é™¤: $idA")
 
         val tags = GalleryTagMap {
             pid = idA
@@ -180,8 +180,8 @@ class LocalGallery : NfApp(), IFshApp {
             id = idA
         }.deleteById()
         msg.reply(
-            "${idA}ÒÑÉ¾³ı\n" +
-                "É¾³ı${imgNum}ÕÅÍ¼Æ¬    ${tags.size + 1}Ìõ¼ÇÂ¼"
+            "${idA}å·²åˆ é™¤\n" +
+                "åˆ é™¤${imgNum}å¼ å›¾ç‰‡    ${tags.size + 1}æ¡è®°å½•"
         )
     }
 }

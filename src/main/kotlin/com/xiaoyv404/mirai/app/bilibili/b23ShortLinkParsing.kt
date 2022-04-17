@@ -14,7 +14,7 @@ import net.mamoe.mirai.event.subscribeGroupMessages
 class B23ShortLinkParse : NfApp(){
     override fun getAppName() = "b23ShortLinkParse"
     override fun getVersion() = "1.0.0"
-    override fun getAppDescription() = "b23¶ÌÁ´½âÎö"
+    override fun getAppDescription() = "b23çŸ­é“¾è§£æ"
 
     override fun init() {
         GlobalEventChannel.subscribeGroupMessages {

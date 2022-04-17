@@ -21,10 +21,10 @@ object NfApplicationManager {
         nfApps.add(app)
         val name = app.getAppName()
         if (appBlacklist.contains(name)) {
-            log.info("Ìø¹ıÓ¦ÓÃ$name@${app.getVersion()}: ÔÚ¼ÓÔØºÚÃûµ¥")
+            log.info("è·³è¿‡åº”ç”¨$name@${app.getVersion()}: åœ¨åŠ è½½é»‘åå•")
             return
         }
-        log.info("×¢²áÓ¦ÓÃ$name@${app.getVersion()}")
+        log.info("æ³¨å†Œåº”ç”¨$name@${app.getVersion()}")
         app.init()
         if (app is NfAppMessageHandler) {
             GlobalEventChannel.subscribeAlways(MessageEvent::class.java) {
@@ -32,7 +32,7 @@ object NfApplicationManager {
                     app.handleMessage(it)
                 }
             }
-            log.info("×¢²áÏûÏ¢´¦ÀíÆ÷${app.getAppName()}")
+            log.info("æ³¨å†Œæ¶ˆæ¯å¤„ç†å™¨${app.getAppName()}")
         }
 
         if (app is NfAppMessageRecallHandler){
@@ -41,12 +41,12 @@ object NfApplicationManager {
                     app.handleMessage(it)
                 }
             }
-            log.info("×¢²á³·»ØÏûÏ¢´¦ÀíÆ÷${app.getAppName()}")
+            log.info("æ³¨å†Œæ’¤å›æ¶ˆæ¯å¤„ç†å™¨${app.getAppName()}")
         }
         if (app is IFshApp) {
             for (command in app.getCommands()) {
                 fshCommands[command] = app
-                log.info("×¢²áfshÃüÁî$command")
+                log.info("æ³¨å†Œfshå‘½ä»¤$command")
             }
         }
     }

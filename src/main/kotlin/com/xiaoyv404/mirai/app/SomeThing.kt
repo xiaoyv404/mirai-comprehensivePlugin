@@ -17,15 +17,15 @@ import kotlin.coroutines.EmptyCoroutineContext
 class SomeThing : NfApp(), IFshApp {
     override fun getAppName() = "SomeThing"
     override fun getVersion() = "1.1.0"
-    override fun getAppDescription() = "ÔÓÆßÔÓ°ËµÄ¶«Î÷"
+    override fun getAppDescription() = "æ‚ä¸ƒæ‚å…«çš„ä¸œè¥¿"
     override fun getCommands(): Array<String> =
         arrayOf("-status", "-help")
 
 
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
         when (args[0]) {
-            "-status"  -> status(msg)
-            "-help"    -> help(msg)
+            "-status" -> status(msg)
+            "-help"   -> help(msg)
         }
         return true
     }
@@ -49,22 +49,20 @@ class SomeThing : NfApp(), IFshApp {
         ) {
             bot.getFriend(2083664136L)!!
                 .sendMessage(
-                    "ÊÂ¼şID: ${it.eventId}\n" +
-                        "Ö÷ÈË,${it.invitorNick}(${it.invitorId})ÑûÇëÎÒ¼ÓÈëÈº${it.groupName}(${it.groupId})"
+                    "äº‹ä»¶ID: ${it.eventId}\n" +
+                        "ä¸»äºº,${it.invitorNick}(${it.invitorId})é‚€è¯·æˆ‘åŠ å…¥ç¾¤${it.groupName}(${it.groupId})"
                 )
             accept()
         }
         GlobalEventChannel.subscribeGroupMessages {
             at(2083664136L).invoke {
                 var chain = buildMessageChain {
-                    +PlainText("${sender.nick}(${sender.id})ÔÚ${group.name}(${group.id})ÖĞ¶ÔÖ÷ÈËËµ£º\n")
+                    +PlainText("${sender.nick}(${sender.id})åœ¨${group.name}(${group.id})ä¸­å¯¹ä¸»äººè¯´ï¼š\n")
                 }
                 chain = chain.plus(
                     MiraiCode.deserializeMiraiCode(
                         message
-                            .serializeToMiraiCode()
-                            .replace("[mirai:at:2083664136] ", "")
-                            .replace("[mirai:at:2083664136]", "")
+                            .serializeToMiraiCode().replace(Regex("^(\\[mirai:at:2083664136]( )?)"), "")
                     )
                 )
                 bot.getFriend(2083664136L)?.sendMessage(chain)
@@ -72,14 +70,12 @@ class SomeThing : NfApp(), IFshApp {
 
             at(3068755284).invoke {
                 var chain = buildMessageChain {
-                    +PlainText("${sender.nick}(${sender.id})ÔÚ${group.name}(${group.id})ÖĞ¶Ô¼¦¸çËµ£º\n")
+                    +PlainText("${sender.nick}(${sender.id})åœ¨${group.name}(${group.id})ä¸­å¯¹é¸¡å“¥è¯´ï¼š\n")
                 }
                 chain = chain.plus(
                     MiraiCode.deserializeMiraiCode(
                         message
-                            .serializeToMiraiCode()
-                            .replace("[mirai:at:3068755284] ", "")
-                            .replace("[mirai:at:3068755284]", "")
+                            .serializeToMiraiCode().replace(Regex("^(\\[mirai:at:3068755284]( )?)"), "")
                     )
                 )
                 bot.getFriend(3068755284)?.sendMessage(chain)

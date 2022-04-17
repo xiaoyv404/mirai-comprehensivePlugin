@@ -13,31 +13,31 @@ object PluginConfig : AutoSavePluginConfig("404.404ComprehensiveBotConfig") {
 data class DatabaseConfig(
     @Comment(
         """
-        Êı¾İ¿âµØÖ·£¬Ö§³ÖpostgresÊı¾İ¿â.
-        Ä¬ÈÏÖµ£º127.0.0.1
+        æ•°æ®åº“åœ°å€ï¼Œæ”¯æŒpostgresæ•°æ®åº“.
+        é»˜è®¤å€¼ï¼š127.0.0.1
     """
     )
     val address: String = "127.0.0.1",
     @Comment(
         """
-        Êı¾İ¿âµÇÈëÓÃ»§.
-        Ä¬ÈÏÖµ£ºpostgres
+        æ•°æ®åº“ç™»å…¥ç”¨æˆ·.
+        é»˜è®¤å€¼ï¼špostgres
     """
     )
     val user: String = "postgres",
-    @Comment("Êı¾İ¿âµÇÈëÃÜÂë")
+    @Comment("æ•°æ®åº“ç™»å…¥å¯†ç ")
     val password: String = "",
-    @Comment("Êı¾İ¿â±íµ¥£¬±íÊ¾Òª½«Êı¾İ´æ´¢ÔÚÕâ¸ö±íµ¥Àï")
+    @Comment("æ•°æ®åº“è¡¨å•ï¼Œè¡¨ç¤ºè¦å°†æ•°æ®å­˜å‚¨åœ¨è¿™ä¸ªè¡¨å•é‡Œ")
     var table: String = "404",
-    @Comment("SQLÁ¬½ÓµÄ¸½¼Ó²ÎÊı£¬¼ÇµÃÒÔ&¿ªÍ·")
+    @Comment("SQLè¿æ¥çš„é™„åŠ å‚æ•°ï¼Œè®°å¾—ä»¥&å¼€å¤´")
     val AdditionalParameters: String = "",
-    @Comment("×î´óÁ¬½ÓÊı£¬Ò²ĞíÊÇÁ¬½Ó³ØµÄ´óĞ¡£¿£¿£¿")
+    @Comment("æœ€å¤§è¿æ¥æ•°ï¼Œä¹Ÿè®¸æ˜¯è¿æ¥æ± çš„å¤§å°ï¼Ÿï¼Ÿï¼Ÿ")
     var maximumPoolSize: Int? = 10,
     @Comment("Redis Ip")
     val redisAddress: String = "127.0.0.1",
     @Comment("Redis password")
     val redisPassword: String = "",
-    @Comment("±¾µØ´úÀí¶Ë¿Ú")
+    @Comment("æœ¬åœ°ä»£ç†ç«¯å£")
     val ProxyPort: Int = 7890,
     @Comment("SauceNAOAPIKEY")
     val sauceNaoApiKey: String = ""

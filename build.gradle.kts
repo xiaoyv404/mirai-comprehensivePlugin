@@ -17,16 +17,16 @@ val httpcomponents = "4.5.13"
 repositories {
     mavenLocal()
 
-    // ��������Ч�ֿ⣺https://maven.aliyun.com/mvn/guide
+    // 阿里云云效仓库：https://maven.aliyun.com/mvn/guide
     maven("https://maven.aliyun.com/repository/public")
     maven("https://maven.aliyun.com/repository/google")
     maven("https://maven.aliyun.com/repository/gradle-plugin")
-    // ��Ϊ��Դ����https://mirrors.huaweicloud.com
+    // 华为开源镜像：https://mirrors.huaweicloud.com
     maven("https://repo.huaweicloud.com/repository/maven")
-    // JitPack Զ�ֿ̲⣺https://jitpack.io
+    // JitPack 远程仓库：https://jitpack.io
     maven("https://jitpack.io")
 
-    // MavenCentral Զ�ֿ̲⣺https://mvnrepository.com
+    // MavenCentral 远程仓库：https://mvnrepository.com
     mavenCentral()
     gradlePluginPortal()
     google()

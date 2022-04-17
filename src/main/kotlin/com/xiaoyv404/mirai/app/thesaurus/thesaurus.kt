@@ -25,11 +25,11 @@ class Thesaurus : NfApp(), IFshApp{
 
     override fun getAppName() = "Thesaurus"
     override fun getVersion() = "1.0.1"
-    override fun getAppDescription() = "´Ê¿â"
-    override fun getCommands() = arrayOf("!!´´½¨´ÊÌõ", "-thesaurus")
+    override fun getAppDescription() = "è¯åº“"
+    override fun getCommands() = arrayOf("!!åˆ›å»ºè¯æ¡", "-thesaurus")
 
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
-        if (args[0] == "´´½¨´ÊÌõ") {
+        if (args[0] == "åˆ›å»ºè¯æ¡") {
             add(msg.sender, msg)
             return true
         }
@@ -42,14 +42,14 @@ class Thesaurus : NfApp(), IFshApp{
     private suspend fun add(sender: net.mamoe.mirai.contact.User, msg: MessageEvent) {
         val subject = msg.subject
         if (authorityIdentification(sender.id, subject.id, "ThesaurusAdd")) {
-            subject.sendMessage("Çë·¢ËÍquestion")
+            subject.sendMessage("è¯·å‘é€question")
             val questionA = parseMsgAndSaveImg(msg.nextMessage())
-            subject.sendMessage("Çë·¢ËÍreply")
+            subject.sendMessage("è¯·å‘é€reply")
             val replyA = parseMsgAndSaveImg(msg.nextMessage())
             subject.sendMessage(
                 "question: $questionA\n" +
                     "reply: $replyA\n"
-                    + "ÇëÊäÈë[y]ÒÔÈ·ÈÏ"
+                    + "è¯·è¾“å…¥[y]ä»¥ç¡®è®¤"
             )
             if (msg.nextMessage().contentToString() == "y") {
                 Thesauru {
@@ -57,9 +57,9 @@ class Thesaurus : NfApp(), IFshApp{
                     reply = replyA
                     creator = sender.id
                 }.save()
-                subject.sendMessage("Ìí¼Ó³É¹¦~")
+                subject.sendMessage("æ·»åŠ æˆåŠŸ~")
             } else
-                subject.sendMessage("°¡ßÖ, ÎªÉ¶ÒªÈ¡ÏûÄó")
+                subject.sendMessage("å•Šå’§, ä¸ºå•¥è¦å–æ¶ˆæ")
         }
     }
 
@@ -75,17 +75,17 @@ class Thesaurus : NfApp(), IFshApp{
             gidInput != null -> gidInput
             msg.gid() != 0L  -> msg.gid()
             else             -> {
-                msg.reply("ÊäÈëÖµ´íÎó", true)
+                msg.reply("è¾“å…¥å€¼é”™è¯¯", true)
                 return false
             }
         }
-        msg.reply("Çë·¢ËÍquestion")
+        msg.reply("è¯·å‘é€question")
 
         val entryMassages = Thesauru {
             question = parseMsg(msg.nextMessage())
         }.findByQuestion(gid)
         if (entryMassages.isEmpty()) {
-            subject.sendMessage("ºÃÏñÃ»ÓĞÄØ")
+            subject.sendMessage("å¥½åƒæ²¡æœ‰å‘¢")
             return true
         }
 
@@ -103,27 +103,27 @@ class Thesaurus : NfApp(), IFshApp{
             )
         }
 
-        subject.sendMessage("Çë·¢ËÍÒªÉ¾³ıµÄ´ÊÌõµÄÏÂ±ê")
+        subject.sendMessage("è¯·å‘é€è¦åˆ é™¤çš„è¯æ¡çš„ä¸‹æ ‡")
         val subscript = msg.nextMessage().contentToString()
         if (!(Regex("[0-9]+").containsMatchIn(subscript))) {
-            subject.sendMessage("ÒÑÈ¡Ïû")
+            subject.sendMessage("å·²å–æ¶ˆ")
             return true
         }
 
         val subscriptI = subscript.toInt()
         subject.sendMessage(
-            "È·¶¨ÒªÉ¾³ı: \n" +
+            "ç¡®å®šè¦åˆ é™¤: \n" +
                 "${MiraiCode.deserializeMiraiCode(thesaurusRemoveMsg(entryMassages[subscriptI]))}\n" +
-                "ÊäÈë[y]ÒÔÈ·ÈÏ    ÊäÈë[n]ÒÔÈ¡Ïû"
+                "è¾“å…¥[y]ä»¥ç¡®è®¤    è¾“å…¥[n]ä»¥å–æ¶ˆ"
         )
 
         if (msg.nextMessage().contentToString() == "y") {
             Thesauru {
                 id = entryMassages[subscriptI].id
             }.deleteById()
-            subject.sendMessage("³É¹¦É¾³ı")
+            subject.sendMessage("æˆåŠŸåˆ é™¤")
         } else {
-            subject.sendMessage("ÎªÊ²Ã´ÒªÈ¡ÏûÄó")
+            subject.sendMessage("ä¸ºä»€ä¹ˆè¦å–æ¶ˆæ")
         }
 
         return true

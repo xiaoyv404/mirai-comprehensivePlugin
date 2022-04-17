@@ -46,7 +46,7 @@ class SauceNaoRequester(private val msg: MessageEvent) {
             parseJson(json)
         } catch (e: Exception) {
             msg.reply(
-                "³öÏÖ´íÎó£¾©n£¼Çë¸óÏÂµ½¿ØÖÆÌ¨²é¿´\n" + e.message?.replace(
+                "å‡ºç°é”™è¯¯ï¼ï¹ï¼œè¯·é˜ä¸‹åˆ°æ§åˆ¶å°æŸ¥çœ‹\n" + e.message?.replace(
                     PluginConfig.database.sauceNaoApiKey,
                     "/$/{APIKEY/}"
                 ), true
@@ -65,44 +65,44 @@ class SauceNaoRequester(private val msg: MessageEvent) {
     suspend fun sendResult() {
         val image = KtorUtils.normalClient.get<InputStream>(result!!.header.thumbnail).uploadAsImage(msg.subject)
         if (result!!.header.similarity.toFloat() < 60){
-            msg.reply("ÕÒ²»µ½Äó£¬Æ¥Åä¶ÈÖ»ÓĞ${result!!.header.similarity}", true)
+            msg.reply("æ‰¾ä¸åˆ°æï¼ŒåŒ¹é…åº¦åªæœ‰${result!!.header.similarity}", true)
             return
         }
         val message = when (result!!.header.index_id) {
             // Index #5: Pixiv Images
             5    -> {
-                "À´Ô´£ºPixiv Images\n" +
-                    "ÌâÄ¿£º${result!!.data.title}\n" +
-                    "ÏàËÆ¶È£º${result!!.header.similarity}\n" +
-                    "pixiv id£º${result!!.data.pixiv_id}\n" +
-                    "×÷Õß£º${result!!.data.member_name}\n" +
-                    "×÷Õßid£º${result!!.data.member_id}\n" +
-                    "Ô´Á´½Ó£º${result!!.data.ext_urls}"
+                "æ¥æºï¼šPixiv Images\n" +
+                    "é¢˜ç›®ï¼š${result!!.data.title}\n" +
+                    "ç›¸ä¼¼åº¦ï¼š${result!!.header.similarity}\n" +
+                    "pixiv idï¼š${result!!.data.pixiv_id}\n" +
+                    "ä½œè€…ï¼š${result!!.data.member_name}\n" +
+                    "ä½œè€…idï¼š${result!!.data.member_id}\n" +
+                    "æºé“¾æ¥ï¼š${result!!.data.ext_urls}"
             }
             // Index #21: Anime
             21   -> {
-                "À´Ô´£ºAnime\n" +
-                    "¶¯»­Ãû£º${result!!.data.source}\n" +
-                    "ÏàËÆ¶È£º${result!!.header.similarity}\n" +
-                    "anidb_id£º${result!!.data.pixiv_id}\n" +
-                    "Äê´ú£º${result!!.data.year}\n" +
-                    "¼¯Êı£º${result!!.data.part}\n" +
-                    "Ô´Á´½Ó£º${result!!.data.ext_urls}"
+                "æ¥æºï¼šAnime\n" +
+                    "åŠ¨ç”»åï¼š${result!!.data.source}\n" +
+                    "ç›¸ä¼¼åº¦ï¼š${result!!.header.similarity}\n" +
+                    "anidb_idï¼š${result!!.data.pixiv_id}\n" +
+                    "å¹´ä»£ï¼š${result!!.data.year}\n" +
+                    "é›†æ•°ï¼š${result!!.data.part}\n" +
+                    "æºé“¾æ¥ï¼š${result!!.data.ext_urls}"
             }
             // Index #34: deviantArt
             34   -> {
-                "À´Ô´£ºdeviantArt\n" +
-                    "ÌâÄ¿£º${result!!.data.title}\n" +
-                    "ÏàËÆ¶È£º${result!!.header.similarity}\n" +
-                    "Í¼Æ¬id£º${result!!.data.da_id}\n" +
-                    "×÷Õß£º${result!!.data.author_name}\n" +
-                    "×÷ÕßÁ´½Ó£º${result!!.data.author_url}\n" +
-                    "Ô´Á´½Ó£º${result!!.data.ext_urls}"
+                "æ¥æºï¼šdeviantArt\n" +
+                    "é¢˜ç›®ï¼š${result!!.data.title}\n" +
+                    "ç›¸ä¼¼åº¦ï¼š${result!!.header.similarity}\n" +
+                    "å›¾ç‰‡idï¼š${result!!.data.da_id}\n" +
+                    "ä½œè€…ï¼š${result!!.data.author_name}\n" +
+                    "ä½œè€…é“¾æ¥ï¼š${result!!.data.author_url}\n" +
+                    "æºé“¾æ¥ï¼š${result!!.data.ext_urls}"
             }
             40   -> {
-                "À´Ô´£ºFurAffinity\n"
+                "æ¥æºï¼šFurAffinity\n"
             }
-            else -> "ÔİÊ±ÎŞ·¨½âÎöµÄ²ÎÊı, Êı¾İ¿â£º${result!!.header.index_name}\n Çë°Ñ¿ª·¢Õß¾¾³öÀ´¸øËû¿´¿´½á¹û"
+            else -> "æš‚æ—¶æ— æ³•è§£æçš„å‚æ•°, æ•°æ®åº“ï¼š${result!!.header.index_name}\n è¯·æŠŠå¼€å‘è€…æªå‡ºæ¥ç»™ä»–çœ‹çœ‹ç»“æœ"
         }
         msg.reply(PlainText(message) + image, true)
     }

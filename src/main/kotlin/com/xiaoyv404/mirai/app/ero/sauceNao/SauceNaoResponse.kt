@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class SauceNaoResponse(
-    // ·µ»ØÖµÅĞ¶Ï²éÑ¯ÊÇ·ñ³É¹¦
+    // è¿”å›å€¼åˆ¤æ–­æŸ¥è¯¢æ˜¯å¦æˆåŠŸ
     val header: Header,
     val results: List<Result>
 ) {
@@ -22,10 +22,10 @@ data class SauceNaoResponse(
 
     @Serializable
     data class ResultsHeader(
-        val similarity: String, // ÏàËÆ¶È
-        val thumbnail: String, // Ö±½ÓÏÂÔØËõÂÔÍ¼µÄÁ´½Ó
-        val index_id: Int, // Êı¾İ¿âid
-        val index_name: String // Êı¾İ¿âÃû³Æ
+        val similarity: String, // ç›¸ä¼¼åº¦
+        val thumbnail: String, // ç›´æ¥ä¸‹è½½ç¼©ç•¥å›¾çš„é“¾æ¥
+        val index_id: Int, // æ•°æ®åº“id
+        val index_name: String // æ•°æ®åº“åç§°
     )
 
     @Serializable

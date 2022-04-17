@@ -1,15 +1,15 @@
 package com.xiaoyv404.mirai.databace
 
 object Bilibili {
-    //ÊÓÆµ±í´ïÊ½
+    //è§†é¢‘è¡¨è¾¾å¼
     val biliBvFind = "BV1[1-9A-NP-Za-km-z]{9}".toRegex()
     val biliAvFind = "(av|AV)([1-9]\\d{0,18})".toRegex()
 
-    //b23Õ¾¶Ì
+    //b23ç«™çŸ­
     val b23Find = Regex("(https?://b23.tv/\\S{6})")
 }
 
 object Pixiv {
     val worksInfoFind = Regex("(?=\\{\"illustId\":\").*?(?=,\"userIllusts\")")
-    val worksNumberFind = Regex("(?<=<p>ß@‚€×÷Æ·IDÖĞÓĞ )[0-9]+(?= ˆˆDÆ¬£¬ĞèÒªÖ¸¶¨ÊÇµÚ×ˆˆDÆ¬²ÅÄÜÕı´_ï@Ê¾\\(Õˆ…¢¿¼<a href=\"https://pixiv.cat/\">Ê×í“</a>ÕfÃ÷\\)¡£</p>)")
+    val worksNumberFind = Regex("(?<=<p>é€™å€‹ä½œå“IDä¸­æœ‰ )[0-9]+(?= å¼µåœ–ç‰‡ï¼Œéœ€è¦æŒ‡å®šæ˜¯ç¬¬å¹¾å¼µåœ–ç‰‡æ‰èƒ½æ­£ç¢ºé¡¯ç¤º\\(è«‹åƒè€ƒ<a href=\"https://pixiv.cat/\">é¦–é </a>èªªæ˜\\)ã€‚</p>)")
 }

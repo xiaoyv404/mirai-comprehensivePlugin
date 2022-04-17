@@ -39,7 +39,7 @@ object PluginMain : KotlinPlugin(
             NfApplicationManager.appInitialization(bean as NfApp)
         }
 
-        logger.info { "综合插件加载完成，版本：$version Java版本:${System.getProperty("java.version")}" }
+        logger.info { "缁煎悎鎻掍欢鍔犺浇瀹屾垚锛岀増鏈細$version Java鐗堟湰:${System.getProperty("java.version")}" }
     }
     override fun onDisable() {
         KtorUtils.closeClient()

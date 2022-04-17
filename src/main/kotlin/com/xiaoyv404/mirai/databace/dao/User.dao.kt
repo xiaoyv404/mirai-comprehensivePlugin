@@ -20,8 +20,8 @@ interface User : Entity<User> {
 private val Database.users get() = this.sequenceOf(Users)
 
 /**
- * @return false 新增
- * @return true 更新
+ * @return false 鏂板
+ * @return true 鏇存柊
  */
 fun User.save():Boolean{
     return if (this.findById() == null) {

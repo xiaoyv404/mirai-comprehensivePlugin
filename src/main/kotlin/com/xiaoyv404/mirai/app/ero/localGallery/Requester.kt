@@ -49,9 +49,9 @@ class LocalGallerys(val msg: MessageEvent) {
 
 
     /**
-     *  »ñÈ¡²¢±£´æĞÅÏ¢ºÍÍ¼Æ¬µ½±¾µØ£¬²¢·¢ËÍµ½[subject]
+     *  è·å–å¹¶ä¿å­˜ä¿¡æ¯å’Œå›¾ç‰‡åˆ°æœ¬åœ°ï¼Œå¹¶å‘é€åˆ°[subject]
      *
-     *  @return false ±íÊ¾Î´±¨´í, true ±íÊ¾±¨´í
+     *  @return false è¡¨ç¤ºæœªæŠ¥é”™, true è¡¨ç¤ºæŠ¥é”™
      */
     @ExperimentalSerializationApi
     suspend fun unformat(idA: String, senderId: Long, outPut: Boolean): Boolean {
@@ -102,7 +102,7 @@ class LocalGallerys(val msg: MessageEvent) {
         if (!outPut) {
             send(info)
         } else
-            log.info("ÒÑ¹Ø±ÕÊä³ö")
+            log.info("å·²å…³é—­è¾“å‡º")
         return false
     }
 
@@ -111,25 +111,25 @@ class LocalGallerys(val msg: MessageEvent) {
         private val log = PluginMain.logger
 
         fun linkInfo(ii: Gallery): String = """
-                ×÷Æ·ID: ${ii.id}
-                ±êÌâ: ${ii.title}
-                ±êÇ©: ${ii.tags}
-                Í¼Æ¬Êı: ${ii.picturesMun}
-                ×÷ÕßÃû³Æ: ${ii.userName}
-                ×÷ÕßID: ${ii.userId}
+                ä½œå“ID: ${ii.id}
+                æ ‡é¢˜: ${ii.title}
+                æ ‡ç­¾: ${ii.tags}
+                å›¾ç‰‡æ•°: ${ii.picturesMun}
+                ä½œè€…åç§°: ${ii.userName}
+                ä½œè€…ID: ${ii.userId}
             """.trimIndent()
         object Img {
             suspend fun getSave(num: Int, id: String): String {
                 var fe = ""
                 if (num != 1) {
-                    log.info("º¬ÓĞ$num ÕÅÍ¼Æ¬")
+                    log.info("å«æœ‰$num å¼ å›¾ç‰‡")
                     for (i in 1..num) {
-                        log.info("ÕıÔÚ±£´æµÚ$i ÕÅÍ¼Æ¬")
+                        log.info("æ­£åœ¨ä¿å­˜ç¬¬$i å¼ å›¾ç‰‡")
                         val `in` = KtorUtils.normalClient.get<InputStream>("https://pixiv.re/$id-$i.png")
                         fe = verifyExtensionAndSaveFile(`in`, "gallery/$id-$i")
                     }
                 } else {
-                    log.info("º¬ÓĞ1 ÕÅÍ¼Æ¬")
+                    log.info("å«æœ‰1 å¼ å›¾ç‰‡")
                     val `in` = KtorUtils.normalClient.get<InputStream>("https://pixiv.re/$id.png")
                     fe = verifyExtensionAndSaveFile(`in`, "gallery/$id")
                 }
@@ -140,7 +140,7 @@ class LocalGallerys(val msg: MessageEvent) {
                 val bSrc = BufferedInputStream(src)
                 bSrc.mark(0)
                 var fe = Tika().detect(bSrc)
-                log.info("ÎÄ¼ş¸ñÊ½: $fe")
+                log.info("æ–‡ä»¶æ ¼å¼: $fe")
                 fe = when (fe) {
                     "image/png"  -> "png"
                     "image/jpeg" -> "jpg"

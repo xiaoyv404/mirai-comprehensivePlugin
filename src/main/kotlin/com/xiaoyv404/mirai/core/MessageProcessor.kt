@@ -16,7 +16,7 @@ object MessageProcessor {
     private fun markSent(src: MessageEvent, sent: MessageReceipt<Contact>) {
         val originIdentity = src.source.rgwMsgIdentity()
         val sentIdentity = "${sent.source.rgwMsgIdentity()}#${sent.source.fromId}#${sent.source.targetId}"
-        log.info("´¥·¢Ô­ÏûÏ¢±êÊ¶$originIdentity  ·¢ËÍÏûÏ¢±êÊ¶$sentIdentity")
+        log.info("è§¦å‘åŸæ¶ˆæ¯æ ‡è¯†$originIdentity  å‘é€æ¶ˆæ¯æ ‡è¯†$sentIdentity")
         val redisKey = "fmp:replied:$originIdentity:$sentIdentity"
 
         Database.rdb.setex(redisKey,1800L, sentIdentity)

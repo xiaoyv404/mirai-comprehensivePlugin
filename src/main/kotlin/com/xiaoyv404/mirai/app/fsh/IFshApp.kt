@@ -14,18 +14,18 @@ interface IFshApp {
     }
 
     /**
-     * Ìá¹©ÃüÁîÃû
+     * æä¾›å‘½ä»¤å
      *
-     * @return ÃüÁîÃû
+     * @return å‘½ä»¤å
      */
     fun getCommands(): Array<String>
 
     /**
-     * ÃüÁî´¦Àí·½·¨ (Òì²½)
+     * å‘½ä»¤å¤„ç†æ–¹æ³• (å¼‚æ­¥)
      *
-     * @param args ÃüÁîĞĞ²ÎÊı
-     * @param msg ½ÓÊÕµÄÔ­ÏûÏ¢
-     * @return ÊÇ·ñ½øĞĞµ÷ÓÃ¼Æ´Î
+     * @param args å‘½ä»¤è¡Œå‚æ•°
+     * @param msg æ¥æ”¶çš„åŸæ¶ˆæ¯
+     * @return æ˜¯å¦è¿›è¡Œè°ƒç”¨è®¡æ¬¡
      */
     @Throws(Exception::class)
     suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean

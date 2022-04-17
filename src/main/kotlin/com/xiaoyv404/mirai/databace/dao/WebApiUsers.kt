@@ -20,7 +20,7 @@ interface WebApiUser : Entity<WebApiUser> {
 private val Database.webApiUser get() = this.sequenceOf(WebApiUsers)
 
 /**
- * Í¨¹ıÓÃ»§Ãû²éÕÒÓÃ»§
+ * é€šè¿‡ç”¨æˆ·åæŸ¥æ‰¾ç”¨æˆ·
  * @author xiaoyv_404
  * @create 2022/2/27
  *
@@ -31,7 +31,7 @@ fun WebApiUser.findByName(): WebApiUser? {
 }
 
 /**
- * ¸üĞÂÓÃ»§Êı¾İ
+ * æ›´æ–°ç”¨æˆ·æ•°æ®
  * @author xiaoyv_404
  * @create 2022/2/27
  *
@@ -41,7 +41,7 @@ fun WebApiUser.update(){
 }
 
 /**
- * Ìí¼ÓÓÃ»§
+ * æ·»åŠ ç”¨æˆ·
  * @author xiaoyv_404
  * @create 2022/2/27
  *
@@ -63,7 +63,7 @@ fun WebApiUser.save(){
 }
 
 /**
- * ²éÑ¯»òÌí¼ÓÓÃ»§
+ * æŸ¥è¯¢æˆ–æ·»åŠ ç”¨æˆ·
  * @author xiaoyv_404
  * @create 2022/2/27
  *
@@ -75,7 +75,7 @@ fun WebApiUser.findByNameOrSave(): WebApiUser {
 
 
 /**
- * ÅĞ¶ÏÊÇ·ñÊÇWebAdmin
+ * åˆ¤æ–­æ˜¯å¦æ˜¯WebAdmin
  * @author xiaoyv_404
  * @create 2022/2/27
  *
@@ -88,7 +88,7 @@ fun String.itWebAdmin(): Boolean {
 }
 
 /**
- * È¨ÏŞĞèÒª Admin
+ * æƒé™éœ€è¦ Admin
  * @author xiaoyv_404
  * @create 2022/2/27
  *

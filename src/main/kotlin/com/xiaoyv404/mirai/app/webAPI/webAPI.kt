@@ -44,7 +44,7 @@ import kotlin.time.Duration.Companion.minutes
 class WebApi : NfApp() {
     override fun getAppName() = "WebApi"
     override fun getVersion() = "1.0.0"
-    override fun getAppDescription() = "ÍøÂçAPI"
+    override fun getAppDescription() = "ç½‘ç»œAPI"
 
     override fun init() {
         Thread {
@@ -63,7 +63,7 @@ class WebApi : NfApp() {
 //                }
                 install(ContentNegotiation) {
                     jackson {
-                        enable(SerializationFeature.INDENT_OUTPUT) // ÃÀ»¯Êä³ö JSON
+                        enable(SerializationFeature.INDENT_OUTPUT) // ç¾åŒ–è¾“å‡º JSON
                     }
                 }
 
@@ -90,7 +90,7 @@ class WebApi : NfApp() {
                 }
                 install(Sessions) {
                     cookie<UserSession>(SESSION_REGISTER_NAME) {
-                        cookie.path = "*" //²âÊÔÓÃ
+                        cookie.path = "*" //æµ‹è¯•ç”¨
                     }
                 }
                 routing {
@@ -98,21 +98,21 @@ class WebApi : NfApp() {
                     route("/lab") {
                         post("/login-register") {
                             val post = call.receive<LoginRegister>()
-                            PluginMain.logger.info("ÊÕµ½${post.name}µÇÂ¼ÇëÇó")
+                            PluginMain.logger.info("æ”¶åˆ°${post.name}ç™»å½•è¯·æ±‚")
                             val user = WebApiUser {
                                 name = post.name
                                 password = post.password
                             }.findByNameOrSave()
                             if (!BCrypt.checkpw(post.password, user.password)) {
-                                PluginMain.logger.info("²µ»Ø${post.name}µÇÂ¼ÇëÇó")
+                                PluginMain.logger.info("é©³å›${post.name}ç™»å½•è¯·æ±‚")
                                 throw InvalidCredentialsException("Invalid credentials")
                             }
-                            PluginMain.logger.info("${post.name}µÇÂ¼³É¹¦")
+                            PluginMain.logger.info("${post.name}ç™»å½•æˆåŠŸ")
                             call.respond(mapOf("token" to simpleJwt.sign(user.name)))
                         }
 
                         get {
-                            call.respond("»¶Ó­À´µ½ 404Lab")
+                            call.respond("æ¬¢è¿æ¥åˆ° 404Lab")
                         }
                         webSocket("/admin/listenMsg") {
                             val ses = session
@@ -130,7 +130,7 @@ class WebApi : NfApp() {
                                     when (val frame = incoming.receive()) {
                                         is Frame.Text -> {
                                             val text = frame.readText()
-                                            // µü´úËùÓĞÁ¬½Ó
+                                            // è¿­ä»£æ‰€æœ‰è¿æ¥
                                             val textToSend = "${client.name} said: $text"
                                             for (other in clients.toList()) {
                                                 other.session.outgoing.send(Frame.Text(textToSend))
@@ -150,16 +150,16 @@ class WebApi : NfApp() {
                                 val bot = Bot.getInstance(2079373402)
                                 val target = bot.getFriend(post.qqNumber)
                                 if (target == null) {
-                                    call.respond(mapOf("code" to 1000, "msg" to "²éÎŞ´ËÈË"))
+                                    call.respond(mapOf("code" to 1000, "msg" to "æŸ¥æ— æ­¤äºº"))
                                     return@post
                                 } else {
                                     call.respond(mapOf("code" to 200))
                                 }
                                 target.sendMessage(
                                     """
-                                    ËÆºõÓĞÈËÏë°ó¶¨ÄãµÄqqÄó
-                                    ${principal.name}ÊÇÄãÂğw
-                                    Èç¹ûÊÇÄãµÄ»°ÇëÊäÈë[Y]À´È·ÈÏÅ¶
+                                    ä¼¼ä¹æœ‰äººæƒ³ç»‘å®šä½ çš„qqæ
+                                    ${principal.name}æ˜¯ä½ å—w
+                                    å¦‚æœæ˜¯ä½ çš„è¯è¯·è¾“å…¥[Y]æ¥ç¡®è®¤å“¦
                                 """.trimIndent()
                                 )
 
@@ -176,9 +176,9 @@ class WebApi : NfApp() {
                                     }.findByName()
                                     targetD!!.qid = post.qqNumber
                                     targetD.update()
-                                    target.sendMessage("°ó¶¨³É¹¦~")
+                                    target.sendMessage("ç»‘å®šæˆåŠŸ~")
                                 } else
-                                    target.sendMessage("²»°ó¾Í²»°óßÂ£¬ºß")
+                                    target.sendMessage("ä¸ç»‘å°±ä¸ç»‘å‘—ï¼Œå“¼")
                             }
                             route("/admin") {
                                 get {
@@ -200,7 +200,7 @@ class WebApi : NfApp() {
                                             )
                                         )
                                     }
-                                    call.respond("ÕâÀïÊÇ¹ÜÀí½çÃæÅ¶")
+                                    call.respond("è¿™é‡Œæ˜¯ç®¡ç†ç•Œé¢å“¦")
                                 }
                                 post("/getConversationsInfoList") {
                                     val principal = call.principal<UserIdPrincipal>() ?: error("No principal")
@@ -251,7 +251,7 @@ class WebApi : NfApp() {
                                         call.respond(
                                             mapOf(
                                                 "code" to 10001,
-                                                "msg" to "Î´·¢ËÍ³É¹¦",
+                                                "msg" to "æœªå‘é€æˆåŠŸ",
                                                 "list" to fail
                                             )
                                         )

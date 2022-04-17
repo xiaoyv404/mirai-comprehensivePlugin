@@ -14,61 +14,61 @@ abstract class NfApp {
     val log = PluginMain.logger
 
     /**
-     * Ó¦ÓÃÃû³Æ
+     * åº”ç”¨åç§°
      */
     abstract fun getAppName(): String
 
     /**
-     * Ó¦ÓÃÃèÊö
+     * åº”ç”¨æè¿°
      */
     open fun getAppDescription(): String? = null
 
     /**
-     * Ó¦ÓÃ°æ±¾
+     * åº”ç”¨ç‰ˆæœ¬
      */
     abstract fun getVersion(): String
 
     /**
-     * Ò»¶¨Ê±¼äÄÚÏŞÖÆµ÷ÓÃ´ÎÊı
+     * ä¸€å®šæ—¶é—´å†…é™åˆ¶è°ƒç”¨æ¬¡æ•°
      */
     open fun getLimitCount(): Int = 1000
 
     /**
-     * ÏŞÖÆµ÷ÓÃ¼Æ´Î¹ıÆÚÊ±¼ä(Ãë)
+     * é™åˆ¶è°ƒç”¨è®¡æ¬¡è¿‡æœŸæ—¶é—´(ç§’)
      */
     open fun getLimitExpiresTime(): Long = 60
 
     /**
-     * ³¬¹ıÏŞÖÆµ÷ÓÃÌáÊ¾Óï¿ª¹Ø
+     * è¶…è¿‡é™åˆ¶è°ƒç”¨æç¤ºè¯­å¼€å…³
      */
     open fun getLimitHint(): Boolean = true
 
     /**
-     * Ó¦ÓÃÊ¹ÓÃËµÃ÷
+     * åº”ç”¨ä½¿ç”¨è¯´æ˜
      */
     open fun getAppUsage(): String? = null
 
     /**
-     * Ó¦ÓÃ³õÊ¼»¯
-     * ÔÚÓ¦ÓÃ±»½ûÓÃÊ±£¬²»»á±»µ÷ÓÃ
+     * åº”ç”¨åˆå§‹åŒ–
+     * åœ¨åº”ç”¨è¢«ç¦ç”¨æ—¶ï¼Œä¸ä¼šè¢«è°ƒç”¨
      */
     open fun init() {
     }
 
     /**
-     * Ó¦ÓÃ¹Ø±Õ
-     * ÔÚÓ¦ÓÃ±»½ûÓÃÊ±£¬²»»á±»µ÷ÓÃ
+     * åº”ç”¨å…³é—­
+     * åœ¨åº”ç”¨è¢«ç¦ç”¨æ—¶ï¼Œä¸ä¼šè¢«è°ƒç”¨
      */
     open fun uninit() {
     }
 
     /**
-     * È¡ÏŞÖÆµ÷ÓÃÊ£Óà´ÎÊı
+     * å–é™åˆ¶è°ƒç”¨å‰©ä½™æ¬¡æ•°
      *
-     * @param caller µ÷ÓÃÕß
-     * @param place µ÷ÓÃµØµã
-     * @param app ÏŞÖÆµÄÓ¦ÓÃÃû Ä¬ÈÏÊÇµ±Ç°Ó¦ÓÃ
-     * @return µ±Ç°Ê£Óà¿Éµ÷ÓÃ´ÎÊı
+     * @param caller è°ƒç”¨è€…
+     * @param place è°ƒç”¨åœ°ç‚¹
+     * @param app é™åˆ¶çš„åº”ç”¨å é»˜è®¤æ˜¯å½“å‰åº”ç”¨
+     * @return å½“å‰å‰©ä½™å¯è°ƒç”¨æ¬¡æ•°
      */
     fun getCallLimiterRemainCount(caller: Long, place: Long, app: String = getAppName()): Int {
         val key = "${app}_${place}_${caller}"
@@ -81,10 +81,10 @@ abstract class NfApp {
     }
 
     /**
-     * ¼ì²éÏŞÖÆµ÷ÓÃ£¬³É¹¦ºóÖ´ĞĞ£¬·ñÔò·¢ËÍÌáÊ¾ÏûÏ¢²¢¼Æ´Î
+     * æ£€æŸ¥é™åˆ¶è°ƒç”¨ï¼ŒæˆåŠŸåæ‰§è¡Œï¼Œå¦åˆ™å‘é€æç¤ºæ¶ˆæ¯å¹¶è®¡æ¬¡
      *
-     * @param caller µ÷ÓÃÕß
-     * @param place µ÷ÓÃµØµã
+     * @param caller è°ƒç”¨è€…
+     * @param place è°ƒç”¨åœ°ç‚¹
      */
     suspend fun requireCallLimiter(
         msg: MessageEvent,
@@ -98,13 +98,13 @@ abstract class NfApp {
             remainCount > 0 -> block()
             remainCount > -2 -> {
                 if (replyOnLimited) {
-                    msg.reply("404ºÃÀÛÈÇqwq", quote = true)
+                    msg.reply("404å¥½ç´¯æƒ¹qwq", quote = true)
                 }
                 submitCallLimiter(caller, place)
             }
             remainCount > -3 -> {
                 if (replyOnLimited) {
-                    msg.reply( "È¥ËÀ°¡", quote = true)
+                    msg.reply( "å»æ­»å•Š", quote = true)
                 }
                 submitCallLimiter(caller, place)
             }
@@ -112,10 +112,10 @@ abstract class NfApp {
     }
 
     /**
-     * Ìá½»ÏŞÖÆµ÷ÓÃ
+     * æäº¤é™åˆ¶è°ƒç”¨
      *
-     * @param caller µ÷ÓÃÕß
-     * @param place µ÷ÓÃµØµã
+     * @param caller è°ƒç”¨è€…
+     * @param place è°ƒç”¨åœ°ç‚¹
      */
     fun submitCallLimiter(caller: Long, place: Long) {
         val key = "${getAppName()}_${place}_${caller}"

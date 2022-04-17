@@ -25,8 +25,8 @@ interface Gallery : Entity<Gallery> {
 private val Database.gallerys get() = this.sequenceOf(Gallerys)
 
 /**
- * @return false 新增
- * @return true 更新
+ * @return false 鏂板
+ * @return true 鏇存柊
  */
 fun Gallery.save(): Boolean {
     return if (this.findById() == null) {

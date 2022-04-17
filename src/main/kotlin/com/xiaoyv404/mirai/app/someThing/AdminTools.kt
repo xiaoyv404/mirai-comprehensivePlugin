@@ -21,13 +21,13 @@ import org.apache.commons.cli.Options
 class AdminTools  : NfApp(), IFshApp {
     override fun getAppName() = "AdminTools"
     override fun getVersion() = "1.0.0"
-    override fun getAppDescription() = "¹ÜÀíÔ±¹ÜÀí¹¤¾ß"
-    override fun getCommands() = arrayOf("-sendto","-ban", "!!¿ªÆôÈ«Ìå¹ã²¥", "-bot")
+    override fun getAppDescription() = "ç®¡ç†å‘˜ç®¡ç†å·¥å…·"
+    override fun getCommands() = arrayOf("-sendto","-ban", "!!å¼€å¯å…¨ä½“å¹¿æ’­", "-bot")
 
     private val banOptions = Options().apply {
-        addOption("g", "group", true, "ÈºÁÄID")
-        addOption("u", "unBan", false, "È¡Ïû½ûÑÔ")
-        addOption("t", "time", true, "½ûÑÔÊ±¼ä")
+        addOption("g", "group", true, "ç¾¤èŠID")
+        addOption("u", "unBan", false, "å–æ¶ˆç¦è¨€")
+        addOption("t", "time", true, "ç¦è¨€æ—¶é—´")
     }
 
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
@@ -40,7 +40,7 @@ class AdminTools  : NfApp(), IFshApp {
             "-ban"     -> {
                 ban((args.getOrNull(1) ?: return false).toLong(), IFshApp.cmdLine(banOptions, args), msg)
             }
-            "!!¿ªÆôÈ«Ìå¹ã²¥" -> adminBroadcast(msg)
+            "!!å¼€å¯å…¨ä½“å¹¿æ’­" -> adminBroadcast(msg)
         }
         return true
     }
@@ -49,10 +49,10 @@ class AdminTools  : NfApp(), IFshApp {
         if (msg.isNotAdmin())
             return
 
-        msg.reply("Çë·¢ËÍÈºid")
+        msg.reply("è¯·å‘é€ç¾¤id")
         val gpIds = Regex("\\d+").findAll(msg.nextMessage().contentToString()).toList()
-        log.info("ÈºÁÄ¸öÊı${gpIds.size}")
-        msg.reply("Çë·¢ËÍmsg")
+        log.info("ç¾¤èŠä¸ªæ•°${gpIds.size}")
+        msg.reply("è¯·å‘é€msg")
         val nextMsg = msg.nextMessage()
         gpIds.forEach {
             msg.bot.getGroup(it.value.toLong())?.sendMessage(nextMsg)
@@ -68,7 +68,7 @@ class AdminTools  : NfApp(), IFshApp {
             id = idA
             bot = true
         }.save()
-        msg.reply("Ìí¼Ó³É¹¦~")
+        msg.reply("æ·»åŠ æˆåŠŸ~")
 
     }
 
@@ -81,7 +81,7 @@ class AdminTools  : NfApp(), IFshApp {
         else if (msg.gid() != 0L)
             msg.gid()
         else {
-            msg.reply("È±ÉÙ²ÎÊı: groupId")
+            msg.reply("ç¼ºå°‘å‚æ•°: groupId")
             return
         }
 
@@ -95,12 +95,12 @@ class AdminTools  : NfApp(), IFshApp {
             val group = msg.subject.bot
                 .getGroupOrFail(gid)
             if (group.botAsMember.permission == MemberPermission.MEMBER) {
-                msg.reply("404Ã»ÓĞÈ¨ÏŞqwq")
+                msg.reply("404æ²¡æœ‰æƒé™qwq")
                 return
             }
             group.getOrFail(uid)
         } catch (e: NoSuchElementException) {
-            msg.reply("ÎŞĞ§µÄÈº»ò³ÉÔ±")
+            msg.reply("æ— æ•ˆçš„ç¾¤æˆ–æˆå‘˜")
             return
         }
 
@@ -115,12 +115,12 @@ class AdminTools  : NfApp(), IFshApp {
         if (msg.isNotAdmin())
             return
 
-        msg.reply("È«Ìå¹ã²¥ÒÑ¿ªÆô")
+        msg.reply("å…¨ä½“å¹¿æ’­å·²å¼€å¯")
         GlobalEventChannel.subscribe<FriendMessageEvent> {
             if (msg.uid() == it.sender.id) {
                 val entryMassage = it.message.serializeToMiraiCode()
-                if (entryMassage == "!!¹Ø±ÕÈ«Ìå¹ã²¥") {
-                    msg.reply("È«Ìå¹ã²¥ÒÑ¹Ø±Õ")
+                if (entryMassage == "!!å…³é—­å…¨ä½“å¹¿æ’­") {
+                    msg.reply("å…¨ä½“å¹¿æ’­å·²å…³é—­")
                     return@subscribe ListeningStatus.STOPPED
                 }
                 if (entryMassage != "") {

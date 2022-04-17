@@ -36,11 +36,11 @@ object Thesaurus : Table<Thesauru>("Thesaurus") {
 private val Database.thesauru get() = this.sequenceOf(Thesaurus)
 
 /**
- * ¸üĞÂ»òÌí¼Ó
+ * æ›´æ–°æˆ–æ·»åŠ 
  * @author xiaoyv_404
  * @create 2022/3/5
  *
- * @return true Ìí¼Ó false ¸üĞÂ
+ * @return true æ·»åŠ  false æ›´æ–°
  */
 fun Thesauru.save(): Boolean {
 
@@ -63,12 +63,12 @@ fun Thesauru.findById(): Thesauru? {
 }
 
 /**
- * Ê¹ÓÃÎÊÌâ²éÑ¯»Ø´ğ
+ * ä½¿ç”¨é—®é¢˜æŸ¥è¯¢å›ç­”
  * @author xiaoyv_404
  * @create 2022/3/5
  *
- * @param gid Èºid[String]
- * @return List<»Ø´ğ>
+ * @param gid ç¾¤id[String]
+ * @return List<å›ç­”>
  */
 fun Thesauru.findByQuestion(gid: String): List<Thesauru> {
     return db.thesauru.filter {
@@ -77,19 +77,19 @@ fun Thesauru.findByQuestion(gid: String): List<Thesauru> {
 }
 
 /**
- * Ê¹ÓÃÎÊÌâ²éÑ¯»Ø´ğ
+ * ä½¿ç”¨é—®é¢˜æŸ¥è¯¢å›ç­”
  * @author xiaoyv_404
  * @create 2022/3/5
  *
- * @param gid Èºid[Long]
- * @return List<»Ø´ğ>
+ * @param gid ç¾¤id[Long]
+ * @return List<å›ç­”>
  */
 fun Thesauru.findByQuestion(gid: Long):List<Thesauru>{
    return this.findByQuestion(gid.toString())
 }
 
 /**
- * Í¨¹ı ID É¾³ı´ÊÌõ
+ * é€šè¿‡ ID åˆ é™¤è¯æ¡
  * @author xiaoyv_404
  * @create 2022/3/5
  *

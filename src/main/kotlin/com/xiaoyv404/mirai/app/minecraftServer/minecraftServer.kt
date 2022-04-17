@@ -29,13 +29,13 @@ import java.util.*
 class MinecraftServerStats : NfApp(), IFshApp {
     override fun getAppName() = "MinecraftServerStats"
     override fun getVersion() = "1.0.1"
-    override fun getAppDescription() = "ÎÒµÄÊÀ½ç·şÎñÆ÷×´Ì¬¼à²â"
+    override fun getAppDescription() = "æˆ‘çš„ä¸–ç•ŒæœåŠ¡å™¨çŠ¶æ€ç›‘æµ‹"
     override fun getCommands() =
-        arrayOf("-·şÎñÆ÷ÊìÁËÃ»", "-·şÎñÆ÷×´Ì¬", "-ÍÁ¶¹ÊìÁËÃ»", "-ÍÁ¶¹×´Ì¬", "-ÆÆÍÆÍ·ÊìÁËÃ»", "-ÆÆÍÆÍ·×´Ì¬", "-ServerStatus", "-PotatoStatus")
+        arrayOf("-æœåŠ¡å™¨ç†Ÿäº†æ²¡", "-æœåŠ¡å™¨çŠ¶æ€", "-åœŸè±†ç†Ÿäº†æ²¡", "-åœŸè±†çŠ¶æ€", "-ç ´æ¨å¤´ç†Ÿäº†æ²¡", "-ç ´æ¨å¤´çŠ¶æ€", "-ServerStatus", "-PotatoStatus")
 
 
     private val options = Options().apply {
-        addOption("p", "player", false, "»ñÈ¡Íæ¼ÒÁĞ±í")
+        addOption("p", "player", false, "è·å–ç©å®¶åˆ—è¡¨")
     }
 
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
@@ -80,13 +80,13 @@ class MinecraftServerStats : NfApp(), IFshApp {
         val bot = msg.bot
         val players = infoD.serverInformationFormat!!.players
 
-        //ÅĞ¶Ïµ±Ç°·şÎñÆ÷×´Ì¬
+        //åˆ¤æ–­å½“å‰æœåŠ¡å™¨çŠ¶æ€
         val statusT = if (infoD.status != 1 && info.status == 1)
             -1
         else
             1
 
-        //Í¨¹ı×´Ì¬Éú³ÉÌáÊ¾Óï
+        //é€šè¿‡çŠ¶æ€ç”Ÿæˆæç¤ºè¯­
         val msgA =
             if (statusT == 1)
                 msg.subject.uploadImage(
@@ -108,7 +108,7 @@ class MinecraftServerStats : NfApp(), IFshApp {
                     """.trimIndent()
                 )
 
-        //»ñÈ¡·şÎñÆ÷¹ØÁªÈº£¬²¢·¢ËÍÌáÊ¾
+        //è·å–æœåŠ¡å™¨å…³è”ç¾¤ï¼Œå¹¶å‘é€æç¤º
         if (statusT != info.status)
             MinecraftServerMap {
                 serverID = info.id
@@ -118,7 +118,7 @@ class MinecraftServerStats : NfApp(), IFshApp {
         else
             msg.reply(msgA, false)
 
-        //Èç¹ûÓĞĞèÇó²¢ÇÒ·şÎñÆ÷ÔÚÏß£¬·¢ËÍÍæ¼ÒÁĞ±í
+        //å¦‚æœæœ‰éœ€æ±‚å¹¶ä¸”æœåŠ¡å™¨åœ¨çº¿ï¼Œå‘é€ç©å®¶åˆ—è¡¨
         if (statusT == 1 && playerList) {
             sendPlayerList(msg, getPlayerList(info.host, info.port, players))
         }
@@ -130,7 +130,7 @@ class MinecraftServerStats : NfApp(), IFshApp {
         if (cycles != 0)
             cycles++
 
-        log.info("³¢ÊÔ»ñÈ¡PlayList´ÎÊı£º${cycles + 1}´Î")
+        log.info("å°è¯•è·å–PlayListæ¬¡æ•°ï¼š${cycles + 1}æ¬¡")
 
         for (i in 1..cycles) {
             getServerInfo(host, port).serverInformationFormat?.players?.players?.forEach {
@@ -139,7 +139,7 @@ class MinecraftServerStats : NfApp(), IFshApp {
         }
 
         val playersL = playersML.distinct()
-        log.info("ÒÑ»ñÈ¡µ½Íæ¼ÒÁĞ±íÈËÊı£º${playersL.size}")
+        log.info("å·²è·å–åˆ°ç©å®¶åˆ—è¡¨äººæ•°ï¼š${playersL.size}")
         return playersL
     }
 
@@ -166,7 +166,7 @@ class MinecraftServerStats : NfApp(), IFshApp {
             val statusD = information.status
             val players = information.serverInformationFormat?.players
 
-            //ÅĞ¶Ï·şÎñÆ÷ÏÖÔÚÊÇÊ²Ã´×´Ì¬
+            //åˆ¤æ–­æœåŠ¡å™¨ç°åœ¨æ˜¯ä»€ä¹ˆçŠ¶æ€
             val statusT = if (statusD != 1)
                 if (info.status == 1)
                     0
@@ -175,18 +175,18 @@ class MinecraftServerStats : NfApp(), IFshApp {
             else
                 1
 
-            //·¢ËÍlog²¢»ñÈ¡·şÎñÆ÷µÄ¹ØÁªÈº
+            //å‘é€logå¹¶è·å–æœåŠ¡å™¨çš„å…³è”ç¾¤
             if ((statusT == -1 && info.status != -1) || (statusT == 1 && info.status == -1)) {
                 if (statusT == 1)
-                    log.info("·şÎñÆ÷ ${info.name} ÉÏÏß")
+                    log.info("æœåŠ¡å™¨ ${info.name} ä¸Šçº¿")
                 else
-                    log.info("·şÎñÆ÷ ${info.name} ÀëÏß")
+                    log.info("æœåŠ¡å™¨ ${info.name} ç¦»çº¿")
                 MinecraftServerMap { serverID = info.id }.findByServerId().forEach {
                     groups.add(bot.getGroup(it.groupID) ?: return@forEach)
                 }
             }
 
-            //¸üĞÂÊı¾İ¿âÄÚ×´Ì¬
+            //æ›´æ–°æ•°æ®åº“å†…çŠ¶æ€
             if (statusT != info.status) {
                 MinecraftServer {
                     id = info.id
@@ -194,7 +194,7 @@ class MinecraftServerStats : NfApp(), IFshApp {
                 }.update()
             }
 
-            //·¢ËÍ×´Ì¬ÌáÊ¾
+            //å‘é€çŠ¶æ€æç¤º
             groups.forEach {
                 if (statusT == 1)
                     players?.let { it1 ->

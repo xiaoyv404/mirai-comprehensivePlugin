@@ -15,7 +15,7 @@ import net.mamoe.mirai.event.events.MessageEvent
 @App
 class DebuMe :NfApp(),IFshApp {
     override fun getAppName() = "DebuMe"
-    override fun getAppDescription() = "ÎÒÊÇ²ËÄñ£¡"
+    override fun getAppDescription() = "æˆ‘æ˜¯èœé¸Ÿï¼"
     override fun getVersion() = "1.0.0"
     override fun getCommands()= arrayOf("~me")
     override fun getLimitCount() = 2
@@ -40,7 +40,7 @@ class DebuMe :NfApp(),IFshApp {
             } else
                 sender.remarkOrNick
             msg.reply(
-                "*${name}×øÔÚµØÉÏ¿Ş×ÅËµµÀ¡¸¿ÉÁ¯ßÕ${name}Ê²Ã´Ê±ºò²ÅÓĞ´óÀĞÃÇ°Ù·ÖÖ®Ò»À÷º¦Ñ½¡­¡­¡¹"
+                "*${name}ååœ¨åœ°ä¸Šå“­ç€è¯´é“ã€Œå¯æ€œå“’${name}ä»€ä¹ˆæ—¶å€™æ‰æœ‰å¤§ä½¬ä»¬ç™¾åˆ†ä¹‹ä¸€å‰å®³å‘€â€¦â€¦ã€"
             )
         }
     }

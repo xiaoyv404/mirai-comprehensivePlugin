@@ -10,7 +10,7 @@ import net.mamoe.mirai.event.events.MessageEvent
 class Dice : NfApp(), IFshApp {
     override fun getAppName() = "Dice"
     override fun getVersion() = "1.0.1"
-    override fun getAppDescription() = "骰子"
+    override fun getAppDescription() = "楠板瓙"
     override fun getCommands() = arrayOf(".r")
 
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
@@ -26,7 +26,7 @@ class Dice : NfApp(), IFshApp {
             6L
 
         if (start == end) {
-            msg.reply("有什么意义呢，恼")
+            msg.reply("鏈変粈涔堟剰涔夊憿锛屾伡")
             return true
         }
 
