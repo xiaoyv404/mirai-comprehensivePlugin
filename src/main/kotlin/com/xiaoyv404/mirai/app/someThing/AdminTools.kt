@@ -18,11 +18,11 @@ import org.apache.commons.cli.CommandLine
 import org.apache.commons.cli.Options
 
 @App
-class AdminTools  : NfApp(), IFshApp {
+class AdminTools : NfApp(), IFshApp {
     override fun getAppName() = "AdminTools"
-    override fun getVersion() = "1.0.0"
+    override fun getVersion() = "1.0.1"
     override fun getAppDescription() = "管理员管理工具"
-    override fun getCommands() = arrayOf("-sendto","-ban", "!!开启全体广播", "-bot")
+    override fun getCommands() = arrayOf("-sendto", "-ban", "!!开启全体广播", "-bot", "-accept")
 
     private val banOptions = Options().apply {
         addOption("g", "group", true, "群聊ID")
@@ -41,8 +41,14 @@ class AdminTools  : NfApp(), IFshApp {
                 ban((args.getOrNull(1) ?: return false).toLong(), IFshApp.cmdLine(banOptions, args), msg)
             }
             "!!开启全体广播" -> adminBroadcast(msg)
+            "-accept"  -> accept(msg, args.getOrNull(1)?.toLongOrNull() ?: return false)
         }
         return true
+    }
+
+    private suspend fun accept(msg: MessageEvent, event: Long) {
+        // TODO: 2022/4/22 尚未完成
+        msg.reply("已同意事件 $event",true)
     }
 
     private suspend fun sendto(msg: MessageEvent) {

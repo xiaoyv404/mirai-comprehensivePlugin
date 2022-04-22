@@ -7,6 +7,7 @@ import com.xiaoyv404.mirai.core.NfApp
 import net.mamoe.mirai.event.GlobalEventChannel
 import net.mamoe.mirai.event.events.BotInvitedJoinGroupRequestEvent
 import net.mamoe.mirai.event.events.MessageEvent
+import net.mamoe.mirai.event.events.NewFriendRequestEvent
 import net.mamoe.mirai.event.subscribeGroupMessages
 import net.mamoe.mirai.message.code.MiraiCode
 import net.mamoe.mirai.message.data.PlainText
@@ -16,7 +17,7 @@ import kotlin.coroutines.EmptyCoroutineContext
 @App
 class SomeThing : NfApp(), IFshApp {
     override fun getAppName() = "SomeThing"
-    override fun getVersion() = "1.1.0"
+    override fun getVersion() = "1.1.1"
     override fun getAppDescription() = "杂七杂八的东西"
     override fun getCommands(): Array<String> =
         arrayOf("-status", "-help")
@@ -53,6 +54,15 @@ class SomeThing : NfApp(), IFshApp {
                         "主人,${it.invitorNick}(${it.invitorId})邀请我加入群${it.groupName}(${it.groupId})"
                 )
             accept()
+        }
+
+        GlobalEventChannel.subscribeAlways(
+            NewFriendRequestEvent::class
+        ) {
+            bot.getFriendOrFail(2083664136L).sendMessage("""
+                [事件]好友添加请求    事件ID: ${it.eventId}
+                来自 ${it.fromNick}(${it.fromId})的请求
+                """.trimIndent())
         }
         GlobalEventChannel.subscribeGroupMessages {
             at(2083664136L).invoke {
