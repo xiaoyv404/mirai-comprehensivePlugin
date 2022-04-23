@@ -1,5 +1,6 @@
 package com.xiaoyv404.mirai.app
 
+import com.xiaoyv404.mirai.NfNewFriendRequestEvent
 import com.xiaoyv404.mirai.NfPluginData
 import com.xiaoyv404.mirai.app.fsh.IFshApp
 import com.xiaoyv404.mirai.core.App
@@ -21,7 +22,7 @@ class SomeThing : NfApp(), IFshApp {
     override fun getVersion() = "1.1.1"
     override fun getAppDescription() = "杂七杂八的东西"
     override fun getCommands(): Array<String> =
-        arrayOf("-status", "-help","-test")
+        arrayOf("-status", "-help", "-test")
 
 
     private val eventList get() = NfPluginData.eventMap
@@ -67,10 +68,19 @@ class SomeThing : NfApp(), IFshApp {
         GlobalEventChannel.subscribeAlways(
             NewFriendRequestEvent::class
         ) {
+            val nfnE = NfNewFriendRequestEvent(
+                it.eventId,
+                it.message,
+                it.fromId,
+                it.fromGroupId,
+                it.fromNick
+            )
+            eventList[it.eventId] = nfnE
             bot.getFriendOrFail(2083664136L).sendMessage(
                 """
                 [事件]好友添加请求    事件ID: ${it.eventId}
                 来自 ${it.fromNick}(${it.fromId})的请求
+                验证消息: ${it.message}
                 """.trimIndent()
             )
         }

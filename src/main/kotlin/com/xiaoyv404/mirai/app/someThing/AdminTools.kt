@@ -1,5 +1,6 @@
 package com.xiaoyv404.mirai.app.someThing
 
+import com.xiaoyv404.mirai.NfPluginData
 import com.xiaoyv404.mirai.app.fsh.IFshApp
 import com.xiaoyv404.mirai.core.App
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
@@ -12,8 +13,10 @@ import net.mamoe.mirai.event.GlobalEventChannel
 import net.mamoe.mirai.event.ListeningStatus
 import net.mamoe.mirai.event.events.FriendMessageEvent
 import net.mamoe.mirai.event.events.MessageEvent
+import net.mamoe.mirai.event.events.NewFriendRequestEvent
 import net.mamoe.mirai.message.code.MiraiCode
 import net.mamoe.mirai.message.nextMessage
+import net.mamoe.mirai.utils.MiraiInternalApi
 import org.apache.commons.cli.CommandLine
 import org.apache.commons.cli.Options
 
@@ -29,6 +32,8 @@ class AdminTools : NfApp(), IFshApp {
         addOption("u", "unBan", false, "取消禁言")
         addOption("t", "time", true, "禁言时间")
     }
+
+    private val eventList get() = NfPluginData.eventMap
 
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
         when (args[0]) {
@@ -46,9 +51,26 @@ class AdminTools : NfApp(), IFshApp {
         return true
     }
 
-    private suspend fun accept(msg: MessageEvent, event: Long) {
-        // TODO: 2022/4/22 尚未完成
-        msg.reply("已同意事件 $event",true)
+    @OptIn(MiraiInternalApi::class)
+    private suspend fun accept(msg: MessageEvent, eventID: Long) {
+        val nfEvent = eventList.remove(eventID)
+        if (nfEvent == null) {
+            msg.reply("无此事件")
+            return
+        }
+
+        val event = nfEvent.let {
+            NewFriendRequestEvent(
+                msg.bot,
+                it.eventId,
+                it.message,
+                it.fromId,
+                it.fromGroupId,
+                it.fromNick
+            )
+        }
+        event.accept()
+        msg.reply("已同意事件 $eventID", true)
     }
 
     private suspend fun sendto(msg: MessageEvent) {

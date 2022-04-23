@@ -43,6 +43,7 @@ object PluginMain : KotlinPlugin(
         logger.info { "综合插件加载完成，版本：$version Java版本:${System.getProperty("java.version")}" }
     }
     override fun onDisable() {
+        NfPluginData.save()
         KtorUtils.closeClient()
         NfApplicationManager.nfApps.forEach{
             it.uninit()
