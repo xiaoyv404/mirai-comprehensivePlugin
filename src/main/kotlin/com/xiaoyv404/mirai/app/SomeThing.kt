@@ -1,5 +1,6 @@
 package com.xiaoyv404.mirai.app
 
+import com.xiaoyv404.mirai.NfPluginData
 import com.xiaoyv404.mirai.app.fsh.IFshApp
 import com.xiaoyv404.mirai.core.App
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
@@ -20,15 +21,22 @@ class SomeThing : NfApp(), IFshApp {
     override fun getVersion() = "1.1.1"
     override fun getAppDescription() = "杂七杂八的东西"
     override fun getCommands(): Array<String> =
-        arrayOf("-status", "-help")
+        arrayOf("-status", "-help","-test")
 
+
+    private val eventList get() = NfPluginData.eventMap
 
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
         when (args[0]) {
             "-status" -> status(msg)
             "-help"   -> help(msg)
+            "-test"   -> test(msg)
         }
         return true
+    }
+
+    private suspend fun test(msg: MessageEvent) {
+        msg.reply("test")
     }
 
     private suspend fun status(msg: MessageEvent) {
@@ -59,10 +67,12 @@ class SomeThing : NfApp(), IFshApp {
         GlobalEventChannel.subscribeAlways(
             NewFriendRequestEvent::class
         ) {
-            bot.getFriendOrFail(2083664136L).sendMessage("""
+            bot.getFriendOrFail(2083664136L).sendMessage(
+                """
                 [事件]好友添加请求    事件ID: ${it.eventId}
                 来自 ${it.fromNick}(${it.fromId})的请求
-                """.trimIndent())
+                """.trimIndent()
+            )
         }
         GlobalEventChannel.subscribeGroupMessages {
             at(2083664136L).invoke {

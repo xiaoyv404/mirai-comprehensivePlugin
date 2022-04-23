@@ -29,6 +29,7 @@ object PluginMain : KotlinPlugin(
 )       {
     @OptIn(DelicateCoroutinesApi::class)
     override fun onEnable() {
+        NfPluginData.reload()
         PluginConfig.reload()
         connect()
 

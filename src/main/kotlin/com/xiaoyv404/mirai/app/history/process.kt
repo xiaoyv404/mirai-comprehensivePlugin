@@ -25,7 +25,9 @@ class History : NfAppMessageHandler() {
     override fun getAppDescription() = "消息记录器"
     override suspend fun handleMessage(msg: MessageEvent) {
         val message = msg.message
-        val group = msg.subject as Group
+        val group = msg.subject
+        if (group !is Group)
+            return
         when (message[1]) {
             is PlainText  -> {
                 message.content
