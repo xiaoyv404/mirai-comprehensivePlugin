@@ -25,7 +25,7 @@ class AdminTools : NfApp(), IFshApp {
     override fun getAppName() = "AdminTools"
     override fun getVersion() = "1.0.1"
     override fun getAppDescription() = "管理员管理工具"
-    override fun getCommands() = arrayOf("-sendto", "-ban", "!!开启全体广播", "-bot", "-accept")
+    override fun getCommands() = arrayOf("-sendto", "-ban", "!!开启全体广播", "-bot", "-accept","-debug")
 
     private val banOptions = Options().apply {
         addOption("g", "group", true, "群聊ID")
@@ -47,8 +47,14 @@ class AdminTools : NfApp(), IFshApp {
             }
             "!!开启全体广播" -> adminBroadcast(msg)
             "-accept"  -> accept(msg, args.getOrNull(1)?.toLongOrNull() ?: return false)
+            "-debug"   -> debug(msg, args.getOrNull(1)?.toBooleanStrictOrNull() ?: return false)
         }
         return true
+    }
+
+    private suspend fun debug(msg: MessageEvent, switch: Boolean) {
+        NfPluginData.deBug = switch
+        msg.reply("Debug模式已切换至 $switch", true)
     }
 
     @OptIn(MiraiInternalApi::class)

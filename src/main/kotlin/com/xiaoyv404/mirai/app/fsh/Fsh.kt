@@ -1,5 +1,6 @@
 package com.xiaoyv404.mirai.app.fsh
 
+import com.xiaoyv404.mirai.NfPluginData
 import com.xiaoyv404.mirai.app.thesaurus.cMsgToMiraiMsg
 import com.xiaoyv404.mirai.app.thesaurus.parseMsg
 import com.xiaoyv404.mirai.core.App
@@ -18,13 +19,14 @@ import java.util.regex.Pattern
 
 
 @App
-class Fsh : NfAppMessageHandler(){
+class Fsh : NfAppMessageHandler() {
     override fun getAppName() = "fsh"
     override fun getVersion() = "1.0"
     override fun getAppDescription() = "命令系统的底层实现"
     override fun getAppUsage() = "命令系统的底层实现模块, 具体使用见命令"
 
     private val argsSplitPattern = Pattern.compile("([^\"]\\S*|\".+?(?<!\\\\)\")\\s*")
+    private val debug get() = NfPluginData.deBug
 
     override suspend fun handleMessage(msg: MessageEvent) {
         val incoming = msg.source
@@ -72,14 +74,17 @@ class Fsh : NfAppMessageHandler(){
         val fshApp = NfApplicationManager.fshCommands[argsList[0]]
         if (fshApp != null) {
             fshApp as NfApp
-            fshApp.requireCallLimiter(msg, uid, gid,fshApp.getLimitHint()) {
+            fshApp.requireCallLimiter(msg, uid, gid, fshApp.getLimitHint()) {
                 try {
                     if (fshApp.executeRsh(argsList.toTypedArray(), msg)) {
                         // 调用成功进行限制计次
                         fshApp.submitCallLimiter(uid, gid)
                     }
                 } catch (e: Exception) {
-                    msg.reply("执行时发生内部错误", quote = true)
+                    if (debug)
+                        msg.reply("处理${argsList[0]}命令发生异常\n$e", quote = true)
+                    else
+                        msg.reply("执行时发生内部错误", quote = true)
                     log.warning("处理${argsList[0]}命令发生异常\n$e")
                 }
             }

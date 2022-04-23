@@ -25,4 +25,7 @@ object NfPluginData : AbstractPluginData() {
 
     @ValueDescription("事件记录")
     val eventMap by value<MutableMap<Long, NfNewFriendRequestEvent>>()
+
+    @ValueDescription("deBug")
+    var deBug by value<Boolean>(false)
 }
