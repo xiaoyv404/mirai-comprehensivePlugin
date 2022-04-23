@@ -25,7 +25,4 @@ object NfPluginData : AbstractPluginData() {
 
     @ValueDescription("事件记录")
     val eventMap by value<MutableMap<Long, NfNewFriendRequestEvent>>()
-
-    @ValueDescription("用于测试")
-    val testMap by value<MutableMap<Long, String>>()
 }
