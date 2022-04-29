@@ -105,7 +105,7 @@ class Thesaurus : NfApp(), IFshApp{
 
         subject.sendMessage("请发送要删除的词条的下标")
         val subscript = msg.nextMessage().contentToString()
-        if (!(Regex("[0-9]+").containsMatchIn(subscript))) {
+        if (!(Regex("\\d+").containsMatchIn(subscript))) {
             subject.sendMessage("已取消")
             return true
         }
