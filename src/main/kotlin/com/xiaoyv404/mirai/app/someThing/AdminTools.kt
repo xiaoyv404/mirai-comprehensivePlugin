@@ -25,7 +25,7 @@ class AdminTools : NfApp(), IFshApp {
     override fun getAppName() = "AdminTools"
     override fun getVersion() = "1.0.1"
     override fun getAppDescription() = "管理员管理工具"
-    override fun getCommands() = arrayOf("-sendto", "-ban", "!!开启全体广播", "-bot", "-accept","-debug")
+    override fun getCommands() = arrayOf("-sendto", "-ban", "!!开启全体广播", "-bot", "-accept", "-debug")
 
     private val banOptions = Options().apply {
         addOption("g", "group", true, "群聊ID")
@@ -118,6 +118,9 @@ class AdminTools : NfApp(), IFshApp {
             msg.reply("缺少参数: groupId")
             return
         }
+
+        if (uid == msg.bot.id)
+            msg.reply("ban自己是哒咩的！")
 
 
         val time = if (data.hasOption("time"))
