@@ -1,7 +1,9 @@
 package com.xiaoyv404.mirai.app.bilibili
 
 import com.xiaoyv404.mirai.core.App
-import com.xiaoyv404.mirai.core.NfApp
+import com.xiaoyv404.mirai.core.NfAppMessageHandler
+import com.xiaoyv404.mirai.core.gid
+import com.xiaoyv404.mirai.core.uid
 import com.xiaoyv404.mirai.databace.Bilibili
 import com.xiaoyv404.mirai.databace.dao.authorityIdentification
 import com.xiaoyv404.mirai.tool.KtorUtils
@@ -12,57 +14,55 @@ import kotlinx.serialization.SerializationException
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import net.mamoe.mirai.contact.Contact
-import net.mamoe.mirai.event.GlobalEventChannel
-import net.mamoe.mirai.event.subscribeGroupMessages
+import net.mamoe.mirai.event.events.MessageEvent
 import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
 import java.io.InputStream
 
 val format = Json { ignoreUnknownKeys = true }
 
 @App
-class BiliBiliVideoParse : NfApp(){
+class BiliBiliVideoParse : NfAppMessageHandler(){
     override fun getAppName() = "BiliBiliVideoParse"
     override fun getVersion() = "1.0.0"
     override fun getAppDescription() = "b站视频解析"
-
-    override fun init() {
-        GlobalEventChannel.subscribeGroupMessages {
-            finding(Bilibili.biliBvFind){
-                val bv = it.value
-                if (authorityIdentification(
-                        sender.id,
-                        group.id,
-                        "BiliBiliParsing"
-                    )
-                ) {
-                    uJsonVideo(
-                        KtorUtils.normalClient.get(
-                            "https://api.bilibili.com/x/web-interface/view?bvid=$bv"
-                        ), group
-                    )
-                }
+    @OptIn(ExperimentalSerializationApi::class)
+    override suspend fun handleMessage(msg: MessageEvent) {
+        val str = msg.message.contentToString()
+        Bilibili.biliBvFind.find(str)?.let {
+            val bv = it.value
+            if (authorityIdentification(
+                    msg.uid(),
+                    msg.gid(),
+                    "BiliBiliParsing"
+                )
+            ) {
+                uJsonVideo(
+                    KtorUtils.normalClient.get(
+                        "https://api.bilibili.com/x/web-interface/view?bvid=$bv"
+                    ), msg.subject
+                )
             }
-            finding(Bilibili.biliAvFind) {
-                val av = it.groups[2]!!.value
-                if (authorityIdentification(
-                        sender.id,
-                        group.id,
-                        "BiliBiliParsing"
-                    )
-                ) {
-                    uJsonVideo(
-                        KtorUtils.normalClient.get(
-                            "https://api.bilibili.com/x/web-interface/view?aid=$av"
-                        ), group
-                    )
-                }
+        }
+        Bilibili.biliAvFind.find(str)?.let {
+            val av = it.groups[2]!!.value
+            if (authorityIdentification(
+                    msg.uid(),
+                    msg.gid(),
+                    "BiliBiliParsing"
+                )
+            ) {
+                uJsonVideo(
+                    KtorUtils.normalClient.get(
+                        "https://api.bilibili.com/x/web-interface/view?aid=$av"
+                    ), msg.subject
+                )
             }
         }
     }
 }
 
 //用于格式化Json并发送
-@OptIn(ExperimentalSerializationApi::class)
+@ExperimentalSerializationApi
 suspend fun uJsonVideo(uJsonVideo: String, group: Contact) {
     /**
      * 如果pJson中含有data字段时不会抛出[SerializationException]，不含有则反之
