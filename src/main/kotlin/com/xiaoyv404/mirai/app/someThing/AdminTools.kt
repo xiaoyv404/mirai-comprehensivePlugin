@@ -23,7 +23,7 @@ import org.apache.commons.cli.Options
 @App
 class AdminTools : NfApp(), IFshApp {
     override fun getAppName() = "AdminTools"
-    override fun getVersion() = "1.0.1"
+    override fun getVersion() = "1.0.2"
     override fun getAppDescription() = "管理员管理工具"
     override fun getCommands() = arrayOf("-sendto", "-ban", "!!开启全体广播", "-bot", "-accept", "-debug")
 
@@ -119,9 +119,10 @@ class AdminTools : NfApp(), IFshApp {
             return
         }
 
-        if (uid == msg.bot.id)
+        if (uid == msg.bot.id) {
             msg.reply("ban自己是哒咩的！")
-
+            return
+        }
 
         val time = if (data.hasOption("time"))
             data.getOptionValue("time").toInt()
