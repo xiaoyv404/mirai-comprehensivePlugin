@@ -21,7 +21,8 @@
 2. 插件下载
    - 前往本项目的[releases](https://github.com/xiaoyv404/mirai-comprehensivePlugin/releases) 下载插件~~自己Clone下来编译会比releases的版本快那么亿些些~~
 3. 配置数据库
-   - 请下载MySQL8，并按照dao配置好表
+   - 请下载PostgreSQL，并按照dao配置好表
+   - 安装Redis
 4. 插件运行
    - 将本插件放入 mirai-console 的 plugins 的文件夹并运行 mirai-console。
 
@@ -45,4 +46,4 @@
 
 ## 尾巴
 
-如有任何疑问，可以通过 mail 或者 qq 联系我
+如有任何疑问，可以通过 [mail](mailto:xiaoyv404@outlook.com) 或者 qq 联系我
