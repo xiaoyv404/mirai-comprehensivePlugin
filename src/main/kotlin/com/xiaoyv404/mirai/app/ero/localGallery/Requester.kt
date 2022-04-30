@@ -2,7 +2,6 @@ package com.xiaoyv404.mirai.app.ero.localGallery
 
 import com.xiaoyv404.mirai.PluginMain
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
-import com.xiaoyv404.mirai.databace.Pixiv
 import com.xiaoyv404.mirai.databace.dao.gallery.*
 import com.xiaoyv404.mirai.tool.FileUtils
 import com.xiaoyv404.mirai.tool.KtorUtils
@@ -66,7 +65,7 @@ class LocalGallerys(val msg: MessageEvent) {
         }
 
         val pJ = format.decodeFromString<PixivJson>(
-            Pixiv.worksInfoFind
+            Regex("(?=\\{\"illustId\":\").*?(?=,\"userIllusts\")")
                 .find(formatInfo)!!.value + "}"
         )
 
@@ -77,9 +76,12 @@ class LocalGallerys(val msg: MessageEvent) {
         tagsA.subSequence(0, tagsA.length - 1)
 
         val num: Int = try {
-            Pixiv.worksNumberFind.find(KtorUtils.normalClient.config {
-                expectSuccess = false
-            }.get<String>("https://pixiv.re/$idA.png"))?.value?.toInt() ?: 1
+            Regex("(?<=<p>這個作品ID中有 )\\d+(?= 張圖片，需要指定是第幾張圖片才能正確顯示\\(請參考<a href=\"https://pixiv.cat/\">首頁</a>說明\\)。</p>)")
+                .find(
+                    KtorUtils.normalClient.config {
+                        expectSuccess = false
+                    }.get<String>("https://pixiv.re/$idA.png")
+                )?.value?.toInt() ?: 1
         } catch (_: Exception) {
             1
         }
@@ -118,6 +120,7 @@ class LocalGallerys(val msg: MessageEvent) {
                 作者名称: ${ii.userName}
                 作者ID: ${ii.userId}
             """.trimIndent()
+
         object Img {
             suspend fun getSave(num: Int, id: String): String {
                 var fe = ""
@@ -142,9 +145,9 @@ class LocalGallerys(val msg: MessageEvent) {
                 var fe = Tika().detect(bSrc)
                 log.info("文件格式: $fe")
                 fe = when (fe) {
-                    "image/png"  -> "png"
+                    "image/png" -> "png"
                     "image/jpeg" -> "jpg"
-                    else         -> "???"
+                    else -> "???"
                 }
                 bSrc.reset()
                 FileUtils.saveFileFromStream(bSrc, PluginMain.resolveDataFile("$dst.$fe"))
