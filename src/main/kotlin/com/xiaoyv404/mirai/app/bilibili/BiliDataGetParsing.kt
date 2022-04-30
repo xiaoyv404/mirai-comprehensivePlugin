@@ -22,7 +22,7 @@ val format = Json { ignoreUnknownKeys = true }
 @App
 class BiliBiliVideoParse : NfAppMessageHandler() {
     override fun getAppName() = "BiliBiliVideoParse"
-    override fun getVersion() = "1.0.0"
+    override fun getVersion() = "1.0.1"
     override fun getAppDescription() = "b站视频解析"
 
     override suspend fun handleMessage(msg: MessageEvent) {

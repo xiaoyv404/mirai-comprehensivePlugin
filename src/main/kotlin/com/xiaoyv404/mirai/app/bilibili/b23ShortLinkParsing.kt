@@ -12,7 +12,7 @@ import net.mamoe.mirai.event.events.MessageEvent
 @App
 class B23ShortLinkParse : NfAppMessageHandler() {
     override fun getAppName() = "b23ShortLinkParse"
-    override fun getVersion() = "1.0.0"
+    override fun getVersion() = "1.0.1"
     override fun getAppDescription() = "b23短链解析"
 
     override suspend fun handleMessage(msg: MessageEvent) {

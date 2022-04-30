@@ -18,7 +18,7 @@ import org.apache.commons.cli.Options
 @App
 class LocalGallery : NfApp(), IFshApp {
     override fun getAppName() = "LocalGallery"
-    override fun getVersion() = "1.0.0"
+    override fun getVersion() = "1.0.1"
     override fun getAppDescription() = "本地图库"
     override fun getCommands() = arrayOf("-ero")
 
