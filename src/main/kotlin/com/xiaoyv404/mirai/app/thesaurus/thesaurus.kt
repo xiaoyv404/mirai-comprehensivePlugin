@@ -21,7 +21,7 @@ import java.io.InputStream
 import java.math.BigInteger
 
 @App
-class Thesaurus : NfApp(), IFshApp{
+class Thesaurus : NfApp(), IFshApp {
 
     override fun getAppName() = "Thesaurus"
     override fun getVersion() = "1.0.1"
@@ -47,9 +47,7 @@ class Thesaurus : NfApp(), IFshApp{
             subject.sendMessage("请发送reply")
             val replyA = parseMsgAndSaveImg(msg.nextMessage())
             subject.sendMessage(
-                "question: $questionA\n" +
-                    "reply: $replyA\n"
-                    + "请输入[y]以确认"
+                "question: $questionA\nreply: $replyA\n请输入[y]以确认"
             )
             if (msg.nextMessage().contentToString() == "y") {
                 Thesauru {
@@ -58,17 +56,14 @@ class Thesaurus : NfApp(), IFshApp{
                     creator = sender.id
                 }.save()
                 subject.sendMessage("添加成功~")
-            } else
-                subject.sendMessage("啊咧, 为啥要取消捏")
+            } else subject.sendMessage("啊咧, 为啥要取消捏")
         }
     }
 
     private suspend fun remove(
-        msg: MessageEvent,
-        gidInput: Long? = null
+        msg: MessageEvent, gidInput: Long? = null
     ): Boolean {
-        if (msg.isNotAdmin())
-            return false
+        if (msg.isNotAdmin()) return false
 
         val subject = msg.subject
         val gid = when {
@@ -92,15 +87,13 @@ class Thesaurus : NfApp(), IFshApp{
         if (entryMassages.size == 1) {
             subject.sendMessage(MiraiCode.deserializeMiraiCode(thesaurusRemoveMsg(entryMassages[0])))
         } else {
-            subject.sendMessage(
-                msg.buildForwardMessage {
-                    entryMassages.forEach { da ->
-                        da.question.cMsgToMiraiMsg(subject)
-                        da.reply.cMsgToMiraiMsg(subject)
-                        subject.bot.says(MiraiCode.deserializeMiraiCode(thesaurusRemoveMsg(da)))
-                    }
+            subject.sendMessage(msg.buildForwardMessage {
+                entryMassages.forEach { da ->
+                    da.question.cMsgToMiraiMsg(subject)
+                    da.reply.cMsgToMiraiMsg(subject)
+                    subject.bot.says(MiraiCode.deserializeMiraiCode(thesaurusRemoveMsg(da)))
                 }
-            )
+            })
         }
 
         subject.sendMessage("请发送要删除的词条的下标")
@@ -112,9 +105,7 @@ class Thesaurus : NfApp(), IFshApp{
 
         val subscriptI = subscript.toInt()
         subject.sendMessage(
-            "确定要删除: \n" +
-                "${MiraiCode.deserializeMiraiCode(thesaurusRemoveMsg(entryMassages[subscriptI]))}\n" +
-                "输入[y]以确认    输入[n]以取消"
+            "确定要删除: \n" + "${MiraiCode.deserializeMiraiCode(thesaurusRemoveMsg(entryMassages[subscriptI]))}\n" + "输入[y]以确认    输入[n]以取消"
         )
 
         if (msg.nextMessage().contentToString() == "y") {
@@ -128,24 +119,23 @@ class Thesaurus : NfApp(), IFshApp{
 
         return true
     }
+
+    private fun thesaurusRemoveMsg(da: Thesauru): String {
+        return ("""ID: ${da.id}
+   question: ${da.question}
+   reply: ${da.reply}
+   creator id: ${da.creator}""")
+    }
 }
 
 suspend fun String.cMsgToMiraiMsg(subject: Contact): String {
     var msg = this
     Regex("(\\[404:image:(.+)])").findAll(this).forEach {
         val img =
-            subject.uploadImage(PluginMain.resolveDataFile("thesaurus/${it.groups[2]!!.value}"))
-                .serializeToMiraiCode()
+            subject.uploadImage(PluginMain.resolveDataFile("thesaurus/${it.groups[2]!!.value}")).serializeToMiraiCode()
         msg = msg.replace(it.value, img)
     }
     return msg
-}
-
-fun thesaurusRemoveMsg(da: Thesauru): String {
-    return("""ID: ${da.id}
-   question: ${da.question}
-   reply: ${da.reply}
-   creator id: ${da.creator}""")
 }
 
 suspend fun parseMsgAndSaveImg(message: MessageChain): String {
@@ -154,14 +144,11 @@ suspend fun parseMsgAndSaveImg(message: MessageChain): String {
         if (it is Image) {
             val imageId = BigInteger(1, it.md5).toString(16)
             val `in` = KtorUtils.normalClient.get<InputStream>(it.queryUrl())
-            val imageType = if (it.imageType != ImageType.UNKNOWN)
-                it.imageType
-            else
-                ImageType.PNG
+            val imageType = if (it.imageType != ImageType.UNKNOWN) it.imageType
+            else ImageType.PNG
 
             FileUtils.saveFileFromStream(
-                `in`,
-                PluginMain.resolveDataFile("thesaurus/$imageId.$imageType")
+                `in`, PluginMain.resolveDataFile("thesaurus/$imageId.$imageType")
             )
             img.add("[404:image:${imageId}.$imageType]")
         }
@@ -181,10 +168,8 @@ fun parseMsg(message: MessageChain): String {
     message.toMessageChain().forEach {
         if (it is Image) {
             val imageId = BigInteger(1, it.md5).toString(16)
-            val imageType = if (it.imageType != ImageType.UNKNOWN)
-                it.imageType
-            else
-                ImageType.PNG
+            val imageType = if (it.imageType != ImageType.UNKNOWN) it.imageType
+            else ImageType.PNG
             img.add("[404:image:${imageId}.$imageType]")
         }
     }
