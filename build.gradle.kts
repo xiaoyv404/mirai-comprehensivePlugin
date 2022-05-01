@@ -41,13 +41,13 @@ dependencies {
 
     implementation("ch.qos.logback:logback-classic:1.2.11")
 
-    implementation("org.postgresql:postgresql:42.3.3")
+    implementation("org.postgresql:postgresql:42.3.4")
     implementation("org.ktorm:ktorm-core:$ktorm")
     implementation("com.zaxxer:HikariCP:5.0.1")
 
     implementation("io.lettuce:lettuce-core:6.1.8.RELEASE")
 
-    implementation("com.alibaba:fastjson:1.2.80")
+    implementation("com.alibaba:fastjson:2.0.1")
 
     implementation("io.ktor:ktor-client-cio:$ktorVersion")
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
