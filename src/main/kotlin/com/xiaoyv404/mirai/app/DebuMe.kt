@@ -1,4 +1,4 @@
-package com.xiaoyv404.mirai.app.someThing
+package com.xiaoyv404.mirai.app
 
 import com.xiaoyv404.mirai.app.fsh.IFshApp
 import com.xiaoyv404.mirai.core.App
