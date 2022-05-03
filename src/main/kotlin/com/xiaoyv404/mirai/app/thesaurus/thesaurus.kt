@@ -24,7 +24,7 @@ import java.math.BigInteger
 class Thesaurus : NfApp(), IFshApp {
 
     override fun getAppName() = "Thesaurus"
-    override fun getVersion() = "1.0.1"
+    override fun getVersion() = "1.0.2"
     override fun getAppDescription() = "词库"
     override fun getCommands() = arrayOf("!!创建词条", "-thesaurus")
 
