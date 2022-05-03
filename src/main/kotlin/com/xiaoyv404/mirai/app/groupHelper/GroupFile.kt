@@ -87,7 +87,7 @@ class GroupFile : NfApp(), IFshApp {
             """
 整理完成，已整理文件统计: 
 $str
-        """
+        """.trimIndent()
         )
     }
 }
