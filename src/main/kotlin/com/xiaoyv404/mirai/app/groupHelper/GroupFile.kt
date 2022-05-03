@@ -14,7 +14,7 @@ import java.util.*
 @App
 class GroupFile : NfApp(), IFshApp {
     override fun getAppName() = "群文件管理助手"
-    override fun getVersion() = "1.0.0"
+    override fun getVersion() = "1.0.1"
     override fun getAppDescription() = "帮助整理群文件"
     override fun getCommands() = arrayOf("-file")
 
