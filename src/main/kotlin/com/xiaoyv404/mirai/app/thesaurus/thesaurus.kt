@@ -29,7 +29,7 @@ class Thesaurus : NfApp(), IFshApp {
     override fun getCommands() = arrayOf("!!创建词条", "-thesaurus")
 
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
-        if (args[0] == "创建词条") {
+        if (args[0] == "!!创建词条") {
             add(msg.sender, msg)
             return true
         }
