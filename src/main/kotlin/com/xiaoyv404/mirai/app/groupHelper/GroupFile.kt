@@ -14,7 +14,7 @@ import java.util.*
 @App
 class GroupFile : NfApp(), IFshApp {
     override fun getAppName() = "群文件管理助手"
-    override fun getVersion() = "1.0.1"
+    override fun getVersion() = "1.0.2"
     override fun getAppDescription() = "帮助整理群文件"
     override fun getCommands() = arrayOf("-file")
 
@@ -45,7 +45,12 @@ class GroupFile : NfApp(), IFshApp {
         "apk" to "应用程序",
         "jpeg" to "图片",
         "gif" to "图片",
-        "m4a" to "音频"
+        "m4a" to "音频",
+        "doc" to "文档",
+        "docx" to "文档",
+        "flac" to "音频",
+        "aac" to "音频",
+        "torrent" to "种子"
     )
 
     private suspend fun pack(msg: MessageEvent) {
