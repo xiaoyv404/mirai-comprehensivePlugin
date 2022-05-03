@@ -61,8 +61,8 @@ class GroupFile : NfApp(), IFshApp {
         var mark = true
         //循环执行至完成
         while (mark) {
+            mark = false
             root.files().collect {
-                mark = false
                 val name = it.nameWithoutExtension
                 val extension = it.extension.lowercase(Locale.getDefault())
                 val folderName = extensionMap[extension] ?: return@collect //todo: 如果此文件没匹配到，发送消息至主人
