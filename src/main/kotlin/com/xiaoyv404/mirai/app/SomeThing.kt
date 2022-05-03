@@ -6,7 +6,6 @@ import com.xiaoyv404.mirai.app.fsh.IFshApp
 import com.xiaoyv404.mirai.core.App
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
 import com.xiaoyv404.mirai.core.NfApp
-import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.event.GlobalEventChannel
 import net.mamoe.mirai.event.events.BotInvitedJoinGroupRequestEvent
 import net.mamoe.mirai.event.events.MessageEvent
@@ -39,9 +38,6 @@ class SomeThing : NfApp(), IFshApp {
 
     private suspend fun test(msg: MessageEvent) {
         msg.reply("test")
-        (msg.subject as Group).files.root.files().collect {
-            log.info(it.name)
-        }
     }
 
     private suspend fun status(msg: MessageEvent) {
