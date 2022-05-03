@@ -40,7 +40,7 @@ class GroupFile : NfApp(), IFshApp {
         "mov" to "视频",
         "rar" to "压缩包",
         "exe" to "应用程序",
-        "py" to "应用程序",
+        "py" to "code",
         "jar" to "应用程序",
         "apk" to "应用程序",
         "jpeg" to "图片",
@@ -50,7 +50,21 @@ class GroupFile : NfApp(), IFshApp {
         "docx" to "文档",
         "flac" to "音频",
         "aac" to "音频",
-        "torrent" to "种子"
+        "torrent" to "种子",
+        "bat" to "脚本",
+        "sh" to "脚本",
+        "nbt" to "数据",
+        "litematic" to "投影文件",
+        "html" to "code",
+        "kt" to "code",
+        "java" to "code",
+        "go" to "code",
+        "js" to "脚本",
+        "css" to "code",
+        "md" to "文档",
+        "json" to "数据",
+        "nbt" to "数据",
+        "db" to "数据"
     )
 
     private suspend fun pack(msg: MessageEvent) {
