@@ -27,6 +27,7 @@ class GroupFile : NfApp(), IFshApp {
         return true
     }
 
+    //todo 添加至配置文件
     private val extensionMap = mapOf(
         "png" to "图片",
         "pdf" to "文档",
@@ -64,7 +65,14 @@ class GroupFile : NfApp(), IFshApp {
         "md" to "文档",
         "json" to "数据",
         "nbt" to "数据",
-        "db" to "数据"
+        "db" to "数据",
+        "litemod" to "数据",
+        "crx" to "数据",
+        "webp" to "图片",
+        "flv" to "视频",
+        "bmp" to "图片",
+        "avi" to "视频",
+        "txt" to "数据"
     )
 
     private suspend fun pack(msg: MessageEvent) {
