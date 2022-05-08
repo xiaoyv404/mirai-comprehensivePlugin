@@ -23,15 +23,22 @@ val format = Json { ignoreUnknownKeys = true }
 @App
 class BiliBiliVideoParse : NfAppMessageHandler() {
     override fun getAppName() = "BiliBiliVideoParse"
-    override fun getVersion() = "1.0.1"
+    override fun getVersion() = "1.0.2"
     override fun getAppDescription() = "b站视频解析"
 
     override suspend fun handleMessage(msg: MessageEvent) {
         if (msg.uid().isBot())
             return
 
-        val str = msg.message.contentToString()
-        biliABvFind(str, msg)
+        if (authorityIdentification(
+                msg.uid(),
+                msg.gid(),
+                "BiliBiliParsing"
+            )
+        ) {
+            val str = msg.message.contentToString()
+            biliABvFind(str, msg)
+        }
     }
 }
 
