@@ -5,6 +5,7 @@ import com.xiaoyv404.mirai.core.NfAppMessageHandler
 import com.xiaoyv404.mirai.core.gid
 import com.xiaoyv404.mirai.core.uid
 import com.xiaoyv404.mirai.databace.dao.authorityIdentification
+import com.xiaoyv404.mirai.databace.dao.isBot
 import com.xiaoyv404.mirai.tool.KtorUtils
 import com.xiaoyv404.mirai.tool.parsingVideoDataString
 import io.ktor.client.request.*
@@ -26,6 +27,9 @@ class BiliBiliVideoParse : NfAppMessageHandler() {
     override fun getAppDescription() = "b站视频解析"
 
     override suspend fun handleMessage(msg: MessageEvent) {
+        if (msg.uid().isBot())
+            return
+
         val str = msg.message.contentToString()
         biliABvFind(str, msg)
     }
