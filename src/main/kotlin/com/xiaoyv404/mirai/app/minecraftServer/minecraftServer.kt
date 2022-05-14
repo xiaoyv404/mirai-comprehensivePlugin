@@ -144,17 +144,21 @@ class MinecraftServerStats : NfApp(), IFshApp {
     }
 
     private suspend fun sendPlayerList(msg: MessageEvent, players: List<Player>) {
-        msg.reply(
-            buildForwardMessage(msg.subject) {
-                players.forEach { player ->
-                    msg.subject.bot.says(
-                        """
+        if (players.isEmpty())
+            msg.reply("都没有玩家怎么播报列表啊（恼）", quote = true)
+        else
+            msg.reply(
+                buildForwardMessage(msg.subject) {
+                    players.forEach { player ->
+                        msg.subject.bot.says(
+                            """
                         name: ${player.name}
                         d: ${player.id}
-                        """.trimIndent())
-                }
-            }.toMessageChain(), quote = false
-        )
+                        """.trimIndent()
+                        )
+                    }
+                }.toMessageChain(), quote = false
+            )
     }
 
     suspend fun check(info: MinecraftServer) {
