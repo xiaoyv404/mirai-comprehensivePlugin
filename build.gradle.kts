@@ -3,7 +3,7 @@ plugins {
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.serialization") version kotlinVersion
 
-    id("net.mamoe.mirai-console") version "2.11.0-RC2"
+    id("net.mamoe.mirai-console") version "2.11.0"
 }
 
 group = "com.xiaoyv404"
@@ -47,15 +47,15 @@ dependencies {
 
     implementation("io.lettuce:lettuce-core:6.1.8.RELEASE")
 
-    implementation("com.alibaba:fastjson:2.0.1")
+    implementation("com.alibaba:fastjson:2.0.3")
 
-    implementation("io.ktor:ktor-client-cio:$ktorVersion")
-    implementation("io.ktor:ktor-server-netty:$ktorVersion")
+    implementation("io.ktor:ktor-client-cio:2.0.1")
+    implementation("io.ktor:ktor-server-netty:2.0.1")
     implementation("io.ktor:ktor-jackson:$ktorVersion")
     implementation("io.ktor:ktor-auth:$ktorVersion")
     implementation("io.ktor:ktor-auth-jwt:$ktorVersion")
-    implementation("io.ktor:ktor-websockets:$ktorVersion")
-    implementation("io.ktor:ktor-server-sessions:$ktorVersion")
+    implementation("io.ktor:ktor-websockets:2.0.1")
+    implementation("io.ktor:ktor-server-sessions:2.0.1")
     implementation("de.svenkubiak:jBCrypt:0.4.3")
 
 
