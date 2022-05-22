@@ -49,13 +49,13 @@ dependencies {
 
     implementation("com.alibaba:fastjson:2.0.3")
 
-    implementation("io.ktor:ktor-client-cio:2.0.1")
-    implementation("io.ktor:ktor-server-netty:2.0.1")
+    implementation("io.ktor:ktor-client-cio:$ktorVersion")
+    implementation("io.ktor:ktor-server-netty:$ktorVersion")
     implementation("io.ktor:ktor-jackson:$ktorVersion")
     implementation("io.ktor:ktor-auth:$ktorVersion")
     implementation("io.ktor:ktor-auth-jwt:$ktorVersion")
-    implementation("io.ktor:ktor-websockets:2.0.1")
-    implementation("io.ktor:ktor-server-sessions:2.0.1")
+    implementation("io.ktor:ktor-websockets:$ktorVersion")
+    implementation("io.ktor:ktor-server-sessions:$ktorVersion")
     implementation("de.svenkubiak:jBCrypt:0.4.3")
 
 

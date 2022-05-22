@@ -28,7 +28,7 @@ import java.util.*
 @App
 class MinecraftServerStats : NfApp(), IFshApp {
     override fun getAppName() = "MinecraftServerStats"
-    override fun getVersion() = "1.0.1"
+    override fun getVersion() = "1.0.2"
     override fun getAppDescription() = "我的世界服务器状态监测"
     override fun getCommands() =
         arrayOf("-服务器熟了没", "-服务器状态", "-土豆熟了没", "-土豆状态", "-破推头熟了没", "-破推头状态", "-ServerStatus", "-PotatoStatus")
@@ -78,10 +78,10 @@ class MinecraftServerStats : NfApp(), IFshApp {
     private suspend fun sendInfo(msg: MessageEvent, info: MinecraftServer, playerList: Boolean = false) {
         val infoD = getServerInfo(info.host, info.port)
         val bot = msg.bot
-        val players = infoD.serverInformationFormat!!.players
+        val players = infoD.serverInformationFormat?.players
 
         //判断当前服务器状态
-        val statusT = if (infoD.status != 1 && info.status == 1)
+        val statusT = if (infoD.status != 1)
             -1
         else
             1
@@ -92,8 +92,8 @@ class MinecraftServerStats : NfApp(), IFshApp {
                 msg.subject.uploadImage(
                     players.let {
                         MinecraftDataImgGenerator.getImg(
-                            it.players,
-                            "${players.online}/${players.max}",
+                            it!!.players,
+                            "${it.online}/${it.max}",
                             info.host,
                             info.port.toString()
                         )
@@ -109,18 +109,22 @@ class MinecraftServerStats : NfApp(), IFshApp {
                 )
 
         //获取服务器关联群，并发送提示
-        if (statusT != info.status)
+        if (statusT != info.status) {
             MinecraftServerMap {
                 serverID = info.id
             }.findByServerId().forEach {
                 (bot.getGroup(it.groupID) ?: return@forEach).sendMessage(msgA)
             }
-        else
+            MinecraftServer {
+                id = info.id
+                status = statusT
+            }.update()
+        } else
             msg.reply(msgA, false)
 
         //如果有需求并且服务器在线，发送玩家列表
         if (statusT == 1 && playerList) {
-            sendPlayerList(msg, getPlayerList(info.host, info.port, players))
+            sendPlayerList(msg, getPlayerList(info.host, info.port, players!!))
         }
     }
 

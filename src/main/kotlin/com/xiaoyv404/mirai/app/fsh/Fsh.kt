@@ -21,7 +21,7 @@ import java.util.regex.Pattern
 @App
 class Fsh : NfAppMessageHandler() {
     override fun getAppName() = "fsh"
-    override fun getVersion() = "1.0"
+    override fun getVersion() = "1.0.1"
     override fun getAppDescription() = "命令系统的底层实现"
     override fun getAppUsage() = "命令系统的底层实现模块, 具体使用见命令"
 
@@ -81,11 +81,15 @@ class Fsh : NfAppMessageHandler() {
                         fshApp.submitCallLimiter(uid, gid)
                     }
                 } catch (e: Exception) {
-                    if (debug)
+                    if (debug) {
                         msg.reply("处理${argsList[0]}命令发生异常\n$e", quote = true)
-                    else
+                        log.warning("处理${argsList[0]}命令发生异常")
+                        e.printStackTrace()
+                    }
+                    else {
                         msg.reply("执行时发生内部错误", quote = true)
-                    log.warning("处理${argsList[0]}命令发生异常\n$e")
+                        log.warning("处理${argsList[0]}命令发生异常\n$e")
+                    }
                 }
             }
         } else {
