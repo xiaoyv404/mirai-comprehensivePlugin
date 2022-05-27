@@ -68,14 +68,13 @@ class SomeThing : NfApp(), IFshApp {
         GlobalEventChannel.subscribeAlways(
             NewFriendRequestEvent::class
         ) {
-            val nfnE = NfNewFriendRequestEvent(
+            eventList[it.eventId] = NfNewFriendRequestEvent(
                 it.eventId,
                 it.message,
                 it.fromId,
                 it.fromGroupId,
                 it.fromNick
             )
-            eventList[it.eventId] = nfnE
             bot.getFriendOrFail(2083664136L).sendMessage(
                 """
                 [事件]好友添加请求    事件ID: ${it.eventId}
