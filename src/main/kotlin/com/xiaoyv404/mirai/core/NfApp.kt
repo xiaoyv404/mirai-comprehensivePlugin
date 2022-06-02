@@ -70,7 +70,7 @@ abstract class NfApp {
      * @param app 限制的应用名 默认是当前应用
      * @return 当前剩余可调用次数
      */
-    fun getCallLimiterRemainCount(caller: Long, place: Long, app: String = getAppName()): Int {
+    private fun getCallLimiterRemainCount(caller: Long, place: Long, app: String = getAppName()): Int {
         val key = "${app}_${place}_${caller}"
         val remain = rdb.get(key).get(1,TimeUnit.MINUTES)
         return if (remain == null) {
