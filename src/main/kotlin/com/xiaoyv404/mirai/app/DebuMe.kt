@@ -4,8 +4,6 @@ import com.xiaoyv404.mirai.app.fsh.IFshApp
 import com.xiaoyv404.mirai.core.App
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
 import com.xiaoyv404.mirai.core.NfApp
-import com.xiaoyv404.mirai.core.gid
-import com.xiaoyv404.mirai.core.uid
 import com.xiaoyv404.mirai.databace.dao.authorityIdentification
 import net.mamoe.mirai.contact.Member
 import net.mamoe.mirai.contact.remarkOrNameCardOrNick
@@ -29,11 +27,7 @@ class DebuMe : NfApp(), IFshApp {
     private suspend fun debuMe(data: String?, msg: MessageEvent): Boolean {
         val sender = msg.sender
 
-        if (authorityIdentification(
-                msg.uid(),
-                msg.gid(),
-                "DebuMe"
-            )
+        if (msg.authorityIdentification("DebuMe")
         ) return false
 
         val name = data ?: if (sender is Member) {

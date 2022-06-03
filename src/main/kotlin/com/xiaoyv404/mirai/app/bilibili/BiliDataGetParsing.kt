@@ -2,7 +2,6 @@ package com.xiaoyv404.mirai.app.bilibili
 
 import com.xiaoyv404.mirai.core.App
 import com.xiaoyv404.mirai.core.NfAppMessageHandler
-import com.xiaoyv404.mirai.core.gid
 import com.xiaoyv404.mirai.core.uid
 import com.xiaoyv404.mirai.databace.dao.authorityIdentification
 import com.xiaoyv404.mirai.databace.dao.isBot
@@ -30,12 +29,8 @@ class BiliBiliVideoParse : NfAppMessageHandler() {
         if (msg.uid().isBot())
             return
 
-        if (authorityIdentification(
-                msg.uid(),
-                msg.gid(),
-                "BiliBiliParsing"
-            )
-        ) return
+        if (msg.authorityIdentification("BiliBiliParsing"))
+            return
 
         val str = msg.message.contentToString()
         biliABvFind(str, msg)
@@ -46,10 +41,9 @@ class BiliBiliVideoParse : NfAppMessageHandler() {
 suspend fun biliABvFind(str: String, msg: MessageEvent) {
     Regex("BV1[1-9A-NP-Za-km-z]{9}").find(str)?.let {
         val bv = it.value
-        if (authorityIdentification(
-                msg.uid(), msg.gid(), "BiliBiliParsing"
-            )
-        ) return
+        if (msg.authorityIdentification("BiliBiliParsing"))
+            return
+
         uJsonVideo(
             KtorUtils.normalClient.get(
                 "https://api.bilibili.com/x/web-interface/view?bvid=$bv"
@@ -59,10 +53,9 @@ suspend fun biliABvFind(str: String, msg: MessageEvent) {
     }
     Regex("(av|AV)([1-9]\\d{0,18})").find(str)?.let {
         val av = it.groups[2]!!.value
-        if (authorityIdentification(
-                msg.uid(), msg.gid(), "BiliBiliParsing"
-            )
-        ) return
+        if (msg.authorityIdentification("BiliBiliParsing"))
+            return
+
         uJsonVideo(
             KtorUtils.normalClient.get(
                 "https://api.bilibili.com/x/web-interface/view?aid=$av"

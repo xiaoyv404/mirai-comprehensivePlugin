@@ -5,7 +5,6 @@ import com.xiaoyv404.mirai.app.fsh.IFshApp
 import com.xiaoyv404.mirai.core.App
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
 import com.xiaoyv404.mirai.core.NfApp
-import com.xiaoyv404.mirai.core.gid
 import com.xiaoyv404.mirai.core.uid
 import com.xiaoyv404.mirai.databace.dao.authorityIdentification
 import com.xiaoyv404.mirai.databace.dao.gallery.*
@@ -63,8 +62,9 @@ class LocalGallery : NfApp(), IFshApp {
      */
     @OptIn(ExperimentalSerializationApi::class)
     private suspend fun eroAdd(idData: String?, msg: MessageEvent, noOutPut: Boolean = false): Boolean {
-        if (authorityIdentification(msg.uid(), msg.gid(), "LocalGallery"))
+        if (msg.authorityIdentification("LocalGallery"))
             return false
+
         val fail = mutableListOf<String>()
         val ids = Regex("\\d+").findAll(
             if (idData == null) {
@@ -103,8 +103,9 @@ class LocalGallery : NfApp(), IFshApp {
      * @param msg
      */
     private suspend fun eroSearch(tagNameA: String, msg: MessageEvent): Boolean {
-        if (authorityIdentification(msg.uid(), msg.gid(), "LocalGallery"))
+        if (msg.authorityIdentification("LocalGallery"))
             return false
+
         log.info("[LocalGallerySearch] 尝试从本地图库搜索 Tag 包含 $tagNameA 的图片")
         val tagidA = GalleryTag {
             tagname = tagNameA

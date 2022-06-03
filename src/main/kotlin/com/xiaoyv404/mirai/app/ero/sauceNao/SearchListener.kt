@@ -4,8 +4,6 @@ import com.xiaoyv404.mirai.app.fsh.IFshApp
 import com.xiaoyv404.mirai.core.App
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
 import com.xiaoyv404.mirai.core.NfApp
-import com.xiaoyv404.mirai.core.gid
-import com.xiaoyv404.mirai.core.uid
 import com.xiaoyv404.mirai.databace.dao.authorityIdentification
 import net.mamoe.mirai.event.events.MessageEvent
 import net.mamoe.mirai.message.data.Image
@@ -25,7 +23,7 @@ class SauceNaoImgSearch : NfApp(), IFshApp {
             return false
         }
 
-        if (authorityIdentification(msg.uid(), msg.gid(), "SauceNaoSearch"))
+        if (msg.authorityIdentification("SauceNaoSearch"))
             return false
 
         val subject = msg.subject

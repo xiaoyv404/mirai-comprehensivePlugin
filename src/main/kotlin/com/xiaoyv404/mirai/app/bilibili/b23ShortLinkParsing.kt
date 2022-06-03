@@ -2,7 +2,6 @@ package com.xiaoyv404.mirai.app.bilibili
 
 import com.xiaoyv404.mirai.core.App
 import com.xiaoyv404.mirai.core.NfAppMessageHandler
-import com.xiaoyv404.mirai.core.gid
 import com.xiaoyv404.mirai.core.uid
 import com.xiaoyv404.mirai.databace.dao.authorityIdentification
 import com.xiaoyv404.mirai.databace.dao.isBot
@@ -21,12 +20,7 @@ class B23ShortLinkParse : NfAppMessageHandler() {
             return
 
         Regex("(https?://b23.tv/\\S{6})").find(msg.message.contentToString())?.let {
-            if (authorityIdentification(
-                    msg.uid(),
-                    msg.gid(),
-                    "BiliBiliParsing"
-                )
-            )
+            if (msg.authorityIdentification("BiliBiliParsing"))
                 return
 
             val b23 = it.value

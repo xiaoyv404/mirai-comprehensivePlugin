@@ -92,10 +92,8 @@ class Fsh : NfAppMessageHandler() {
                 }
             }
         } else {
-            if (authorityIdentification(
-                    uid, gid, "ThesaurusResponse"
-                )
-            ) return
+            if (msg.authorityIdentification("ThesaurusResponse"))
+                return
 
             val replyC = Thesauru {
                 question = parseMsg(msg.message)

@@ -6,6 +6,7 @@ import com.xiaoyv404.mirai.core.App
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
 import com.xiaoyv404.mirai.core.NfApp
 import com.xiaoyv404.mirai.core.gid
+import com.xiaoyv404.mirai.core.uid
 import com.xiaoyv404.mirai.databace.dao.*
 import com.xiaoyv404.mirai.tool.FileUtils
 import com.xiaoyv404.mirai.tool.KtorUtils
@@ -30,7 +31,7 @@ class Thesaurus : NfApp(), IFshApp {
 
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
         if (args[0] == "!!创建词条") {
-            return add(msg.sender, msg)
+            return add(msg)
         }
         if (args[1] == "remove") {
             return remove(msg, args.getOrNull(2)?.toLong())
@@ -38,10 +39,10 @@ class Thesaurus : NfApp(), IFshApp {
         return true
     }
 
-    private suspend fun add(sender: net.mamoe.mirai.contact.User, msg: MessageEvent): Boolean {
+    private suspend fun add(msg: MessageEvent): Boolean {
         val subject = msg.subject
 
-        if (authorityIdentification(sender.id, subject.id, "ThesaurusAdd"))
+        if (msg.authorityIdentification("ThesaurusAdd"))
             return false
 
         subject.sendMessage("请发送question")
@@ -55,7 +56,7 @@ class Thesaurus : NfApp(), IFshApp {
             Thesauru {
                 question = questionA
                 reply = replyA
-                creator = sender.id
+                creator = msg.uid()
             }.save()
             subject.sendMessage("添加成功~")
         } else subject.sendMessage("啊咧, 为啥要取消捏")
