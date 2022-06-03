@@ -38,7 +38,7 @@ fun authorityIdentification(uid: Long, gid: Long, func: String): Boolean {
         .from(Groups)
         .select(
             gp.asJson()[func].getAsString("all"),
-            gp.asJson()[func]["white"].findOrNot(sUid),
+            gp.asJson()[func]["black"].findOrNot(sUid),
             gp.asJson()[func]["white"].findOrNot(sUid)
         )
         .where(Groups.id eq gid)
