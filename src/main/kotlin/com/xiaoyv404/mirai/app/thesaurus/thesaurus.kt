@@ -30,8 +30,7 @@ class Thesaurus : NfApp(), IFshApp {
 
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
         if (args[0] == "!!创建词条") {
-            add(msg.sender, msg)
-            return true
+            return add(msg.sender, msg)
         }
         if (args[1] == "remove") {
             return remove(msg, args.getOrNull(2)?.toLong())
@@ -39,25 +38,29 @@ class Thesaurus : NfApp(), IFshApp {
         return true
     }
 
-    private suspend fun add(sender: net.mamoe.mirai.contact.User, msg: MessageEvent) {
+    private suspend fun add(sender: net.mamoe.mirai.contact.User, msg: MessageEvent): Boolean {
         val subject = msg.subject
-        if (authorityIdentification(sender.id, subject.id, "ThesaurusAdd")) {
-            subject.sendMessage("请发送question")
-            val questionA = parseMsgAndSaveImg(msg.nextMessage())
-            subject.sendMessage("请发送reply")
-            val replyA = parseMsgAndSaveImg(msg.nextMessage())
-            subject.sendMessage(
-                "question: $questionA\nreply: $replyA\n请输入[y]以确认"
-            )
-            if (msg.nextMessage().contentToString() == "y") {
-                Thesauru {
-                    question = questionA
-                    reply = replyA
-                    creator = sender.id
-                }.save()
-                subject.sendMessage("添加成功~")
-            } else subject.sendMessage("啊咧, 为啥要取消捏")
-        }
+
+        if (authorityIdentification(sender.id, subject.id, "ThesaurusAdd"))
+            return false
+
+        subject.sendMessage("请发送question")
+        val questionA = parseMsgAndSaveImg(msg.nextMessage())
+        subject.sendMessage("请发送reply")
+        val replyA = parseMsgAndSaveImg(msg.nextMessage())
+        subject.sendMessage(
+            "question: $questionA\nreply: $replyA\n请输入[y]以确认"
+        )
+        if (msg.nextMessage().contentToString() == "y") {
+            Thesauru {
+                question = questionA
+                reply = replyA
+                creator = sender.id
+            }.save()
+            subject.sendMessage("添加成功~")
+        } else subject.sendMessage("啊咧, 为啥要取消捏")
+
+        return true
     }
 
     private suspend fun remove(

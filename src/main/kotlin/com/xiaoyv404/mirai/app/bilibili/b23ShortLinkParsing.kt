@@ -26,11 +26,12 @@ class B23ShortLinkParse : NfAppMessageHandler() {
                     msg.gid(),
                     "BiliBiliParsing"
                 )
-            ) {
-                val b23 = it.value
-                val b23Data = b23DataGet(b23)
-                biliABvFind(b23Data, msg)
-            }
+            )
+                return
+
+            val b23 = it.value
+            val b23Data = b23DataGet(b23)
+            biliABvFind(b23Data, msg)
         }
     }
 

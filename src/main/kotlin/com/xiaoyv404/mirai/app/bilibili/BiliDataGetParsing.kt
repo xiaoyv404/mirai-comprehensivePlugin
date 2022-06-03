@@ -35,10 +35,10 @@ class BiliBiliVideoParse : NfAppMessageHandler() {
                 msg.gid(),
                 "BiliBiliParsing"
             )
-        ) {
-            val str = msg.message.contentToString()
-            biliABvFind(str, msg)
-        }
+        ) return
+
+        val str = msg.message.contentToString()
+        biliABvFind(str, msg)
     }
 }
 
@@ -49,26 +49,26 @@ suspend fun biliABvFind(str: String, msg: MessageEvent) {
         if (authorityIdentification(
                 msg.uid(), msg.gid(), "BiliBiliParsing"
             )
-        ) {
-            uJsonVideo(
-                KtorUtils.normalClient.get(
-                    "https://api.bilibili.com/x/web-interface/view?bvid=$bv"
-                ), msg.subject
-            )
-        }
+        ) return
+        uJsonVideo(
+            KtorUtils.normalClient.get(
+                "https://api.bilibili.com/x/web-interface/view?bvid=$bv"
+            ), msg.subject
+        )
+
     }
     Regex("(av|AV)([1-9]\\d{0,18})").find(str)?.let {
         val av = it.groups[2]!!.value
         if (authorityIdentification(
                 msg.uid(), msg.gid(), "BiliBiliParsing"
             )
-        ) {
-            uJsonVideo(
-                KtorUtils.normalClient.get(
-                    "https://api.bilibili.com/x/web-interface/view?aid=$av"
-                ), msg.subject
-            )
-        }
+        ) return
+        uJsonVideo(
+            KtorUtils.normalClient.get(
+                "https://api.bilibili.com/x/web-interface/view?aid=$av"
+            ), msg.subject
+        )
+
     }
 }
 

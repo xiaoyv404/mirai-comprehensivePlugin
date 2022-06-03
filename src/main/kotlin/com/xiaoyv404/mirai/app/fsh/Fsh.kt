@@ -85,8 +85,7 @@ class Fsh : NfAppMessageHandler() {
                         msg.reply("处理${argsList[0]}命令发生异常\n$e", quote = true)
                         log.warning("处理${argsList[0]}命令发生异常")
                         e.printStackTrace()
-                    }
-                    else {
+                    } else {
                         msg.reply("执行时发生内部错误", quote = true)
                         log.warning("处理${argsList[0]}命令发生异常\n$e")
                     }
@@ -96,15 +95,15 @@ class Fsh : NfAppMessageHandler() {
             if (authorityIdentification(
                     uid, gid, "ThesaurusResponse"
                 )
-            ) {
-                val replyC = Thesauru {
-                    question = parseMsg(msg.message)
-                }.findByQuestion(gid)
-                if (replyC.isEmpty())
-                    return
-                val reply = replyC.random().reply.cMsgToMiraiMsg(msg.subject)
-                msg.reply(MiraiCode.deserializeMiraiCode(reply), quote = false)
-            }
+            ) return
+
+            val replyC = Thesauru {
+                question = parseMsg(msg.message)
+            }.findByQuestion(gid)
+            if (replyC.isEmpty())
+                return
+            val reply = replyC.random().reply.cMsgToMiraiMsg(msg.subject)
+            msg.reply(MiraiCode.deserializeMiraiCode(reply), quote = false)
         }
     }
 }

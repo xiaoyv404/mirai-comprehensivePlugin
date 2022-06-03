@@ -30,14 +30,13 @@ class LocalGallery : NfApp(), IFshApp {
         val cmdLine = IFshApp.cmdLine(options, args)
 
         when (args[1]) {
-            "add"    -> eroAdd(args.getOrNull(2), msg, cmdLine.hasOption("no-outPut"))
+            "add"    -> return eroAdd(args.getOrNull(2), msg, cmdLine.hasOption("no-outPut"))
             "search" -> {
                 val tagName = args.getOrNull(2)
-                if (tagName == null) {
+                return if (tagName == null) {
                     msg.reply("没名字我怎么搜嘛")
-                    return true
-                }
-                eroSearch(tagName, msg)
+                    true
+                } else eroSearch(tagName, msg)
             }
             "remove" -> {
                 val id = args.getOrNull(2)?.toLongOrNull()
@@ -63,35 +62,36 @@ class LocalGallery : NfApp(), IFshApp {
      * @param noOutPut
      */
     @OptIn(ExperimentalSerializationApi::class)
-    private suspend fun eroAdd(idData: String?, msg: MessageEvent, noOutPut: Boolean = false) {
-        if (authorityIdentification(msg.uid(), msg.gid(), "LocalGallery")) {
-            val fail = mutableListOf<String>()
-            val ids = Regex("\\d+").findAll(
-                if (idData == null) {
-                    msg.reply("没找到图片ID捏，请发送图片ID", true)
-                    msg.nextMessage().contentToString()
-                } else
-                    idData
-            ).toList()
+    private suspend fun eroAdd(idData: String?, msg: MessageEvent, noOutPut: Boolean = false): Boolean {
+        if (authorityIdentification(msg.uid(), msg.gid(), "LocalGallery"))
+            return false
+        val fail = mutableListOf<String>()
+        val ids = Regex("\\d+").findAll(
+            if (idData == null) {
+                msg.reply("没找到图片ID捏，请发送图片ID", true)
+                msg.nextMessage().contentToString()
+            } else
+                idData
+        ).toList()
 
-            log.info("找到${ids.size}个ID")
+        log.info("找到${ids.size}个ID")
 
-            ids.forEachIndexed { index, id ->
-                log.info("下载编号 ${ids.size - 1}\\$index id ${id.value}")
-                if (LocalGallerys(msg).unformat(id.value, msg.uid(), noOutPut)) {
-                    log.info("下载编号 $index id ${id.value} 失败")
-                    fail.add(id.value)
-                }
-            }
-
-            if (fail.isNotEmpty()) {
-                msg.reply("下载失败 Id 列表")
-                msg.reply(fail.joinToString("，"))
-            }
-            if (ids.size >= 5) {
-                msg.reply("完成啦w!")
+        ids.forEachIndexed { index, id ->
+            log.info("下载编号 ${ids.size - 1}\\$index id ${id.value}")
+            if (LocalGallerys(msg).unformat(id.value, msg.uid(), noOutPut)) {
+                log.info("下载编号 $index id ${id.value} 失败")
+                fail.add(id.value)
             }
         }
+
+        if (fail.isNotEmpty()) {
+            msg.reply("下载失败 Id 列表")
+            msg.reply(fail.joinToString("，"))
+        }
+        if (ids.size >= 5) {
+            msg.reply("完成啦w!")
+        }
+        return true
     }
 
     /**
@@ -102,35 +102,37 @@ class LocalGallery : NfApp(), IFshApp {
      * @param tagNameA
      * @param msg
      */
-    private suspend fun eroSearch(tagNameA: String, msg: MessageEvent) {
-        if (authorityIdentification(msg.uid(), msg.gid(), "LocalGallery")) {
-            log.info("[LocalGallerySearch] 尝试从本地图库搜索 Tag 包含 $tagNameA 的图片")
-            val tagidA = GalleryTag {
-                tagname = tagNameA
-            }.findTagIdByTagName()
-            if (tagidA == null) {
-                log.info("[LocalGallerySearch] 未搜索到 TagName $tagNameA")
-                msg.reply("唔....似乎没有呢",true)
-                return
-            }
-
-            log.info("[LocalGallerySearch] 搜索到 TagName $tagNameA ID $tagidA")
-
-            val idAL = GalleryTagMap {
-                tagid = tagidA
-            }.findPidByTagId()
-
-            log.info("[LocalGallerySearch] 搜索到 ID $tagidA 数量 ${idAL.size}")
-
-            val idA = idAL.random()
-
-            log.info("[LocalGallerySearch] 随机到 Pid $idA")
-
-            val ii = Gallery {
-                id = idA
-            }.findById()
-            LocalGallerys(msg).send(ii!!)
+    private suspend fun eroSearch(tagNameA: String, msg: MessageEvent): Boolean {
+        if (authorityIdentification(msg.uid(), msg.gid(), "LocalGallery"))
+            return false
+        log.info("[LocalGallerySearch] 尝试从本地图库搜索 Tag 包含 $tagNameA 的图片")
+        val tagidA = GalleryTag {
+            tagname = tagNameA
+        }.findTagIdByTagName()
+        if (tagidA == null) {
+            log.info("[LocalGallerySearch] 未搜索到 TagName $tagNameA")
+            msg.reply("唔....似乎没有呢", true)
+            return true
         }
+
+        log.info("[LocalGallerySearch] 搜索到 TagName $tagNameA ID $tagidA")
+
+        val idAL = GalleryTagMap {
+            tagid = tagidA
+        }.findPidByTagId()
+
+        log.info("[LocalGallerySearch] 搜索到 ID $tagidA 数量 ${idAL.size}")
+
+        val idA = idAL.random()
+
+        log.info("[LocalGallerySearch] 随机到 Pid $idA")
+
+        val ii = Gallery {
+            id = idA
+        }.findById()
+        LocalGallerys(msg).send(ii!!)
+
+        return true
     }
 
 

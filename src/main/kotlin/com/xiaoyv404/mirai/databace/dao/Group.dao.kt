@@ -44,9 +44,9 @@ fun authorityIdentification(uid: Long, gid: Long, func: String): Boolean {
         .where(Groups.id eq gid)
         .map {
             if (it.getString(1) == "true")
-                !it.getBoolean(2)
+                it.getBoolean(2)
             else
-                it.getBoolean(3)
+                !it.getBoolean(3)
         }.first()
 }
 
