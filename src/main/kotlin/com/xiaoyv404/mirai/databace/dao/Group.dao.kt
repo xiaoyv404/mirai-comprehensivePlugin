@@ -1,10 +1,13 @@
 package com.xiaoyv404.mirai.databace.dao
 
+import com.xiaoyv404.mirai.core.gid
+import com.xiaoyv404.mirai.core.uid
 import com.xiaoyv404.mirai.databace.Database.db
 import com.xiaoyv404.mirai.extension.asJson
 import com.xiaoyv404.mirai.extension.findOrNot
 import com.xiaoyv404.mirai.extension.get
 import com.xiaoyv404.mirai.extension.getAsString
+import net.mamoe.mirai.event.events.MessageEvent
 import org.ktorm.database.Database
 import org.ktorm.dsl.*
 import org.ktorm.entity.Entity
@@ -17,6 +20,7 @@ import org.ktorm.schema.text
 
 interface Group : Entity<Group> {
     companion object : Entity.Factory<Group>()
+
     var id: Long
     val notice: String
     val permission: String
@@ -50,8 +54,13 @@ fun authorityIdentification(uid: Long, gid: Long, func: String): Boolean {
         }.first()
 }
 
-object  Groups : Table<Group>("Groups") {
-    val id = long("id").primaryKey().bindTo { it.id  }
+fun MessageEvent.authorityIdentification(func: String): Boolean {
+    return authorityIdentification(this.uid(), this.gid(), func)
+}
+
+
+object Groups : Table<Group>("Groups") {
+    val id = long("id").primaryKey().bindTo { it.id }
     val notice = text("notice").bindTo { it.notice }
     val permission = text("permission").bindTo { it.permission }
     val salutatory = text("salutatory").bindTo { it.salutatory }
