@@ -36,6 +36,9 @@ class AdminTools : NfApp(), IFshApp {
     private val eventList get() = NfPluginData.eventMap
 
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
+        if (msg.isNotAdmin())
+            return false
+
         when (args[0]) {
             "-sendto"  -> sendto(msg)
             "-bot"     -> {
@@ -80,9 +83,6 @@ class AdminTools : NfApp(), IFshApp {
     }
 
     private suspend fun sendto(msg: MessageEvent) {
-        if (msg.isNotAdmin())
-            return
-
         msg.reply("请发送群id")
         val gpIds = Regex("\\d+").findAll(msg.nextMessage().contentToString()).toList()
         log.info("群聊个数${gpIds.size}")
@@ -94,9 +94,6 @@ class AdminTools : NfApp(), IFshApp {
     }
 
     private suspend fun addBot(data: String, msg: MessageEvent) {
-        if (msg.isNotAdmin())
-            return
-
         val idA = (Regex("\\d+").find(data) ?: return).value.toLong()
         User {
             id = idA
@@ -107,9 +104,6 @@ class AdminTools : NfApp(), IFshApp {
     }
 
     private suspend fun ban(uid: Long, data: CommandLine, msg: MessageEvent) {
-        if (msg.isNotAdmin())
-            return
-
         val gid = if (data.hasOption("group"))
             data.getOptionValue("group").toLong()
         else if (msg.gid() != 0L)
@@ -150,9 +144,6 @@ class AdminTools : NfApp(), IFshApp {
     }
 
     private suspend fun adminBroadcast(msg: MessageEvent) {
-        if (msg.isNotAdmin())
-            return
-
         msg.reply("全体广播已开启")
         GlobalEventChannel.subscribe<FriendMessageEvent> {
             if (msg.uid() == it.sender.id) {
