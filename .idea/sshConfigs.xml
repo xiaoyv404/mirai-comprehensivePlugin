@@ -2,7 +2,7 @@
 <project version="4">
   <component name="SshConfigs">
     <configs>
-      <sshConfig host="119.29.153.166" id="cf7b1f0d-c629-4088-95e1-3334ab07054e" keyPath="C:\Users\xiaoyv_404\xiaoyv_404" port="22" nameFormat="DESCRIPTIVE" username="root" />
+      <sshConfig host="119.29.153.166" id="cf7b1f0d-c629-4088-95e1-3334ab07054e" keyPath="F:\xiaoyv_404\存档\key\SA4" port="22" nameFormat="DESCRIPTIVE" username="root" useOpenSSHConfig="true" />
     </configs>
   </component>
 </project>

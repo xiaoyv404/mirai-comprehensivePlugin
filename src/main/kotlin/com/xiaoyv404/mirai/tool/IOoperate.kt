@@ -15,12 +15,6 @@ object FileUtils {
         outputStream.close()
     }
 
-    fun copyFile(src: File, dst: File) {
-        val `in`: InputStream = FileInputStream(src)
-        saveFileFromStream(`in`, dst)
-        `in`.close()
-    }
-
     fun saveFileFromString(sc: String, dst: File) {
         try {
             val bw = BufferedWriter(FileWriter(dst, true))
