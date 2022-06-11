@@ -73,6 +73,7 @@ class History : NfAppMessageHandler() {
                 content = message.serializeToJsonString()
             }.save()
         } catch (_: SerializationException) {
+            // 不必理会
         }
     }
 }
