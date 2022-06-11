@@ -64,17 +64,6 @@ class LocalGallerys(val msg: MessageEvent) {
             return true
         }
 
-        val pJ = format.decodeFromString<PixivJson>(
-            Regex("(?=\\{\"illustId\":\").*?(?=,\"userIllusts\")")
-                .find(formatInfo)!!.value + "}"
-        )
-
-        var tagsA = ""
-        pJ.tags.tags.forEach {
-            tagsA += it.tag + ","
-        }
-        tagsA.subSequence(0, tagsA.length - 1)
-
         val num: Int = try {
             Regex("(?<=<p>這個作品ID中有 )\\d+(?= 張圖片，需要指定是第幾張圖片才能正確顯示\\(請參考<a href=\"https://pixiv.cat/\">首頁</a>說明\\)。</p>)")
                 .find(
@@ -88,23 +77,35 @@ class LocalGallerys(val msg: MessageEvent) {
 
         val fe = Process.Img.getSave(num, idA)
 
-        val info = Gallery {
-            id = idA.toLong()
-            picturesMun = num
-            title = pJ.title
-            tags = tagsA
-            userId = pJ.userId.toLong()
-            userName = pJ.userName
-            creator = senderId
-            extension = fe
+        format.decodeFromString<PixivJson>(
+            Regex("(?=\\{\"illustId\":\").*?(?=,\"userIllusts\")")
+                .find(formatInfo)!!.value + "}"
+        ).let {pj ->
+            var tagsA = ""
+                pj.tags.tags.forEach {
+                tagsA += it.tag + ","
+            }
+            tagsA.subSequence(0, tagsA.length - 1)
+
+            val info = Gallery {
+                id = idA.toLong()
+                picturesMun = num
+                title = pj.title
+                tags = tagsA
+                userId = pj.userId.toLong()
+                userName = pj.userName
+                creator = senderId
+                extension = fe
+            }
+
+            increaseEntry(info, pj.tags.tags)
+
+            if (!outPut) {
+                send(info)
+            } else
+                log.info("已关闭输出")
         }
 
-        increaseEntry(info, pJ.tags.tags)
-
-        if (!outPut) {
-            send(info)
-        } else
-            log.info("已关闭输出")
         return false
     }
 
