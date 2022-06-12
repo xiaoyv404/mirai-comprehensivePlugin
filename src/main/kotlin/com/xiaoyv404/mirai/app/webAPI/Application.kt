@@ -1,0 +1,78 @@
+package com.xiaoyv404.mirai.app.webAPI
+
+import com.fasterxml.jackson.databind.*
+import com.xiaoyv404.mirai.app.webAPI.router.*
+import com.xiaoyv404.mirai.app.webAPI.router.admin.*
+import io.ktor.application.*
+import io.ktor.auth.*
+import io.ktor.auth.jwt.*
+import io.ktor.features.*
+import io.ktor.http.*
+import io.ktor.jackson.*
+import io.ktor.response.*
+import io.ktor.routing.*
+import io.ktor.sessions.*
+import io.ktor.websocket.*
+import org.apache.http.auth.*
+
+fun Application.module() {
+//                install(CORS) {
+//                    method(HttpMethod.Options)
+//                    method(HttpMethod.Get)
+//                    method(HttpMethod.Post)
+//                    method(HttpMethod.Put)
+//                    method(HttpMethod.Delete)
+//                    method(HttpMethod.Patch)
+//                    header(HttpHeaders.Authorization)
+//                    allowCredentials = true
+//                    hosts.add("0x00.xy404.iwangtca.hello.world.chs.pub")
+//                    hosts.add("")
+//                }
+    install(ContentNegotiation) {
+        jackson {
+            enable(SerializationFeature.INDENT_OUTPUT) // 美化输出 JSON
+        }
+    }
+
+    val simpleJwt = WebApi.SimpleJWT("my-super-secret-for-jwt")
+    install(Authentication) {
+        jwt {
+            verifier(simpleJwt.verifier)
+            validate {
+                UserIdPrincipal(it.payload.getClaim("name").asString())
+            }
+        }
+    }
+
+    install(StatusPages) {
+        exception<InvalidCredentialsException> { exception ->
+            call.respond(
+                HttpStatusCode.Unauthorized,
+                mapOf("OK" to false, "error" to (exception.message ?: ""))
+            )
+        }
+    }
+    install(WebSockets) {
+
+    }
+    install(Sessions) {
+        cookie<WebApi.UserSession>(WebApi.SESSION_REGISTER_NAME) {
+            cookie.path = "*" //测试用
+        }
+    }
+
+    routing {
+        route("/lab") {
+            index()
+            login()
+            qBind()
+            authenticate {
+                route("/admin") {
+                    adminIndex()
+                    getConversationsInfoList()
+                    sendMsg()
+                }
+            }
+        }
+    }
+}
