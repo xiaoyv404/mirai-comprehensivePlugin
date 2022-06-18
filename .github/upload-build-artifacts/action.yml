@@ -1,5 +1,5 @@
-name: Upload mirai build artifacts
-author: Karlatemp
+name: Upload comprehensivePlugin build artifacts
+author: xiaoyv_404
 description: Not exists
 
 runs:
@@ -16,5 +16,5 @@ runs:
     - name: Upload mirai-core-utils
       uses: actions/upload-artifact@v3
       with:
-        name: mirai-core-utils
-        path: mirai-core-utils/build/mirai
+        name: mirai-comprehensivePlugin
+        path: mirai-comprehensivePlugin/build/mirai
