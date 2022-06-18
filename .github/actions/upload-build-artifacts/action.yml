@@ -8,9 +8,7 @@ runs:
     - name: Ensure build
       shell: bash
       run: >
-        ./gradlew build publishToMavenLocal --scan
-        --exclude-task allTests
-        --exclude-task jvmTest
+        ./gradlew build buildPluginLegacy --scan
         --exclude-task test
         --exclude-task check
     - name: Upload mirai-core-utils
