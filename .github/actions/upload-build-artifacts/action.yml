@@ -15,4 +15,4 @@ runs:
       uses: actions/upload-artifact@v3
       with:
         name: mirai-comprehensivePlugin
-        path: mirai-comprehensivePlugin/build/mirai
+        path: build/mirai
