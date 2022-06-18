@@ -16,6 +16,9 @@ jobs:
         run: git submodule update --init --recursive
         
       - name: test
+        run: cd ./.github/upload-build-artifacts/
+      
+      - name: test1
         run: ls
 
       - name: Setup JDK 11
