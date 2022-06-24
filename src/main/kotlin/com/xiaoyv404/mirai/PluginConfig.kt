@@ -1,16 +1,17 @@
 package com.xiaoyv404.mirai
 
-import kotlinx.serialization.Serializable
-import net.mamoe.mirai.console.data.AutoSavePluginConfig
-import net.mamoe.mirai.console.data.value
-import net.mamoe.yamlkt.Comment
+import kotlinx.serialization.*
+import net.mamoe.mirai.console.data.*
+import net.mamoe.yamlkt.*
 
 object PluginConfig : AutoSavePluginConfig("404.404ComprehensiveBotConfig") {
-    val database by value<DatabaseConfig>()
+    val redis by value<RedisConfig>()
+    val postgres by value<PostgresConfig>()
+    val etc by value<EtcConfig>()
 }
 
 @Serializable
-data class DatabaseConfig(
+data class PostgresConfig(
     @Comment(
         """
         数据库地址，支持postgres数据库.
@@ -33,10 +34,20 @@ data class DatabaseConfig(
     val AdditionalParameters: String = "",
     @Comment("最大连接数，也许是连接池的大小？？？")
     var maximumPoolSize: Int? = 10,
-    @Comment("Redis Ip")
-    val redisAddress: String = "127.0.0.1",
-    @Comment("Redis password")
-    val redisPassword: String = "",
+
+
+)
+
+@Serializable
+data class RedisConfig(
+    @Comment("Ip")
+    val Address: String = "127.0.0.1",
+    @Comment("password")
+    val Password: String = ""
+)
+
+@Serializable
+data class EtcConfig(
     @Comment("本地代理端口")
     val ProxyPort: Int = 7890,
     @Comment("SauceNAOAPIKEY")

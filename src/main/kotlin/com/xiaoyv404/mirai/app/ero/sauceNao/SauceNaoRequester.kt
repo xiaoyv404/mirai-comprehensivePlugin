@@ -1,22 +1,18 @@
 package com.xiaoyv404.mirai.app.ero.sauceNao
 
-import com.xiaoyv404.mirai.PluginConfig
-import com.xiaoyv404.mirai.PluginMain
+import com.xiaoyv404.mirai.*
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
-import com.xiaoyv404.mirai.tool.KtorUtils
+import com.xiaoyv404.mirai.tool.*
 import io.ktor.client.request.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
-import net.mamoe.mirai.event.events.MessageEvent
-import net.mamoe.mirai.message.data.Image
+import kotlinx.coroutines.*
+import kotlinx.serialization.*
+import kotlinx.serialization.json.*
+import net.mamoe.mirai.event.events.*
+import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
-import net.mamoe.mirai.message.data.PlainText
 import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
-import java.io.InputStream
-import java.net.URLDecoder
+import java.io.*
+import java.net.*
 
 class SauceNaoRequester(private val msg: MessageEvent) {
     private val jsonBuild = Json {
@@ -33,7 +29,7 @@ class SauceNaoRequester(private val msg: MessageEvent) {
                 KtorUtils.normalClient.get(
                     "https://saucenao.com/search.php?" +
                         "output_type=2&" +
-                        "api_key=${PluginConfig.database.sauceNaoApiKey}&" +
+                        "api_key=${PluginConfig.etc.sauceNaoApiKey}&" +
                         "db=5&" +
                         "numres=1&" +
                         "url=${
@@ -47,7 +43,7 @@ class SauceNaoRequester(private val msg: MessageEvent) {
         } catch (e: Exception) {
             msg.reply(
                 "出现错误＞﹏＜请阁下到控制台查看\n" + e.message?.replace(
-                    PluginConfig.database.sauceNaoApiKey,
+                    PluginConfig.etc.sauceNaoApiKey,
                     "/$/{APIKEY/}"
                 ), true
             )
