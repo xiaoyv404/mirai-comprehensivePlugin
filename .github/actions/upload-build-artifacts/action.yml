@@ -1,0 +1,18 @@
+name: Upload comprehensivePlugin build artifacts
+author: xiaoyv_404
+description: Not exists
+
+runs:
+  using: composite
+  steps:
+    - name: Ensure build
+      shell: bash
+      run: >
+        ./gradlew build buildPluginLegacy --scan
+        --exclude-task test
+        --exclude-task check
+    - name: Upload mirai-core-utils
+      uses: actions/upload-artifact@v3
+      with:
+        name: mirai-comprehensivePlugin
+        path: build/mirai
