@@ -1,16 +1,13 @@
 package com.xiaoyv404.mirai
 
-import com.xiaoyv404.mirai.core.App
-import com.xiaoyv404.mirai.core.NfApp
-import com.xiaoyv404.mirai.core.NfApplicationManager
+import com.xiaoyv404.mirai.core.*
 import com.xiaoyv404.mirai.databace.Database.connect
-import com.xiaoyv404.mirai.tool.KtorUtils
-import kotlinx.coroutines.DelicateCoroutinesApi
-import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescription
-import net.mamoe.mirai.console.plugin.jvm.KotlinPlugin
-import net.mamoe.mirai.console.plugin.version
-import net.mamoe.mirai.utils.info
-import org.reflections.Reflections
+import com.xiaoyv404.mirai.tool.*
+import kotlinx.coroutines.*
+import net.mamoe.mirai.console.plugin.*
+import net.mamoe.mirai.console.plugin.jvm.*
+import net.mamoe.mirai.utils.*
+import org.reflections.*
 
 
 object Version {
@@ -32,6 +29,7 @@ object PluginMain : KotlinPlugin(
         NfPluginData.reload()
         PluginConfig.reload()
         connect()
+        ClientUtils.init()
 
         val f = Reflections("com.xiaoyv404.mirai.app")
         val set: Set<Class<*>> = f.getTypesAnnotatedWith(App::class.java)
@@ -44,7 +42,6 @@ object PluginMain : KotlinPlugin(
     }
     override fun onDisable() {
         NfPluginData.save()
-        KtorUtils.closeClient()
         NfApplicationManager.nfApps.forEach{
             it.uninit()
         }

@@ -7,8 +7,7 @@ import com.xiaoyv404.mirai.core.MessageProcessor.reply
 import com.xiaoyv404.mirai.core.NfApp
 import com.xiaoyv404.mirai.core.gid
 import com.xiaoyv404.mirai.databace.dao.*
-import com.xiaoyv404.mirai.tool.KtorUtils
-import io.ktor.client.request.*
+import com.xiaoyv404.mirai.tool.ClientUtils
 import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromString
@@ -231,7 +230,7 @@ class MinecraftServerStats : NfApp(), IFshApp {
         val pJ = ServerInformationFormatAndStatus()
         return try {
             pJ.serverInformationFormat = Json.decodeFromString(
-                KtorUtils.normalClient.get(
+                ClientUtils.normalClient.get(
                     "http://127.0.0.1:8080/server?" +
                         "host=$host&" +
                         "port=$port"

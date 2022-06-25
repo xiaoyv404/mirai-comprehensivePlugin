@@ -3,7 +3,6 @@ package com.xiaoyv404.mirai.app.ero.sauceNao
 import com.xiaoyv404.mirai.*
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
 import com.xiaoyv404.mirai.tool.*
-import io.ktor.client.request.*
 import kotlinx.coroutines.*
 import kotlinx.serialization.*
 import kotlinx.serialization.json.*
@@ -26,7 +25,7 @@ class SauceNaoRequester(private val msg: MessageEvent) {
     suspend fun search(image: Image) {
         try {
             val json: String =
-                KtorUtils.normalClient.get(
+                ClientUtils.normalClient.get(
                     "https://saucenao.com/search.php?" +
                         "output_type=2&" +
                         "api_key=${PluginConfig.etc.sauceNaoApiKey}&" +
@@ -59,7 +58,7 @@ class SauceNaoRequester(private val msg: MessageEvent) {
     }
 
     suspend fun sendResult() {
-        val image = KtorUtils.normalClient.get<InputStream>(result!!.header.thumbnail).uploadAsImage(msg.subject)
+        val image = ClientUtils.normalClient.get<InputStream>(result!!.header.thumbnail).uploadAsImage(msg.subject)
         if (result!!.header.similarity.toFloat() < 60){
             msg.reply("找不到捏，匹配度只有${result!!.header.similarity}", true)
             return

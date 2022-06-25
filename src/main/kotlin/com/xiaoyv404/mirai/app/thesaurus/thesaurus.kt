@@ -9,8 +9,7 @@ import com.xiaoyv404.mirai.core.gid
 import com.xiaoyv404.mirai.core.uid
 import com.xiaoyv404.mirai.databace.dao.*
 import com.xiaoyv404.mirai.tool.FileUtils
-import com.xiaoyv404.mirai.tool.KtorUtils
-import io.ktor.client.request.*
+import com.xiaoyv404.mirai.tool.ClientUtils
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Contact.Companion.uploadImage
 import net.mamoe.mirai.event.events.MessageEvent
@@ -147,7 +146,7 @@ suspend fun parseMsgAndSaveImg(message: MessageChain): String {
     message.forEach {
         if (it is Image) {
             val imageId = BigInteger(1, it.md5).toString(16)
-            val `in` = KtorUtils.normalClient.get<InputStream>(it.queryUrl())
+            val `in` = ClientUtils.normalClient.get<InputStream>(it.queryUrl())
             val imageType = if (it.imageType != ImageType.UNKNOWN) it.imageType
             else ImageType.PNG
 
