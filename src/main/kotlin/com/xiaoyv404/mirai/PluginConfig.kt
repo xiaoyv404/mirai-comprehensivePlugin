@@ -48,8 +48,6 @@ data class RedisConfig(
 
 @Serializable
 data class EtcConfig(
-    @Comment("本地代理端口")
-    val ProxyPort: Int = 7890,
     @Comment("SauceNAOAPIKEY")
     val sauceNaoApiKey: String = ""
 )
