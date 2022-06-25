@@ -10,7 +10,7 @@ group = "com.xiaoyv404"
 version = "1.0.1"
 
 val ktorm = "3.4.1"
-val ktorVersion = "1.6.8"
+val ktorVersion = "1.6.7"
 val yamlKtVersion = "0.10.2"
 val httpcomponents = "4.5.13"
 
@@ -49,6 +49,7 @@ dependencies {
 
     implementation("com.alibaba:fastjson:2.0.3")
 
+    implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
     implementation("io.ktor:ktor-client-cio:$ktorVersion")
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
     implementation("io.ktor:ktor-jackson:$ktorVersion")

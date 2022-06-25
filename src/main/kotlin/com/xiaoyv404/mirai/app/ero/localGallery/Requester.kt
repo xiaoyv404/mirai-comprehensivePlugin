@@ -1,20 +1,17 @@
 package com.xiaoyv404.mirai.app.ero.localGallery
 
-import com.xiaoyv404.mirai.PluginMain
+import com.xiaoyv404.mirai.*
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
 import com.xiaoyv404.mirai.databace.dao.gallery.*
-import com.xiaoyv404.mirai.tool.FileUtils
-import com.xiaoyv404.mirai.tool.KtorUtils
+import com.xiaoyv404.mirai.tool.*
 import io.ktor.client.request.*
-import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
-import net.mamoe.mirai.event.events.MessageEvent
-import net.mamoe.mirai.message.data.buildForwardMessage
+import kotlinx.serialization.*
+import kotlinx.serialization.json.*
+import net.mamoe.mirai.event.events.*
+import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
-import org.apache.tika.Tika
-import java.io.BufferedInputStream
-import java.io.InputStream
+import org.apache.tika.*
+import java.io.*
 
 class LocalGallerys(val msg: MessageEvent) {
 
@@ -55,7 +52,7 @@ class LocalGallerys(val msg: MessageEvent) {
     @ExperimentalSerializationApi
     suspend fun unformat(idA: String, senderId: Long, outPut: Boolean): Boolean {
         val formatInfo = try {
-            KtorUtils.normalClient.get<String>(
+            ClientUtils.normalClient.get<String>(
                 "https://www.pixiv.net/artworks/" +
                     idA
             )
@@ -67,9 +64,11 @@ class LocalGallerys(val msg: MessageEvent) {
         val num: Int = try {
             Regex("(?<=<p>這個作品ID中有 )\\d+(?= 張圖片，需要指定是第幾張圖片才能正確顯示\\(請參考<a href=\"https://pixiv.cat/\">首頁</a>說明\\)。</p>)")
                 .find(
-                    KtorUtils.normalClient.config {
-                        expectSuccess = false
-                    }.get<String>("https://pixiv.re/$idA.png")
+                    ClientUtils.normalClient.useHttpClient {
+                        it.config {
+                            expectSuccess = false
+                        }.get<String>("https://pixiv.re/$idA.png")
+                    }
                 )?.value?.toInt() ?: 1
         } catch (_: Exception) {
             1
@@ -129,12 +128,12 @@ class LocalGallerys(val msg: MessageEvent) {
                     log.info("含有$num 张图片")
                     for (i in 1..num) {
                         log.info("正在保存第$i 张图片")
-                        val `in` = KtorUtils.normalClient.get<InputStream>("https://pixiv.re/$id-$i.png")
+                        val `in` = ClientUtils.normalClient.get<InputStream>("https://pixiv.re/$id-$i.png")
                         fe = verifyExtensionAndSaveFile(`in`, "gallery/$id-$i")
                     }
                 } else {
                     log.info("含有1 张图片")
-                    val `in` = KtorUtils.normalClient.get<InputStream>("https://pixiv.re/$id.png")
+                    val `in` = ClientUtils.normalClient.get<InputStream>("https://pixiv.re/$id.png")
                     fe = verifyExtensionAndSaveFile(`in`, "gallery/$id")
                 }
                 return fe

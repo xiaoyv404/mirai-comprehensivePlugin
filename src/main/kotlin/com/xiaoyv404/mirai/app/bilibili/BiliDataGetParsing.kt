@@ -5,7 +5,7 @@ import com.xiaoyv404.mirai.core.NfAppMessageHandler
 import com.xiaoyv404.mirai.core.uid
 import com.xiaoyv404.mirai.databace.dao.authorityIdentification
 import com.xiaoyv404.mirai.databace.dao.isBot
-import com.xiaoyv404.mirai.tool.KtorUtils
+import com.xiaoyv404.mirai.tool.ClientUtils
 import com.xiaoyv404.mirai.tool.parsingVideoDataString
 import io.ktor.client.request.*
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -39,27 +39,31 @@ class BiliBiliVideoParse : NfAppMessageHandler() {
 
 @OptIn(ExperimentalSerializationApi::class)
 suspend fun biliABvFind(str: String, msg: MessageEvent) {
-    Regex("BV1[1-9A-NP-Za-km-z]{9}").find(str)?.let {
-        val bv = it.value
+    Regex("BV1[1-9A-NP-Za-km-z]{9}").find(str)?.let { matchResult ->
+        val bv = matchResult.value
         if (msg.authorityIdentification("BiliBiliParsing"))
             return
 
         uJsonVideo(
-            KtorUtils.normalClient.get(
-                "https://api.bilibili.com/x/web-interface/view?bvid=$bv"
-            ), msg.subject
+            ClientUtils.normalClient.useHttpClient {
+                it.get(
+                    "https://api.bilibili.com/x/web-interface/view?bvid=$bv"
+                )
+            }, msg.subject
         )
 
     }
-    Regex("(av|AV)([1-9]\\d{0,18})").find(str)?.let {
-        val av = it.groups[2]!!.value
+    Regex("(av|AV)([1-9]\\d{0,18})").find(str)?.let { matchResult ->
+        val av = matchResult.groups[2]!!.value
         if (msg.authorityIdentification("BiliBiliParsing"))
             return
 
         uJsonVideo(
-            KtorUtils.normalClient.get(
-                "https://api.bilibili.com/x/web-interface/view?aid=$av"
-            ), msg.subject
+            ClientUtils.normalClient.useHttpClient {
+                it.get(
+                    "https://api.bilibili.com/x/web-interface/view?aid=$av"
+                )
+            }, msg.subject
         )
 
     }
@@ -76,7 +80,7 @@ suspend fun uJsonVideo(uJsonVideo: String, group: Contact) {
     try {
         val pJson = format.decodeFromString<VideoDataJson>(uJsonVideo)
         group.sendMessage(
-            KtorUtils.normalClient.get<InputStream>(pJson.data.pic).uploadAsImage(group)
+            ClientUtils.normalClient.get<InputStream>(pJson.data.pic).uploadAsImage(group)
                 .plus(parsingVideoDataString(pJson))
         )
     } catch (e: SerializationException) {
