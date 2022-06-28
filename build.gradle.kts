@@ -9,10 +9,6 @@ plugins {
 group = "com.xiaoyv404"
 version = "1.0.1"
 
-val ktorm = "3.4.1"
-val ktorVersion = "1.6.7"
-val yamlKtVersion = "0.10.2"
-val httpcomponents = "4.5.13"
 
 repositories {
     mavenLocal()
@@ -34,35 +30,37 @@ repositories {
     maven("https://plugins.gradle.org/m2")
 }
 dependencies {
-    compileOnly("net.mamoe.yamlkt:yamlkt-jvm:$yamlKtVersion")
+    implementation("io.ktor:ktor-server-status-pages:2.0.2")
+    implementation("io.ktor:ktor-server-content-negotiation:2.0.2")
+    implementation("io.ktor:ktor-client-okhttp-jvm:2.0.2")
+    implementation("io.ktor:ktor-client-cio-jvm:2.0.2")
+    implementation("io.ktor:ktor-server-netty-jvm:2.0.2")
+    implementation("io.ktor:ktor-server-content-negotiation-jvm:2.0.2")
+    implementation("io.ktor:ktor-server-auth-jvm:2.0.2")
+    implementation("io.ktor:ktor-server-auth-jwt-jvm:2.0.2")
+    implementation("io.ktor:ktor-server-websockets-jvm:2.0.2")
+    implementation("io.ktor:ktor-server-sessions-jvm:2.0.2")
+    compileOnly("net.mamoe.yamlkt:yamlkt-jvm:0.10.2")
 
-    implementation("org.ktorm:ktorm-jackson:$ktorm")
-    implementation("org.ktorm:ktorm-support-postgresql:3.4.1")
+    implementation("org.ktorm:ktorm-jackson:3.5.0")
+    implementation("org.ktorm:ktorm-support-postgresql:3.5.0")
 
     implementation("ch.qos.logback:logback-classic:1.2.11")
 
-    implementation("org.postgresql:postgresql:42.3.4")
-    implementation("org.ktorm:ktorm-core:$ktorm")
+    implementation("org.postgresql:postgresql:42.3.6")
+    implementation("org.ktorm:ktorm-core:3.5.0")
     implementation("com.zaxxer:HikariCP:5.0.1")
 
     implementation("io.lettuce:lettuce-core:6.1.8.RELEASE")
 
-    implementation("com.alibaba:fastjson:2.0.3")
+    implementation("com.alibaba:fastjson:2.0.7")
 
-    implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
-    implementation("io.ktor:ktor-client-cio:$ktorVersion")
-    implementation("io.ktor:ktor-server-netty:$ktorVersion")
-    implementation("io.ktor:ktor-jackson:$ktorVersion")
-    implementation("io.ktor:ktor-auth:$ktorVersion")
-    implementation("io.ktor:ktor-auth-jwt:$ktorVersion")
-    implementation("io.ktor:ktor-websockets:$ktorVersion")
-    implementation("io.ktor:ktor-server-sessions:$ktorVersion")
     implementation("de.svenkubiak:jBCrypt:0.4.3")
 
 
-    implementation("org.apache.httpcomponents:httpclient:$httpcomponents")
-    implementation("org.apache.httpcomponents:fluent-hc:$httpcomponents")
-    implementation("org.apache.httpcomponents:httpmime:$httpcomponents")
+    implementation("org.apache.httpcomponents:httpclient:4.5.13")
+    implementation("org.apache.httpcomponents:fluent-hc:4.5.13")
+    implementation("org.apache.httpcomponents:httpmime:4.5.13")
 
 
     implementation("org.apache.tika:tika-core:2.3.0")

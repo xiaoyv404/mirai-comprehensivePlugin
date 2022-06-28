@@ -3,14 +3,14 @@ package com.xiaoyv404.mirai.app.webAPI.router
 import com.xiaoyv404.mirai.*
 import com.xiaoyv404.mirai.app.webAPI.*
 import com.xiaoyv404.mirai.databace.dao.*
-import io.ktor.application.*
-import io.ktor.request.*
-import io.ktor.response.*
-import io.ktor.routing.*
+import io.ktor.server.application.*
+import io.ktor.server.request.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
 import org.apache.http.auth.*
 import org.mindrot.jbcrypt.*
 
-fun Route.login(){
+fun Route.login() {
     post("/login-register") {
         val post = call.receive<WebApi.LoginRegister>()
         PluginMain.logger.info("收到${post.name}登录请求")

@@ -3,7 +3,7 @@ package com.xiaoyv404.mirai.app.webAPI
 import com.auth0.jwt.*
 import com.auth0.jwt.algorithms.Algorithm.*
 import com.xiaoyv404.mirai.core.*
-import io.ktor.application.*
+import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 

@@ -1,18 +1,16 @@
 package com.xiaoyv404.mirai.app.webAPI
 
-import com.fasterxml.jackson.databind.*
 import com.xiaoyv404.mirai.app.webAPI.router.*
 import com.xiaoyv404.mirai.app.webAPI.router.admin.*
-import io.ktor.application.*
-import io.ktor.auth.*
-import io.ktor.auth.jwt.*
-import io.ktor.features.*
 import io.ktor.http.*
-import io.ktor.jackson.*
-import io.ktor.response.*
-import io.ktor.routing.*
-import io.ktor.sessions.*
-import io.ktor.websocket.*
+import io.ktor.server.application.*
+import io.ktor.server.auth.*
+import io.ktor.server.auth.jwt.*
+import io.ktor.server.plugins.statuspages.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
+import io.ktor.server.sessions.*
+import io.ktor.server.websocket.*
 import org.apache.http.auth.*
 
 fun Application.module() {
@@ -28,11 +26,6 @@ fun Application.module() {
 //                    hosts.add("0x00.xy404.iwangtca.hello.world.chs.pub")
 //                    hosts.add("")
 //                }
-    install(ContentNegotiation) {
-        jackson {
-            enable(SerializationFeature.INDENT_OUTPUT) // 美化输出 JSON
-        }
-    }
 
     val simpleJwt = WebApi.SimpleJWT("my-super-secret-for-jwt")
     install(Authentication) {
@@ -45,7 +38,7 @@ fun Application.module() {
     }
 
     install(StatusPages) {
-        exception<InvalidCredentialsException> { exception ->
+        exception<InvalidCredentialsException> { call, exception ->
             call.respond(
                 HttpStatusCode.Unauthorized,
                 mapOf("OK" to false, "error" to (exception.message ?: ""))

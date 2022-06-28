@@ -2,11 +2,11 @@ package com.xiaoyv404.mirai.app.webAPI.router
 
 import com.xiaoyv404.mirai.app.webAPI.*
 import com.xiaoyv404.mirai.databace.dao.*
-import io.ktor.application.*
-import io.ktor.auth.*
-import io.ktor.request.*
-import io.ktor.response.*
-import io.ktor.routing.*
+import io.ktor.server.application.*
+import io.ktor.server.auth.*
+import io.ktor.server.request.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
 import kotlinx.coroutines.*
 import net.mamoe.mirai.*
 import net.mamoe.mirai.event.*
@@ -14,7 +14,7 @@ import net.mamoe.mirai.event.events.*
 import kotlin.coroutines.*
 import kotlin.time.Duration.Companion.minutes
 
-fun Route.qBind(){
+fun Route.qBind() {
     post("/QBind") {
         val post = call.receive<WebApi.QQBind>()
         val principal = call.principal<UserIdPrincipal>() ?: error(WebApi.noPrincipal)

@@ -1,21 +1,16 @@
 package com.xiaoyv404.mirai.app.bilibili
 
-import com.xiaoyv404.mirai.core.App
-import com.xiaoyv404.mirai.core.NfAppMessageHandler
-import com.xiaoyv404.mirai.core.uid
-import com.xiaoyv404.mirai.databace.dao.authorityIdentification
-import com.xiaoyv404.mirai.databace.dao.isBot
-import com.xiaoyv404.mirai.tool.ClientUtils
-import com.xiaoyv404.mirai.tool.parsingVideoDataString
+import com.xiaoyv404.mirai.core.*
+import com.xiaoyv404.mirai.databace.dao.*
+import com.xiaoyv404.mirai.tool.*
+import io.ktor.client.call.*
 import io.ktor.client.request.*
-import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.SerializationException
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
-import net.mamoe.mirai.contact.Contact
-import net.mamoe.mirai.event.events.MessageEvent
+import kotlinx.serialization.*
+import kotlinx.serialization.json.*
+import net.mamoe.mirai.contact.*
+import net.mamoe.mirai.event.events.*
 import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
-import java.io.InputStream
+import java.io.*
 
 val format = Json { ignoreUnknownKeys = true }
 
@@ -48,7 +43,7 @@ suspend fun biliABvFind(str: String, msg: MessageEvent) {
             ClientUtils.normalClient.useHttpClient {
                 it.get(
                     "https://api.bilibili.com/x/web-interface/view?bvid=$bv"
-                )
+                ).body()
             }, msg.subject
         )
 
@@ -62,7 +57,7 @@ suspend fun biliABvFind(str: String, msg: MessageEvent) {
             ClientUtils.normalClient.useHttpClient {
                 it.get(
                     "https://api.bilibili.com/x/web-interface/view?aid=$av"
-                )
+                ).body()
             }, msg.subject
         )
 
@@ -86,9 +81,9 @@ suspend fun uJsonVideo(uJsonVideo: String, group: Contact) {
     } catch (e: SerializationException) {
         val pJson = format.decodeFromString<AbnormalVideoDataJson>(uJsonVideo)
         when (pJson.code) {
-            -404  -> group.sendMessage("喵, 视频不存在哦")
-            -400  -> group.sendMessage("404又出Bug惹, 快去叫主人来修叭")
-            -403  -> group.sendMessage("404的权限不足哦")
+            -404 -> group.sendMessage("喵, 视频不存在哦")
+            -400 -> group.sendMessage("404又出Bug惹, 快去叫主人来修叭")
+            -403 -> group.sendMessage("404的权限不足哦")
             62002 -> group.sendMessage("视频不可见惹, 这个死已婚又干了些什么啊")
         }
     }

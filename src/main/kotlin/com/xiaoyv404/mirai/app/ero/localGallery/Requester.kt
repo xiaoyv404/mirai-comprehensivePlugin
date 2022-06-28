@@ -4,6 +4,7 @@ import com.xiaoyv404.mirai.*
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
 import com.xiaoyv404.mirai.databace.dao.gallery.*
 import com.xiaoyv404.mirai.tool.*
+import io.ktor.client.call.body
 import io.ktor.client.request.*
 import kotlinx.serialization.*
 import kotlinx.serialization.json.*
@@ -67,7 +68,7 @@ class LocalGallerys(val msg: MessageEvent) {
                     ClientUtils.normalClient.useHttpClient {
                         it.config {
                             expectSuccess = false
-                        }.get<String>("https://pixiv.re/$idA.png")
+                        }.get("https://pixiv.re/$idA.png").body<String>()
                     }
                 )?.value?.toInt() ?: 1
         } catch (_: Exception) {
@@ -79,9 +80,9 @@ class LocalGallerys(val msg: MessageEvent) {
         format.decodeFromString<PixivJson>(
             Regex("(?=\\{\"illustId\":\").*?(?=,\"userIllusts\")")
                 .find(formatInfo)!!.value + "}"
-        ).let {pj ->
+        ).let { pj ->
             var tagsA = ""
-                pj.tags.tags.forEach {
+            pj.tags.tags.forEach {
                 tagsA += it.tag + ","
             }
             tagsA.subSequence(0, tagsA.length - 1)

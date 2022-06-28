@@ -1,13 +1,11 @@
 package com.xiaoyv404.mirai.app.bilibili
 
-import com.xiaoyv404.mirai.core.App
-import com.xiaoyv404.mirai.core.NfAppMessageHandler
-import com.xiaoyv404.mirai.core.uid
-import com.xiaoyv404.mirai.databace.dao.authorityIdentification
-import com.xiaoyv404.mirai.databace.dao.isBot
+import com.xiaoyv404.mirai.core.*
+import com.xiaoyv404.mirai.databace.dao.*
 import io.ktor.client.*
+import io.ktor.client.call.*
 import io.ktor.client.request.*
-import net.mamoe.mirai.event.events.MessageEvent
+import net.mamoe.mirai.event.events.*
 
 @App
 class B23ShortLinkParse : NfAppMessageHandler() {
@@ -33,7 +31,7 @@ class B23ShortLinkParse : NfAppMessageHandler() {
         return HttpClient {
             followRedirects = false
             expectSuccess = false
-        }.use { clien -> clien.get(url) }
+        }.use { clien -> clien.get(url).body() }
     }
 }
 
