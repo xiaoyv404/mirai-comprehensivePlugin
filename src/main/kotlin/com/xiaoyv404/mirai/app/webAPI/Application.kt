@@ -3,9 +3,11 @@ package com.xiaoyv404.mirai.app.webAPI
 import com.xiaoyv404.mirai.app.webAPI.router.*
 import com.xiaoyv404.mirai.app.webAPI.router.admin.*
 import io.ktor.http.*
+import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
+import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -28,6 +30,9 @@ fun Application.module() {
 //                }
 
     val simpleJwt = WebApi.SimpleJWT("my-super-secret-for-jwt")
+    install(ContentNegotiation){
+        json()
+    }
     install(Authentication) {
         jwt {
             verifier(simpleJwt.verifier)

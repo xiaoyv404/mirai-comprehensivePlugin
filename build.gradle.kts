@@ -40,6 +40,8 @@ dependencies {
     implementation("io.ktor:ktor-server-auth-jwt-jvm:2.0.2")
     implementation("io.ktor:ktor-server-websockets-jvm:2.0.2")
     implementation("io.ktor:ktor-server-sessions-jvm:2.0.2")
+    implementation("io.ktor:ktor-server-content-negotiation:2.0.2")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:2.0.2")
     compileOnly("net.mamoe.yamlkt:yamlkt-jvm:0.10.2")
 
     implementation("org.ktorm:ktorm-jackson:3.5.0")
