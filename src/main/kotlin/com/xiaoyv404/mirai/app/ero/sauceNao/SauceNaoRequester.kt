@@ -25,7 +25,7 @@ class SauceNaoRequester(private val msg: MessageEvent) {
     suspend fun search(image: Image) {
         try {
             val json: String =
-                ClientUtils.normalClient.get(
+                ClientUtils.get(
                     "https://saucenao.com/search.php?" +
                         "output_type=2&" +
                         "api_key=${PluginConfig.etc.sauceNaoApiKey}&" +
@@ -58,7 +58,7 @@ class SauceNaoRequester(private val msg: MessageEvent) {
     }
 
     suspend fun sendResult() {
-        val image = ClientUtils.normalClient.get<InputStream>(result!!.header.thumbnail).uploadAsImage(msg.subject)
+        val image = ClientUtils.get<InputStream>(result!!.header.thumbnail).uploadAsImage(msg.subject)
         if (result!!.header.similarity.toFloat() < 60){
             msg.reply("找不到捏，匹配度只有${result!!.header.similarity}", true)
             return

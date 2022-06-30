@@ -3,8 +3,6 @@ package com.xiaoyv404.mirai.app.bilibili
 import com.xiaoyv404.mirai.core.*
 import com.xiaoyv404.mirai.databace.dao.*
 import com.xiaoyv404.mirai.tool.*
-import io.ktor.client.call.*
-import io.ktor.client.request.*
 import kotlinx.serialization.*
 import kotlinx.serialization.json.*
 import net.mamoe.mirai.contact.*
@@ -40,11 +38,7 @@ suspend fun biliABvFind(str: String, msg: MessageEvent) {
             return
 
         uJsonVideo(
-            ClientUtils.normalClient.useHttpClient {
-                it.get(
-                    "https://api.bilibili.com/x/web-interface/view?bvid=$bv"
-                ).body()
-            }, msg.subject
+            ClientUtils.get("https://api.bilibili.com/x/web-interface/view?bvid=$bv"), msg.subject
         )
 
     }
@@ -54,13 +48,10 @@ suspend fun biliABvFind(str: String, msg: MessageEvent) {
             return
 
         uJsonVideo(
-            ClientUtils.normalClient.useHttpClient {
-                it.get(
-                    "https://api.bilibili.com/x/web-interface/view?aid=$av"
-                ).body()
-            }, msg.subject
+            ClientUtils.get(
+                "https://api.bilibili.com/x/web-interface/view?aid=$av"
+            ), msg.subject
         )
-
     }
 }
 
@@ -75,7 +66,7 @@ suspend fun uJsonVideo(uJsonVideo: String, group: Contact) {
     try {
         val pJson = format.decodeFromString<VideoDataJson>(uJsonVideo)
         group.sendMessage(
-            ClientUtils.normalClient.get<InputStream>(pJson.data.pic).uploadAsImage(group)
+            ClientUtils.get<InputStream>(pJson.data.pic).uploadAsImage(group)
                 .plus(parsingVideoDataString(pJson))
         )
     } catch (e: SerializationException) {

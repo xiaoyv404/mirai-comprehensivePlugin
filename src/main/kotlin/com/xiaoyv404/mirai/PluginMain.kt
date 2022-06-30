@@ -29,7 +29,6 @@ object PluginMain : KotlinPlugin(
         NfPluginData.reload()
         PluginConfig.reload()
         connect()
-        ClientUtils.init()
 
         val f = Reflections("com.xiaoyv404.mirai.app")
         val set: Set<Class<*>> = f.getTypesAnnotatedWith(App::class.java)
@@ -42,6 +41,7 @@ object PluginMain : KotlinPlugin(
     }
     override fun onDisable() {
         NfPluginData.save()
+        ClientUtils.uninit()
         NfApplicationManager.nfApps.forEach{
             it.uninit()
         }

@@ -1,24 +1,20 @@
 package com.xiaoyv404.mirai.app.thesaurus
 
-import com.xiaoyv404.mirai.PluginMain
-import com.xiaoyv404.mirai.app.fsh.IFshApp
-import com.xiaoyv404.mirai.core.App
+import com.xiaoyv404.mirai.*
+import com.xiaoyv404.mirai.app.fsh.*
+import com.xiaoyv404.mirai.core.*
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
-import com.xiaoyv404.mirai.core.NfApp
-import com.xiaoyv404.mirai.core.gid
-import com.xiaoyv404.mirai.core.uid
 import com.xiaoyv404.mirai.databace.dao.*
-import com.xiaoyv404.mirai.tool.FileUtils
-import com.xiaoyv404.mirai.tool.ClientUtils
-import net.mamoe.mirai.contact.Contact
+import com.xiaoyv404.mirai.tool.*
+import net.mamoe.mirai.contact.*
 import net.mamoe.mirai.contact.Contact.Companion.uploadImage
-import net.mamoe.mirai.event.events.MessageEvent
-import net.mamoe.mirai.message.code.MiraiCode
+import net.mamoe.mirai.event.events.*
+import net.mamoe.mirai.message.*
+import net.mamoe.mirai.message.code.*
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
-import net.mamoe.mirai.message.nextMessage
-import java.io.InputStream
-import java.math.BigInteger
+import java.io.*
+import java.math.*
 
 @App
 class Thesaurus : NfApp(), IFshApp {
@@ -146,7 +142,7 @@ suspend fun parseMsgAndSaveImg(message: MessageChain): String {
     message.forEach {
         if (it is Image) {
             val imageId = BigInteger(1, it.md5).toString(16)
-            val `in` = ClientUtils.normalClient.get<InputStream>(it.queryUrl())
+            val `in` = ClientUtils.get<InputStream>(it.queryUrl())
             val imageType = if (it.imageType != ImageType.UNKNOWN) it.imageType
             else ImageType.PNG
 
