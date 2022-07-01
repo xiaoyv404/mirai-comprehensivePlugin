@@ -5,9 +5,9 @@ import com.xiaoyv404.mirai.app.fsh.*
 import com.xiaoyv404.mirai.core.*
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
 import com.xiaoyv404.mirai.databace.dao.*
-import com.xiaoyv404.mirai.databace.dao.Group
 import com.xiaoyv404.mirai.databace.dao.User
 import net.mamoe.mirai.contact.*
+import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.event.*
 import net.mamoe.mirai.event.events.*
 import net.mamoe.mirai.message.*
@@ -18,14 +18,19 @@ import org.apache.commons.cli.*
 @App
 class AdminTools : NfApp(), IFshApp {
     override fun getAppName() = "AdminTools"
-    override fun getVersion() = "1.0.2"
+    override fun getVersion() = "1.0.3"
     override fun getAppDescription() = "管理员管理工具"
-    override fun getCommands() = arrayOf("-sendto", "-ban", "!!开启全体广播", "-bot", "-accept", "-debug")
+    override fun getCommands() = arrayOf("-sendto", "-ban", "!!开启全体广播", "-bot", "-accept", "-debug", "-admin")
 
     private val banOptions = Options().apply {
         addOption("g", "group", true, "群聊ID")
         addOption("u", "unBan", false, "取消禁言")
         addOption("t", "time", true, "禁言时间")
+    }
+
+    private val adminOptions = Options().apply {
+        addOption("r", "remove", false, "取消此成员的管理")
+        addOption("u", "uid", true, "成员ID")
     }
 
     private val eventList get() = NfPluginData.eventMap
@@ -35,17 +40,22 @@ class AdminTools : NfApp(), IFshApp {
             return false
 
         when (args[0]) {
-            "-sendto"  -> sendto(msg)
-            "-bot"     -> {
+            "-sendto" -> sendto(msg)
+            "-bot" -> {
                 if (args[1] == "add")
                     addBot(args.getOrNull(2) ?: return false, msg)
             }
-            "-ban"     -> {
+            "-ban" -> {
                 ban((args.getOrNull(1) ?: return false).toLong(), IFshApp.cmdLine(banOptions, args), msg)
             }
             "!!开启全体广播" -> adminBroadcast(msg)
-            "-accept"  -> accept(msg, args.getOrNull(1)?.toLongOrNull() ?: return false)
-            "-debug"   -> debug(msg, args.getOrNull(1)?.toBooleanStrictOrNull() ?: return false)
+            "-accept" -> accept(msg, args.getOrNull(1)?.toLongOrNull() ?: return false)
+            "-debug" -> debug(msg, args.getOrNull(1)?.toBooleanStrictOrNull() ?: return false)
+            "-admin" ->
+                groupPermission(
+                    msg,
+                    IFshApp.cmdLine(adminOptions, args)
+                )
         }
         return true
     }
@@ -55,11 +65,30 @@ class AdminTools : NfApp(), IFshApp {
         msg.reply("Debug模式已切换至 $switch", true)
     }
 
-    private suspend fun groupPermission(msg: MessageEvent){
+    private suspend fun groupPermission(msg: MessageEvent, data: CommandLine) {
         if (msg.subject !is Group)
             return
-        val member = msg.sender as Member
-        member.permission
+
+        val subject = msg.subject as Group
+        if (!subject.botPermission.isOwner()) {
+            msg.reply("bot权限不足", true)
+            return
+        }
+
+        val uid = if (data.hasOption("u"))
+            data.getOptionValue("u").toLong()
+        else
+            msg.uid()
+
+
+        val member = subject.getMember(uid)
+        if (member == null) {
+            msg.reply("查无此人", true)
+            return
+        }
+
+        member.modifyAdmin(!data.hasOption("r"))
+        return
     }
 
     @OptIn(MiraiInternalApi::class)
@@ -156,7 +185,7 @@ class AdminTools : NfApp(), IFshApp {
                 }
                 if (entryMassage != "") {
                     bot.groups.forEach { gp ->
-                        val status = Group {
+                        val status = com.xiaoyv404.mirai.databace.dao.Group {
                             id = gp.id
                         }.noticeSwitchRead("AdminBroadcast")
                         if (status) {
