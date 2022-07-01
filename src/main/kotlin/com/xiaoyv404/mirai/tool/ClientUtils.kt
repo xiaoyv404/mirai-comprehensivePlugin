@@ -2,9 +2,11 @@ package com.xiaoyv404.mirai.tool
 
 import io.ktor.client.*
 import io.ktor.client.call.*
+import io.ktor.client.call.body
 import io.ktor.client.engine.okhttp.*
 import io.ktor.client.request.*
 import kotlinx.coroutines.*
+
 object ClientUtils {
     private val client = HttpClient(OkHttp)
 

@@ -1,24 +1,19 @@
 package com.xiaoyv404.mirai.app
 
-import com.xiaoyv404.mirai.NfPluginData
-import com.xiaoyv404.mirai.app.fsh.IFshApp
-import com.xiaoyv404.mirai.core.App
+import com.xiaoyv404.mirai.*
+import com.xiaoyv404.mirai.app.fsh.*
+import com.xiaoyv404.mirai.core.*
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
-import com.xiaoyv404.mirai.core.NfApp
-import com.xiaoyv404.mirai.core.gid
-import com.xiaoyv404.mirai.core.uid
 import com.xiaoyv404.mirai.databace.dao.*
-import net.mamoe.mirai.contact.MemberPermission
-import net.mamoe.mirai.event.GlobalEventChannel
-import net.mamoe.mirai.event.ListeningStatus
-import net.mamoe.mirai.event.events.FriendMessageEvent
-import net.mamoe.mirai.event.events.MessageEvent
-import net.mamoe.mirai.event.events.NewFriendRequestEvent
-import net.mamoe.mirai.message.code.MiraiCode
-import net.mamoe.mirai.message.nextMessage
-import net.mamoe.mirai.utils.MiraiInternalApi
-import org.apache.commons.cli.CommandLine
-import org.apache.commons.cli.Options
+import com.xiaoyv404.mirai.databace.dao.Group
+import com.xiaoyv404.mirai.databace.dao.User
+import net.mamoe.mirai.contact.*
+import net.mamoe.mirai.event.*
+import net.mamoe.mirai.event.events.*
+import net.mamoe.mirai.message.*
+import net.mamoe.mirai.message.code.*
+import net.mamoe.mirai.utils.*
+import org.apache.commons.cli.*
 
 @App
 class AdminTools : NfApp(), IFshApp {
@@ -58,6 +53,13 @@ class AdminTools : NfApp(), IFshApp {
     private suspend fun debug(msg: MessageEvent, switch: Boolean) {
         NfPluginData.deBug = switch
         msg.reply("Debug模式已切换至 $switch", true)
+    }
+
+    private suspend fun groupPermission(msg: MessageEvent){
+        if (msg.subject !is Group)
+            return
+        val member = msg.sender as Member
+        member.permission
     }
 
     @OptIn(MiraiInternalApi::class)
