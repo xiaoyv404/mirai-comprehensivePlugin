@@ -18,6 +18,15 @@ import org.apache.http.auth.*
 
 fun Application.module() {
     install(CORS) {
+        allowMethod(HttpMethod.Options)
+        allowMethod(HttpMethod.Get)
+        allowMethod(HttpMethod.Post)
+        allowMethod(HttpMethod.Put)
+        allowMethod(HttpMethod.Delete)
+        allowMethod(HttpMethod.Patch)
+        allowHeader(HttpHeaders.Authorization)
+        allowHeader(HttpHeaders.ContentType)
+        allowCredentials = true
         anyHost()
     }
 
@@ -38,7 +47,7 @@ fun Application.module() {
         exception<InvalidCredentialsException> { call, exception ->
             call.respond(
                 HttpStatusCode.Unauthorized,
-                mapOf("OK" to false, "error" to (exception.message ?: ""))
+                mapOf("code" to "401", "error" to (exception.message ?: ""))
             )
         }
     }

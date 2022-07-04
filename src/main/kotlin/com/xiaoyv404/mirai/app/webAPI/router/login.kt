@@ -11,7 +11,7 @@ import org.apache.http.auth.*
 import org.mindrot.jbcrypt.*
 
 fun Route.login() {
-    post("/login-register") {
+    post("/login") {
         val post = call.receive<WebApi.LoginRegister>()
         PluginMain.logger.info("收到${post.name}登录请求")
         val user = WebApiUser {
