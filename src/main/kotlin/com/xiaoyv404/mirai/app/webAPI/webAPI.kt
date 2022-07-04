@@ -12,7 +12,7 @@ import kotlinx.serialization.*
 @App
 class WebApi : NfApp() {
     override fun getAppName() = "WebApi"
-    override fun getVersion() = "1.0.0"
+    override fun getVersion() = "1.0.1"
     override fun getAppDescription() = "网络API"
 
     override fun init() {

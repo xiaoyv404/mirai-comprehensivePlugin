@@ -1,10 +1,10 @@
 package com.xiaoyv404.mirai.core
 
-import com.xiaoyv404.mirai.PluginMain
+import com.xiaoyv404.mirai.*
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
-import com.xiaoyv404.mirai.databace.Database
-import net.mamoe.mirai.event.events.MessageEvent
-import java.util.concurrent.TimeUnit
+import com.xiaoyv404.mirai.databace.*
+import net.mamoe.mirai.event.events.*
+import java.util.concurrent.*
 
 
 abstract class NfApp {
@@ -53,6 +53,7 @@ abstract class NfApp {
      * 在应用被禁用时，不会被调用
      */
     open fun init() {
+        //初始化
     }
 
     /**
@@ -60,6 +61,7 @@ abstract class NfApp {
      * 在应用被禁用时，不会被调用
      */
     open fun uninit() {
+        //关闭
     }
 
     /**

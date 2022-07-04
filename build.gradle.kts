@@ -32,13 +32,15 @@ repositories {
 dependencies {
     implementation("io.ktor:ktor-server-status-pages:2.0.2")
     implementation("io.ktor:ktor-server-content-negotiation:2.0.2")
-    implementation("io.ktor:ktor-client-okhttp-jvm:2.0.2")
     implementation("io.ktor:ktor-server-netty-jvm:2.0.2")
     implementation("io.ktor:ktor-server-content-negotiation-jvm:2.0.2")
     implementation("io.ktor:ktor-server-auth-jvm:2.0.2")
     implementation("io.ktor:ktor-server-auth-jwt-jvm:2.0.2")
     implementation("io.ktor:ktor-server-websockets-jvm:2.0.2")
     implementation("io.ktor:ktor-server-sessions-jvm:2.0.2")
+    implementation("io.ktor:ktor-server-cors:2.0.3")
+
+    implementation("io.ktor:ktor-client-okhttp-jvm:2.0.2")
     implementation("io.ktor:ktor-server-content-negotiation:2.0.2")
     implementation("io.ktor:ktor-serialization-kotlinx-json:2.0.2")
     implementation("io.ktor:ktor-client-cio-jvm:2.0.3")
