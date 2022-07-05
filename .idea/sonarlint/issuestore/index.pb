@@ -51,8 +51,6 @@ u
 Esrc/main/kotlin/com/xiaoyv404/mirai/core/NfAppMessageRecallHandler.kt,4\b\4b84eb28de21afabf0c544947b9059f488215752
 w
 Gsrc/main/kotlin/com/xiaoyv404/mirai/databace/dao/gallery/Gallery.dao.kt,9\7\979dc8032604f36cec4a3218b686f4e22841454e
-€
-Psrc/main/kotlin/com/xiaoyv404/mirai/app/ero/localGallery/LocalGalleryListener.kt,9\7\97b76c85c3b08dc5eddddd816b6a98bbfdaa6b08
 t
 Dsrc/main/kotlin/com/xiaoyv404/mirai/app/ero/localGallery/Response.kt,d\4\d42b3e9a611e5ed4967252a8e1ec9d67f1fcf0c8
 x
@@ -106,8 +104,6 @@ e
 5src/main/kotlin/com/xiaoyv404/mirai/app/AdminTools.kt,5\c\5cb2a72aace25f005e9e2a4857336a9a8496c7b8
 w
 Gsrc/main/kotlin/com/xiaoyv404/mirai/app/bilibili/b23ShortLinkParsing.kt,c\d\cd3da52157080be5af5fb8df8ff869543399170e
-u
-Esrc/main/kotlin/com/xiaoyv404/mirai/app/ero/localGallery/Requester.kt,8\f\8fe3cfaeab27881eb52da13c59bca41811dc5d3f
 g
 7src/main/kotlin/com/xiaoyv404/mirai/tool/ClientUtils.kt,e\e\ee3cb2dc328fee427bb090b9bd2b6dcb877d3892
 v
@@ -122,3 +118,11 @@ b
 2src/main/kotlin/com/xiaoyv404/mirai/app/fsh/Fsh.kt,c\0\c0391183de4d02d2bdb87ddf85fbbec5e42659c9
 l
 <src/main/kotlin/com/xiaoyv404/mirai/core/MessageProcessor.kt,7\5\7516378fc9d4ad6cc35537b66589f82eb8cc4278
+a
+1src/main/kotlin/com/xiaoyv404/mirai/PluginMain.kt,c\c\ccd43ad8e4278dfdc352ad4119b1810bfcf522f4
+a
+1src/main/kotlin/com/xiaoyv404/mirai/PluginData.kt,6\4\6427c126c1ed49cceae59925cf6531b077ee0c2d
+c
+3src/main/kotlin/com/xiaoyv404/mirai/PluginConfig.kt,0\7\072ecb68d30906ba5b5ad0753ad7d2c1fc4bed7c
+a
+1src/main/kotlin/com/xiaoyv404/mirai/core/NfApp.kt,d\6\d644d4461c61a4f2308e9ab3a8665f7ecacfd604

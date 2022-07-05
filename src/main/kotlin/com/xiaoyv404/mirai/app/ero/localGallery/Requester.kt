@@ -55,25 +55,22 @@ class LocalGallerys(val msg: MessageEvent) {
         val formatInfo = try {
             ClientUtils.get<String>(
                 "https://www.pixiv.net/artworks/" +
-                        idA
+                    idA
             )
         } catch (e: Exception) {
             log.error(e)
             return true
         }
 
-        val num: Int = try {
-            Regex("(?<=<p>這個作品ID中有 )\\d+(?= 張圖片，需要指定是第幾張圖片才能正確顯示\\(請參考<a href=\"https://pixiv.cat/\">首頁</a>說明\\)。</p>)")
-                .find(
-                    ClientUtils.useHttpClient {
-                        it.config {
-                            expectSuccess = false
-                        }.get("https://pixiv.re/$idA.png").body<String>()
-                    }
-                )?.value?.toInt() ?: 1
-        } catch (_: Exception) {
-            1
-        }
+        val num: Int = Regex("(?<=<p>這個作品ID中有只有 )\\d+(?= 張圖片，請指定正確的頁數，請參考<a href=\"https://pixiv.cat/\">首頁</a>說明。</p>)")
+            .find(
+                ClientUtils.useHttpClient {
+                    it.config {
+                        expectSuccess = false
+                    }.get("https://pixiv.re/$idA.png-114514").body<String>()
+                }
+            )?.value?.toInt() ?: 1
+
 
         val fe = Process.Img.getSave(num, idA)
 

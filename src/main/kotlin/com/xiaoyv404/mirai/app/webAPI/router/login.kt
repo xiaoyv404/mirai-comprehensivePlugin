@@ -7,7 +7,6 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import org.apache.http.auth.*
 import org.mindrot.jbcrypt.*
 
 fun Route.login() {
@@ -20,9 +19,9 @@ fun Route.login() {
         }.findByNameOrSave()
         if (!BCrypt.checkpw(post.password, user.password)) {
             PluginMain.logger.info("驳回${post.name}登录请求")
-            throw InvalidCredentialsException("Invalid credentials")
+            call.respond(mapOf("code" to "1000","msg" to "密码错误"))
         }
         PluginMain.logger.info("${post.name}登录成功")
-        call.respond(mapOf("token" to WebApi.simpleJwt.sign(user.name)))
+        call.respond(mapOf("code" to "200","token" to WebApi.simpleJwt.sign(user.name)))
     }
 }
