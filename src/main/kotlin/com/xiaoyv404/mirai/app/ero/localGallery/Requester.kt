@@ -61,15 +61,15 @@ class LocalGallerys(val msg: MessageEvent) {
             log.error(e)
             return true
         }
-
-        val num: Int = Regex("(?<=<p>這個作品ID中有只有 )\\d+(?= 張圖片，請指定正確的頁數，請參考<a href=\"https://pixiv.cat/\">首頁</a>說明。</p>)")
-            .find(
-                ClientUtils.useHttpClient {
-                    it.config {
-                        expectSuccess = false
-                    }.get("https://pixiv.re/$idA.png-114514").body<String>()
-                }
-            )?.value?.toInt() ?: 1
+        val num: Int =
+            Regex("(?<=<p>這個作品ID中有只有 )\\d+(?= 張圖片，請指定正確的頁數，請參考<a href=\"https://pixiv.cat/\">首頁</a>說明。</p>)")
+                .find(
+                    ClientUtils.useHttpClient {
+                        it.config {
+                            expectSuccess = false
+                        }.get("https://pixiv.re/$idA-114514.png").body<String>()
+                    }
+                )?.value?.toInt() ?: 1
 
 
         val fe = Process.Img.getSave(num, idA)

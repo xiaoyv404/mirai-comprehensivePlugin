@@ -1,23 +1,20 @@
 package com.xiaoyv404.mirai.app.ero.localGallery
 
-import com.xiaoyv404.mirai.PluginMain
-import com.xiaoyv404.mirai.app.fsh.IFshApp
-import com.xiaoyv404.mirai.core.App
+import com.xiaoyv404.mirai.*
+import com.xiaoyv404.mirai.app.fsh.*
+import com.xiaoyv404.mirai.core.*
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
-import com.xiaoyv404.mirai.core.NfApp
-import com.xiaoyv404.mirai.core.uid
-import com.xiaoyv404.mirai.databace.dao.authorityIdentification
+import com.xiaoyv404.mirai.databace.dao.*
 import com.xiaoyv404.mirai.databace.dao.gallery.*
-import com.xiaoyv404.mirai.databace.dao.isNotAdmin
-import kotlinx.serialization.ExperimentalSerializationApi
-import net.mamoe.mirai.event.events.MessageEvent
-import net.mamoe.mirai.message.nextMessage
-import org.apache.commons.cli.Options
+import kotlinx.serialization.*
+import net.mamoe.mirai.event.events.*
+import net.mamoe.mirai.message.*
+import org.apache.commons.cli.*
 
 @App
 class LocalGallery : NfApp(), IFshApp {
     override fun getAppName() = "LocalGallery"
-    override fun getVersion() = "1.0.1"
+    override fun getVersion() = "1.0.2"
     override fun getAppDescription() = "本地图库"
     override fun getCommands() = arrayOf("-ero")
 
