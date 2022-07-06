@@ -3,4 +3,6 @@
 /run/
 /src/test/
 /build/
+/.idea/
+
 /gradle.properties
