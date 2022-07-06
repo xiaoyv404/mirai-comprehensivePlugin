@@ -3,7 +3,7 @@ plugins {
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.serialization") version kotlinVersion
 
-    id("net.mamoe.mirai-console") version "2.12.0-RC"
+    id("net.mamoe.mirai-console") version "2.12.0"
 }
 
 group = "com.xiaoyv404"
@@ -43,7 +43,6 @@ dependencies {
     implementation("io.ktor:ktor-client-okhttp-jvm:2.0.2")
     implementation("io.ktor:ktor-server-content-negotiation:2.0.2")
     implementation("io.ktor:ktor-serialization-kotlinx-json:2.0.2")
-    implementation("io.ktor:ktor-client-cio-jvm:2.0.3")
     compileOnly("net.mamoe.yamlkt:yamlkt-jvm:0.10.2")
 
     implementation("org.ktorm:ktorm-jackson:3.5.0")
