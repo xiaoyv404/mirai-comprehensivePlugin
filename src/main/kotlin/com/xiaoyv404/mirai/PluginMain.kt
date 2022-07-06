@@ -9,19 +9,11 @@ import net.mamoe.mirai.console.plugin.jvm.*
 import net.mamoe.mirai.utils.*
 import org.reflections.*
 
-
-object Version {
-    const val ID = "com.xiaoyv404.ComprehensivePlugin"
-    const val NAME = "ComprehensivePlugin"
-    const val PLUGINVERSION = "1.0.1"
-}
-
-
 object PluginMain : KotlinPlugin(
     JvmPluginDescription(
-        id = Version.ID,
-        name = Version.NAME,
-        version = Version.PLUGINVERSION
+        id = "com.xiaoyv404.ComprehensivePlugin",
+        name = "ComprehensivePlugin",
+        version = "1.0.1"
     )
 )       {
     @OptIn(DelicateCoroutinesApi::class)
