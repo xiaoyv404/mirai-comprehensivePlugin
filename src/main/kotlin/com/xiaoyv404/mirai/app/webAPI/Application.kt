@@ -78,6 +78,7 @@ fun Application.module() {
                     adminIndex()
                     getConversationsInfoList()
                     sendMsg()
+                    getVerificationMessage()
                 }
             }
         }
