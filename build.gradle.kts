@@ -56,8 +56,6 @@ dependencies {
 
     implementation("io.lettuce:lettuce-core:6.1.8.RELEASE")
 
-    implementation("com.alibaba:fastjson:2.0.7")
-
     implementation("de.svenkubiak:jBCrypt:0.4.3")
 
 
@@ -74,6 +72,6 @@ dependencies {
     implementation("com.google.guava:guava:31.1-jre")
     implementation("com.google.code.gson:gson:2.9.0")
 
-    implementation("net.sf.cssbox:cssbox:5.0.0")
-    implementation("freemarker:freemarker:2.3.9")
+//    implementation("net.sf.cssbox:cssbox:5.0.0")
+//    implementation("freemarker:freemarker:2.3.9")
 }
