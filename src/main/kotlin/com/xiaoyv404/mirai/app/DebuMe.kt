@@ -1,14 +1,11 @@
 package com.xiaoyv404.mirai.app
 
-import com.xiaoyv404.mirai.app.fsh.IFshApp
-import com.xiaoyv404.mirai.core.App
+import com.xiaoyv404.mirai.app.fsh.*
+import com.xiaoyv404.mirai.core.*
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
-import com.xiaoyv404.mirai.core.NfApp
-import com.xiaoyv404.mirai.databace.dao.authorityIdentification
-import net.mamoe.mirai.contact.Member
-import net.mamoe.mirai.contact.remarkOrNameCardOrNick
-import net.mamoe.mirai.contact.remarkOrNick
-import net.mamoe.mirai.event.events.MessageEvent
+import com.xiaoyv404.mirai.databace.dao.*
+import net.mamoe.mirai.contact.*
+import net.mamoe.mirai.event.events.*
 
 @App
 class DebuMe : NfApp(), IFshApp {
@@ -16,8 +13,8 @@ class DebuMe : NfApp(), IFshApp {
     override fun getAppDescription() = "我是菜鸟！"
     override fun getVersion() = "1.0.0"
     override fun getCommands() = arrayOf("~me")
-    override fun getLimitCount() = 2
-    override fun getLimitExpiresTime() = 60L
+    override fun getLimitCount() = 1
+    override fun getLimitExpiresTime() = 180L
     override fun getLimitHint() = false
 
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
