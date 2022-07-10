@@ -61,14 +61,6 @@ fun Application.module() {
     }
 
     routing {
-        post("/v1/android/sign") {
-            call.respond(
-                mapOf(
-                    "code" to "200",
-                    "message" to "登录成功"
-                )
-            )
-        }
         route("/lab") {
             index()
             login()
