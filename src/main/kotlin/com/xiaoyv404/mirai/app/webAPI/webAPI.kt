@@ -45,6 +45,7 @@ class WebApi : NfApp() {
     companion object {
         const val SESSION_REGISTER_NAME = "ktor-404"
         const val noPrincipal = "No principal"
+        const val requestError = "Request Error"
         val simpleJwt = SimpleJWT("my-super-secret-for-jwt")
     }
 }

@@ -71,6 +71,7 @@ fun Application.module() {
                     getConversationsInfoList()
                     sendMsg()
                     getVerificationMessage()
+                    getGroupMemberList()
                 }
             }
         }
