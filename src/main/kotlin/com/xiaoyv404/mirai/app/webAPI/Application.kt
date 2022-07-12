@@ -2,6 +2,10 @@ package com.xiaoyv404.mirai.app.webAPI
 
 import com.xiaoyv404.mirai.app.webAPI.router.*
 import com.xiaoyv404.mirai.app.webAPI.router.admin.*
+import com.xiaoyv404.mirai.app.webAPI.router.admin.action.*
+import com.xiaoyv404.mirai.app.webAPI.router.admin.conversation.*
+import com.xiaoyv404.mirai.app.webAPI.router.admin.conversation.group.member.*
+import com.xiaoyv404.mirai.app.webAPI.router.admin.event.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*

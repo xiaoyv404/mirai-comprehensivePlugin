@@ -1,4 +1,4 @@
-package com.xiaoyv404.mirai.app.webAPI.router.admin
+package com.xiaoyv404.mirai.app.webAPI.router.admin.conversation
 
 import com.xiaoyv404.mirai.app.webAPI.*
 import com.xiaoyv404.mirai.databace.dao.*

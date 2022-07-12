@@ -1,4 +1,4 @@
-package com.xiaoyv404.mirai.app.webAPI.router.admin
+package com.xiaoyv404.mirai.app.webAPI.router.admin.event
 
 import com.xiaoyv404.mirai.*
 import com.xiaoyv404.mirai.app.webAPI.*
