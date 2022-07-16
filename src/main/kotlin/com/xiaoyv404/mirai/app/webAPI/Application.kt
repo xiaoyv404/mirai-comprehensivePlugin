@@ -19,7 +19,6 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
 import io.ktor.server.websocket.*
-import org.apache.http.auth.*
 
 fun Application.module() {
     install(CORS) {
@@ -49,12 +48,21 @@ fun Application.module() {
     }
 
     install(StatusPages) {
-        exception<InvalidCredentialsException> { call, exception ->
-            call.respond(
-                HttpStatusCode.Unauthorized,
-                mapOf("code" to "401", "error" to (exception.message ?: ""))
-            )
+        exception<Error> { call, exception ->
+            when (exception.message) {
+                WebApi.noPrincipal -> call.respond(
+                    call.respond(
+                        HttpStatusCode.Unauthorized,
+                        mapOf("code" to "401", "error" to (exception.message ?: ""))
+                    )
+                )
+                WebApi.requestError -> call.respond(
+                    HttpStatusCode.NotFound,
+                    mapOf("code" to "404", "msg" to "Not Found")
+                )
+            }
         }
+
     }
     install(WebSockets) {
 
