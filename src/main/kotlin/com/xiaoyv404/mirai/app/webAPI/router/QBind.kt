@@ -2,13 +2,13 @@ package com.xiaoyv404.mirai.app.webAPI.router
 
 import com.xiaoyv404.mirai.app.webAPI.*
 import com.xiaoyv404.mirai.databace.dao.*
+import com.xiaoyv404.mirai.extension.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.coroutines.*
-import net.mamoe.mirai.*
 import net.mamoe.mirai.event.*
 import net.mamoe.mirai.event.events.*
 import kotlin.coroutines.*
@@ -18,8 +18,7 @@ fun Route.qBind() {
     post("/QBind") {
         val post = call.receive<WebApi.QQBind>()
         val principal = call.principal<UserIdPrincipal>() ?: error(WebApi.noPrincipal)
-        val bot = Bot.getInstance(2079373402)
-        val target = bot.getFriend(post.qqNumber)
+        val target = post.qqNumber.getFriend()
         if (target == null) {
             call.respond(mapOf("code" to 1000, "msg" to "查无此人"))
             return@post

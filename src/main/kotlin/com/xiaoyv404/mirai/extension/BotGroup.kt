@@ -1,9 +1,9 @@
 package com.xiaoyv404.mirai.extension
 
-import net.mamoe.mirai.*
+import com.xiaoyv404.mirai.*
 import net.mamoe.mirai.contact.*
 
-val bot = Bot.getInstance(2079373402)
+val bot = PluginMain.bot
 
 /**
  * 通过[this]gid 获取群
