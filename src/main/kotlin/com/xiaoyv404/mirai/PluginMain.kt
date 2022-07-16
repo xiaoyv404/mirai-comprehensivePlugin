@@ -22,9 +22,6 @@ object PluginMain : KotlinPlugin(
         PluginConfig.reload()
         connect()
 
-        val packageName: String = PluginMain::class.java.getPackage().name
-
-        println(packageName)
         val f = Reflections("com.xiaoyv404.mirai.app")
         val set: Set<Class<*>> = f.getTypesAnnotatedWith(App::class.java)
         set.forEach {
