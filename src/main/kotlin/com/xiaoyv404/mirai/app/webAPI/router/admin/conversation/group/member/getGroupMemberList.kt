@@ -2,11 +2,11 @@ package com.xiaoyv404.mirai.app.webAPI.router.admin.conversation.group.member
 
 import com.xiaoyv404.mirai.app.webAPI.*
 import com.xiaoyv404.mirai.databace.dao.*
+import com.xiaoyv404.mirai.extension.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import net.mamoe.mirai.*
 
 fun Route.getGroupMemberList() {
     get("/getGroupMemberList/{gid}") {
@@ -15,20 +15,12 @@ fun Route.getGroupMemberList() {
         principal.name.permissionRequiredAdmin()
         if (gid == null)
             error(WebApi.requestError)
-        val group = Bot.getInstance(2079373402).getGroup(gid.toLong())
-        if (group == null)
-            call.respond(
-                mapOf(
-                    "code" to "404",
-                    "msg" to "此群组不存在"
-                )
+        val group = gid.getGroup() ?: error(WebApi.requestError)
+        call.respond(
+            mapOf(
+                "code" to "200",
+                "data" to group.members
             )
-        else
-            call.respond(
-                mapOf(
-                    "code" to "200",
-                    "data" to group.members
-                )
-            )
+        )
     }
 }
