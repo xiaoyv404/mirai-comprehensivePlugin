@@ -11,6 +11,6 @@ import net.mamoe.mirai.contact.*
  */
 fun Long.getFriend(): Friend? {
     if (bot == null)
-        Bot.getInstance(2079373402)
+        bot = Bot.getInstance(2079373402)
     return bot!!.getFriend(this)
 }
