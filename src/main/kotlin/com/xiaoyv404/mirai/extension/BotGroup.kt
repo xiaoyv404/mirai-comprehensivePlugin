@@ -1,9 +1,9 @@
 package com.xiaoyv404.mirai.extension
 
-import com.xiaoyv404.mirai.*
+import net.mamoe.mirai.*
 import net.mamoe.mirai.contact.*
 
-val bot = PluginMain.bot
+var bot: Bot? = null
 
 /**
  * 通过[this]gid 获取群
@@ -12,7 +12,9 @@ val bot = PluginMain.bot
  * @return
  */
 fun Long.getGroup(): Group? {
-    return bot.getGroup(this)
+    if (bot == null)
+        Bot.getInstance(2079373402)
+    return bot!!.getGroup(this)
 }
 
 fun String.getGroup(): Group? {

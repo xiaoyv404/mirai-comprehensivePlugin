@@ -4,7 +4,6 @@ import com.xiaoyv404.mirai.core.*
 import com.xiaoyv404.mirai.databace.Database.connect
 import com.xiaoyv404.mirai.tool.*
 import kotlinx.coroutines.*
-import net.mamoe.mirai.*
 import net.mamoe.mirai.console.plugin.*
 import net.mamoe.mirai.console.plugin.jvm.*
 import net.mamoe.mirai.utils.*
@@ -17,7 +16,6 @@ object PluginMain : KotlinPlugin(
         version = "1.0.1"
     )
 )       {
-    val bot = Bot.getInstance(2079373402)
     @OptIn(DelicateCoroutinesApi::class)
     override fun onEnable() {
         NfPluginData.reload()

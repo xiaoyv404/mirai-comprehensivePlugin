@@ -1,5 +1,6 @@
 package com.xiaoyv404.mirai.extension
 
+import net.mamoe.mirai.*
 import net.mamoe.mirai.contact.*
 
 /**
@@ -9,5 +10,7 @@ import net.mamoe.mirai.contact.*
  * @return
  */
 fun Long.getFriend(): Friend? {
-    return bot.getFriend(this)
+    if (bot == null)
+        Bot.getInstance(2079373402)
+    return bot!!.getFriend(this)
 }
