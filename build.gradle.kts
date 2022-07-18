@@ -68,7 +68,5 @@ dependencies {
     implementation("org.apache.commons:commons-lang3:3.12.0")
     implementation("commons-cli:commons-cli:1.5.0")
 
-    implementation("org.reflections:reflections:0.10.2")
-    implementation("com.google.guava:guava:31.1-jre")
     implementation("com.google.code.gson:gson:2.9.0")
 }

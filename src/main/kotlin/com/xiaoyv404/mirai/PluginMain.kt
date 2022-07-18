@@ -7,7 +7,6 @@ import kotlinx.coroutines.*
 import net.mamoe.mirai.console.plugin.*
 import net.mamoe.mirai.console.plugin.jvm.*
 import net.mamoe.mirai.utils.*
-import org.reflections.*
 
 object PluginMain : KotlinPlugin(
     JvmPluginDescription(
@@ -15,15 +14,19 @@ object PluginMain : KotlinPlugin(
         name = "ComprehensivePlugin",
         version = "1.0.1"
     )
-)       {
+) {
     @OptIn(DelicateCoroutinesApi::class)
     override fun onEnable() {
         NfPluginData.reload()
         PluginConfig.reload()
         connect()
 
-        val f = Reflections("com.xiaoyv404.mirai.app")
-        val set: Set<Class<*>> = f.getTypesAnnotatedWith(App::class.java)
+        val set: Set<Class<*>> = NfClassFinder().getAnnotationClasses(
+            "com.xiaoyv404.mirai.app",
+            App::class.java,
+            PluginMain.jvmPluginClasspath.pluginFile
+        )
+
         set.forEach {
             val bean = it.getDeclaredConstructor().newInstance()
             NfApplicationManager.appInitialization(bean as NfApp)
@@ -31,10 +34,11 @@ object PluginMain : KotlinPlugin(
 
         logger.info { "综合插件加载完成，版本：$version Java版本:${System.getProperty("java.version")}" }
     }
+
     override fun onDisable() {
         NfPluginData.save()
         ClientUtils.uninit()
-        NfApplicationManager.nfApps.forEach{
+        NfApplicationManager.nfApps.forEach {
             it.uninit()
         }
     }
