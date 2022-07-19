@@ -8,7 +8,7 @@ runs:
     - name: Ensure build
       shell: bash
       run: >
-        ./gradlew build buildPluginLegacy --scan
+        ./gradlew build buildPlugin --scan
         --exclude-task test
         --exclude-task check
     - name: Upload mirai-core-utils
