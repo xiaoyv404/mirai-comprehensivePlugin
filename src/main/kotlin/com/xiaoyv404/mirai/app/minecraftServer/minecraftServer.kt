@@ -161,6 +161,9 @@ class MinecraftServerStats : NfApp(), IFshApp {
             }
 
             //发送状态提示
+            if (groups.isEmpty()){
+                return@launch
+            }
             val data = info.msgMaker(statusT, players, groups[1])
             groups.forEach {
                 it.sendMessage(data)
