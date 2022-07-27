@@ -11,9 +11,9 @@ import kotlinx.serialization.*
 import kotlinx.serialization.json.*
 import net.mamoe.mirai.*
 import net.mamoe.mirai.contact.*
-import net.mamoe.mirai.contact.Contact.Companion.sendImage
 import net.mamoe.mirai.contact.Contact.Companion.uploadImage
 import net.mamoe.mirai.event.events.*
+import net.mamoe.mirai.message.code.*
 import net.mamoe.mirai.message.data.*
 import org.apache.commons.cli.*
 import java.util.*
@@ -81,44 +81,26 @@ class MinecraftServerStats : NfApp(), IFshApp {
             1
 
         //通过状态生成提示语
-        val msgA =
-            if (statusT == 1)
-                msg.subject.uploadImage(
-                    players.let {
-                        MinecraftDataImgGenerator.getImg(
-                            it!!.players,
-                            "${it.online}/${it.max}",
-                            info.host,
-                            info.port.toString()
-                        )
-                    }
-                ).toMessageChain()
-            else
-                PlainText(
-                    """
-                    :(
-                    ${info.name} is Offline
-                    IP: ${info.host}:${info.port}
-                    """.trimIndent()
-                )
+        val data = info.msgMaker(statusT, players, msg.subject)
+
 
         //获取服务器关联群，并发送提示
         if (statusT != info.status) {
             MinecraftServerMap {
                 serverID = info.id
             }.findByServerId().forEach {
-                (bot.getGroup(it.groupID) ?: return@forEach).sendMessage(msgA)
+                (bot.getGroup(it.groupID) ?: return@forEach).sendMessage(data)
             }
             MinecraftServer {
                 id = info.id
                 status = statusT
             }.update()
         } else
-            msg.reply(msgA, false)
+            msg.reply(data, false)
 
         //如果有需求并且服务器在线，发送玩家列表
         if (statusT == 1 && playerList) {
-            sendPlayerList(msg, getPlayerList(info.host, info.port, players!!))
+            getPlayerList(info.host, info.port, players!!).send(msg)
         }
     }
 
@@ -139,24 +121,6 @@ class MinecraftServerStats : NfApp(), IFshApp {
         val playersL = playersML.distinct()
         log.info("已获取到玩家列表人数：${playersL.size}")
         return playersL
-    }
-
-    private suspend fun sendPlayerList(msg: MessageEvent, players: List<Player>) {
-        if (players.isEmpty())
-            msg.reply("都没有玩家怎么播报列表啊（恼）", quote = true)
-        else
-            msg.reply(
-                buildForwardMessage(msg.subject) {
-                    players.forEach { player ->
-                        msg.subject.bot.says(
-                            """
-                        name: ${player.name}
-                        d: ${player.id}
-                        """.trimIndent()
-                        )
-                    }
-                }.toMessageChain(), quote = false
-            )
     }
 
     suspend fun check(info: MinecraftServer) {
@@ -197,28 +161,32 @@ class MinecraftServerStats : NfApp(), IFshApp {
             }
 
             //发送状态提示
+            val data = info.msgMaker(statusT, players, groups[1])
             groups.forEach {
-                if (statusT == 1)
-                    players?.let { it1 ->
-                        it.sendImage(
-                            MinecraftDataImgGenerator.getImg(
-                                it1.players,
-                                "${players.online}/${players.max}",
-                                info.host,
-                                info.port.toString()
-                            )
-                        )
-                    }
-                else
-                    it.sendMessage(
-                        """
-                    :(
-                    ${info.name} is Offline
-                    IP: ${info.host}:${info.port}
-                    """.trimIndent()
-                    )
+                it.sendMessage(data)
             }
         }
+    }
+
+    private suspend fun MinecraftServer.msgMaker(status: Int, playerList: Players?, subject: Contact): CodableMessage {
+        return if (status == 1)
+            subject.uploadImage(
+                MinecraftDataImgGenerator.getImg(
+                    playerList!!.players,
+                    "${playerList.online}/${playerList.max}",
+                    this.host,
+                    this.port.toString()
+                )
+
+            ).toMessageChain()
+        else
+            PlainText(
+                """
+                    :(
+                    ${this.name} is Offline
+                    IP: ${this.host}:${this.port}
+                    """.trimIndent()
+            )
     }
 
     private suspend fun getServerInfo(host: String, port: Int): ServerInformationFormatAndStatus {
@@ -238,4 +206,22 @@ class MinecraftServerStats : NfApp(), IFshApp {
             pJ
         }
     }
+}
+
+suspend fun List<Player>.send(msg: MessageEvent) {
+    if (this.isEmpty())
+        msg.reply("都没有玩家怎么播报列表啊（恼）", quote = true)
+    else
+        msg.reply(
+            buildForwardMessage(msg.subject) {
+                this@send.forEach { player ->
+                    msg.subject.bot.says(
+                        """
+                        name: ${player.name}
+                        d: ${player.id}
+                        """.trimIndent()
+                    )
+                }
+            }.toMessageChain(), quote = false
+        )
 }
