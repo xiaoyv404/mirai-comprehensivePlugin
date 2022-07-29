@@ -150,20 +150,15 @@ class MinecraftServerStats : NfApp(), IFshApp {
                 MinecraftServerMap { serverID = info.id }.findByServerId().forEach {
                     groups.add(bot.getGroup(it.groupID) ?: return@forEach)
                 }
-            }
-
-            //更新数据库内状态
-            if (statusT != info.status) {
+                //更新数据库内状态
                 MinecraftServer {
                     id = info.id
                     status = statusT
                 }.update()
-            }
-
-            //发送状态提示
-            if (groups.isEmpty()){
+            }else {
                 return@launch
             }
+
             val data = info.msgMaker(statusT, players, groups[1])
             groups.forEach {
                 it.sendMessage(data)
