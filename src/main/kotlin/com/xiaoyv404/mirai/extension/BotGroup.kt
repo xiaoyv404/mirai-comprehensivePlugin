@@ -13,8 +13,8 @@ var bot: Bot? = null
  */
 fun Long.getGroup(): Group? {
     if (bot == null)
-        Bot.getInstance(2079373402)
-    return bot?.getGroup(this)
+        bot = Bot.getInstance(2079373402)
+    return bot!!.getGroup(this)
 }
 
 fun String.getGroup(): Group? {
