@@ -4,7 +4,6 @@ import com.xiaoyv404.mirai.core.*
 import com.xiaoyv404.mirai.databace.dao.*
 import io.ktor.client.*
 import io.ktor.client.call.*
-import io.ktor.client.call.body
 import io.ktor.client.request.*
 import net.mamoe.mirai.event.events.*
 
@@ -18,7 +17,7 @@ class B23ShortLinkParse : NfAppMessageHandler() {
         if (msg.uid().isBot())
             return
 
-        Regex("(https?://b23.tv/\\S{6})").find(msg.message.contentToString())?.let {
+        Regex("(https?://b23.tv/\\S{7})").find(msg.message.contentToString())?.let {
             if (msg.authorityIdentification("BiliBiliParsing"))
                 return
 
