@@ -5,6 +5,7 @@ import com.xiaoyv404.mirai.core.MessageProcessor.reply
 import com.xiaoyv404.mirai.databace.dao.gallery.*
 import com.xiaoyv404.mirai.tool.*
 import io.ktor.client.call.*
+import io.ktor.client.call.body
 import io.ktor.client.request.*
 import kotlinx.serialization.*
 import kotlinx.serialization.json.*
@@ -55,7 +56,7 @@ class LocalGallerys(val msg: MessageEvent) {
         val formatInfo = try {
             ClientUtils.get<String>(
                 "https://www.pixiv.net/artworks/" +
-                    idA
+                        idA
             )
         } catch (e: Exception) {
             log.error(e)

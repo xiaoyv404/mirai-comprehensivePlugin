@@ -19,9 +19,9 @@ fun Route.login() {
         }.findByNameOrSave()
         if (!BCrypt.checkpw(post.password, user.password)) {
             PluginMain.logger.info("驳回${post.name}登录请求")
-            call.respond(mapOf("code" to "1000","msg" to "密码错误"))
+            call.respond(mapOf("code" to "1000", "msg" to "密码错误"))
         }
         PluginMain.logger.info("${post.name}登录成功")
-        call.respond(mapOf("code" to "200","token" to WebApi.simpleJwt.sign(user.name)))
+        call.respond(mapOf("code" to "200", "token" to WebApi.simpleJwt.sign(user.name)))
     }
 }
