@@ -1,6 +1,7 @@
 package com.xiaoyv404.mirai.app.webAPI.router
 
 import com.xiaoyv404.mirai.app.webAPI.*
+import com.xiaoyv404.mirai.app.webAPI.controller.*
 import com.xiaoyv404.mirai.databace.dao.*
 import com.xiaoyv404.mirai.extension.*
 import io.ktor.server.application.*
@@ -20,10 +21,10 @@ fun Route.qBind() {
         val principal = call.principal<UserIdPrincipal>() ?: error(WebApi.noPrincipal)
         val target = post.qqNumber.getFriend()
         if (target == null) {
-            call.respond(mapOf("code" to 1000, "msg" to "查无此人"))
+            call.respond(NfResult.failed("查无此人"))
             return@post
         } else {
-            call.respond(mapOf("code" to 200))
+            call.respond(NfResult.success(null))
         }
         target.sendMessage(
             """

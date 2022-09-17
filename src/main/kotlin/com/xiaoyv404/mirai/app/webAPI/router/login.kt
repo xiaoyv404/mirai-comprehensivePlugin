@@ -2,6 +2,7 @@ package com.xiaoyv404.mirai.app.webAPI.router
 
 import com.xiaoyv404.mirai.*
 import com.xiaoyv404.mirai.app.webAPI.*
+import com.xiaoyv404.mirai.app.webAPI.controller.*
 import com.xiaoyv404.mirai.databace.dao.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -22,6 +23,6 @@ fun Route.login() {
             call.respond(mapOf("code" to "1000", "msg" to "密码错误"))
         }
         PluginMain.logger.info("${post.name}登录成功")
-        call.respond(mapOf("code" to "200", "token" to WebApi.simpleJwt.sign(user.name)))
+        call.respond(NfResult.success(mapOf("token" to WebApi.simpleJwt.sign(user.name))))
     }
 }

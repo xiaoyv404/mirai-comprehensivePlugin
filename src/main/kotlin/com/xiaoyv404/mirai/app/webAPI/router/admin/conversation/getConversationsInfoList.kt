@@ -1,6 +1,7 @@
 package com.xiaoyv404.mirai.app.webAPI.router.admin.conversation
 
 import com.xiaoyv404.mirai.app.webAPI.*
+import com.xiaoyv404.mirai.app.webAPI.controller.*
 import com.xiaoyv404.mirai.databace.dao.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -35,10 +36,7 @@ fun Route.getConversationsInfoList() {
         }
 
         call.respond(
-            mapOf(
-                "code" to 200,
-                "data" to mapOf("groups" to groups, "friends" to friends)
-            )
+            NfResult.success(mapOf("groups" to groups, "friends" to friends))
         )
     }
 }

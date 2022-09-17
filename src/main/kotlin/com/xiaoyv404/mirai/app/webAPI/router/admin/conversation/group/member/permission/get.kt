@@ -1,6 +1,7 @@
 package com.xiaoyv404.mirai.app.webAPI.router.admin.conversation.group.member.permission
 
 import com.xiaoyv404.mirai.app.webAPI.*
+import com.xiaoyv404.mirai.app.webAPI.controller.*
 import com.xiaoyv404.mirai.databace.dao.*
 import com.xiaoyv404.mirai.extension.*
 import io.ktor.server.application.*
@@ -18,9 +19,10 @@ fun Route.getGroupMemberPermission() {
         val permission = member.permission
 
         call.respond(
-            mapOf(
-                "code" to "200",
-                "permission" to permission
+            NfResult.success(
+                mapOf(
+                    "permission" to permission
+                )
             )
         )
     }
