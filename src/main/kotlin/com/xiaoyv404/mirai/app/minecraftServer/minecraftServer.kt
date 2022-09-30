@@ -103,26 +103,6 @@ class MinecraftServerStats : NfApp(), IFshApp {
             getPlayerList(info.host, info.port, players!!).send(msg)
         }
     }
-
-    private suspend fun getPlayerList(host: String, port: Int, players: Players): List<Player> {
-        val playersML = players.players.toMutableList()
-        var cycles = players.online / 12
-        if (cycles != 0)
-            cycles++
-
-        log.info("尝试获取PlayList次数：${cycles + 1}次")
-
-        for (i in 1..cycles) {
-            getServerInfo(host, port).serverInformationFormat?.players?.players?.forEach {
-                playersML.add(it)
-            }
-        }
-
-        val playersL = playersML.distinct()
-        log.info("已获取到玩家列表人数：${playersL.size}")
-        return playersL
-    }
-
     suspend fun check(info: MinecraftServer) {
         PluginMain.launch {
             val information = getServerInfo(info.host, info.port)
@@ -204,22 +184,42 @@ class MinecraftServerStats : NfApp(), IFshApp {
             pJ
         }
     }
-}
 
-suspend fun List<Player>.send(msg: MessageEvent) {
-    if (this.isEmpty())
-        msg.reply("都没有玩家怎么播报列表啊（恼）", quote = true)
-    else
-        msg.reply(
-            buildForwardMessage(msg.subject) {
-                this@send.forEach { player ->
-                    msg.subject.bot.says(
-                        """
+    private suspend fun getPlayerList(host: String, port: Int, players: Players): List<Player> {
+        val playersML = players.players.toMutableList()
+        var cycles = players.online / 12
+        if (cycles != 0)
+            cycles++
+
+        log.info("尝试获取PlayList次数：${cycles + 1}次")
+
+        for (i in 1..cycles) {
+            getServerInfo(host, port).serverInformationFormat?.players?.players?.forEach {
+                playersML.add(it)
+            }
+        }
+
+        val playersL = playersML.distinct()
+        log.info("已获取到玩家列表人数：${playersL.size}")
+        return playersL
+    }
+
+    private suspend fun List<Player>.send(msg: MessageEvent) {
+        if (this.isEmpty())
+            msg.reply("都没有玩家怎么播报列表啊（恼）", quote = true)
+        else
+            msg.reply(
+                buildForwardMessage(msg.subject) {
+                    this@send.forEach { player ->
+                        msg.subject.bot.says(
+                            """
                         name: ${player.name}
                         d: ${player.id}
                         """.trimIndent()
-                    )
-                }
-            }.toMessageChain(), quote = false
-        )
+                        )
+                    }
+                }.toMessageChain(), quote = false
+            )
+    }
 }
+
