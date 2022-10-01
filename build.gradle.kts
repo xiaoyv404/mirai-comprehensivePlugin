@@ -3,7 +3,7 @@ plugins {
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.serialization") version kotlinVersion
 
-    id("net.mamoe.mirai-console") version "2.12.2"
+    id("net.mamoe.mirai-console") version "2.12.3"
 }
 
 group = "com.xiaoyv404"
@@ -30,27 +30,27 @@ repositories {
     maven("https://plugins.gradle.org/m2")
 }
 dependencies {
-    implementation("io.ktor:ktor-server-status-pages:2.1.0")
-    implementation("io.ktor:ktor-server-content-negotiation:2.1.0")
-    implementation("io.ktor:ktor-server-netty-jvm:2.1.0")
-    implementation("io.ktor:ktor-server-content-negotiation-jvm:2.1.0")
-    implementation("io.ktor:ktor-server-auth-jvm:2.1.0")
-    implementation("io.ktor:ktor-server-auth-jwt-jvm:2.1.0")
-    implementation("io.ktor:ktor-server-websockets-jvm:2.1.0")
-    implementation("io.ktor:ktor-server-sessions-jvm:2.1.0")
-    implementation("io.ktor:ktor-server-cors:2.1.0")
+    implementation("io.ktor:ktor-server-status-pages:2.1.1")
+    implementation("io.ktor:ktor-server-content-negotiation:2.1.1")
+    implementation("io.ktor:ktor-server-netty-jvm:2.1.1")
+    implementation("io.ktor:ktor-server-content-negotiation-jvm:2.1.1")
+    implementation("io.ktor:ktor-server-auth-jvm:2.1.1")
+    implementation("io.ktor:ktor-server-auth-jwt-jvm:2.1.1")
+    implementation("io.ktor:ktor-server-websockets-jvm:2.1.1")
+    implementation("io.ktor:ktor-server-sessions-jvm:2.1.1")
+    implementation("io.ktor:ktor-server-cors:2.1.1")
 
-    implementation("io.ktor:ktor-client-okhttp-jvm:2.1.0")
-    implementation("io.ktor:ktor-server-content-negotiation:2.1.0")
-    implementation("io.ktor:ktor-serialization-kotlinx-json:2.1.0")
+    implementation("io.ktor:ktor-client-okhttp-jvm:2.1.1")
+    implementation("io.ktor:ktor-server-content-negotiation:2.1.1")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:2.1.1")
     compileOnly("net.mamoe.yamlkt:yamlkt-jvm:0.10.2")
 
     implementation("org.ktorm:ktorm-jackson:3.5.0")
     implementation("org.ktorm:ktorm-support-postgresql:3.5.0")
 
-    implementation("ch.qos.logback:logback-classic:1.2.11")
+    implementation("ch.qos.logback:logback-classic:1.4.1")
 
-    implementation("org.postgresql:postgresql:42.4.2")
+    implementation("org.postgresql:postgresql:42.5.0")
     implementation("org.ktorm:ktorm-core:3.5.0")
     implementation("com.zaxxer:HikariCP:5.0.1")
 
