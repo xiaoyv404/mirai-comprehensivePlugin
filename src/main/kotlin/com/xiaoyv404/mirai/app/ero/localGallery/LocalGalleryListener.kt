@@ -128,7 +128,7 @@ class LocalGallery : NfApp(), IFshApp {
         val ii = Gallery {
             id = idA
         }.findById()
-        LocalGallerys(msg).send(ii!!)
+        ii!!.send(msg)
 
         return true
     }

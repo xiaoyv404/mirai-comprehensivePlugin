@@ -5,7 +5,6 @@ import com.xiaoyv404.mirai.core.MessageProcessor.reply
 import com.xiaoyv404.mirai.databace.dao.gallery.*
 import com.xiaoyv404.mirai.tool.*
 import io.ktor.client.call.*
-import io.ktor.client.call.body
 import io.ktor.client.request.*
 import kotlinx.serialization.*
 import kotlinx.serialization.json.*
@@ -15,39 +14,36 @@ import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
 import org.apache.tika.*
 import java.io.*
 
+
+suspend fun Gallery.send(msg: MessageEvent){
+    if (this.picturesMun == 1) {
+        msg.reply(
+            PluginMain.resolveDataFile("gallery/${this.id}.${this.extension}")
+                .uploadAsImage(msg.subject).plus(LocalGallerys.Process.linkInfo(this))
+        )
+    } else {
+        msg.reply(
+            buildForwardMessage(msg.subject) {
+                msg.subject.bot.says(LocalGallerys.Process.linkInfo(this@send))
+                for (i in 1..this@send.picturesMun) {
+                    msg.subject.bot.says(
+                        PluginMain.resolveDataFile("gallery/${this@send.id}-$i.${this@send.extension}")
+                            .uploadAsImage(msg.subject)
+                    )
+                }
+            }
+        )
+    }
+}
 class LocalGallerys(val msg: MessageEvent) {
 
     private val log = PluginMain.logger
-
-    private val subject = msg.subject
-
-
-    suspend fun send(ii: Gallery) {
-        if (ii.picturesMun == 1) {
-            msg.reply(
-                PluginMain.resolveDataFile("gallery/${ii.id}.${ii.extension}")
-                    .uploadAsImage(subject).plus(Process.linkInfo(ii))
-            )
-        } else {
-            msg.reply(
-                buildForwardMessage(subject) {
-                    subject.bot.says(Process.linkInfo(ii))
-                    for (i in 1..ii.picturesMun) {
-                        subject.bot.says(
-                            PluginMain.resolveDataFile("gallery/${ii.id}-$i.${ii.extension}")
-                                .uploadAsImage(subject)
-                        )
-                    }
-                }
-            )
-        }
-    }
 
     private val format = Json { ignoreUnknownKeys = true }
 
 
     /**
-     *  获取并保存信息和图片到本地，并发送到[subject]
+     *  获取并保存信息和图片到本地，并发送到[msg]
      *
      *  @return false 表示未报错, true 表示报错
      */
@@ -99,7 +95,7 @@ class LocalGallerys(val msg: MessageEvent) {
             increaseEntry(info, pj.tags.tags)
 
             if (!outPut) {
-                send(info)
+                info.send(msg)
             } else
                 log.info("已关闭输出")
         }
