@@ -149,6 +149,10 @@ class MinecraftServerStats : NfApp(), IFshApp {
             //更新在线玩家列表
             players?.players?.save()
 
+            players?.players?.forEach{
+                log.info(it.name)
+            }
+
             groups.forEach {
                 it.sendMessage(data)
             }
