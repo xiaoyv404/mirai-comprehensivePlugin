@@ -42,7 +42,7 @@ fun Route.getConversationsInfoList() {
                 NfResult.success(mapOf("groups" to groups, "friends" to friends))
             )
         }catch (e:Exception){
-            println(e.stackTrace)
+            e.printStackTrace()
         }
     }
 }
