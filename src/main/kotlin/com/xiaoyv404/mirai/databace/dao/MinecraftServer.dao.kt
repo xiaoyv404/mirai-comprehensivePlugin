@@ -1,12 +1,10 @@
 package com.xiaoyv404.mirai.databace.dao
 
 import com.xiaoyv404.mirai.databace.Database.db
-import org.ktorm.database.Database
-import org.ktorm.dsl.eq
+import org.ktorm.database.*
+import org.ktorm.dsl.*
 import org.ktorm.entity.*
-import org.ktorm.schema.Table
-import org.ktorm.schema.int
-import org.ktorm.schema.varchar
+import org.ktorm.schema.*
 
 
 interface MinecraftServer : Entity<MinecraftServer> {
@@ -30,6 +28,10 @@ fun MinecraftServer.update(){
 
 fun getAll(): List<MinecraftServer> {
     return db.minecraftServers.toList()
+}
+
+fun String.findByName(): MinecraftServer?{
+    return db.minecraftServers.find { it.name eq this }
 }
 
 

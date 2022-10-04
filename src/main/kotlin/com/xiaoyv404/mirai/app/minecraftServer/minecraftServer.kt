@@ -30,22 +30,22 @@ class MinecraftServerStats : NfApp(), IFshApp {
 
     private val options = Options().apply {
         addOption("p", "player", false, "获取玩家列表")
+        addOption("s", "server", true, "选择服务器")
     }
 
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
         val cmdLine = IFshApp.cmdLine(options, args)
-        MinecraftServerMap {
-            groupID = msg.gid()
-        }.findByGroupId().forEach { si ->
-            val info = MinecraftServer {
-                id = si.serverID
-            }.findById()
-            if (info != null) {
-                sendInfo(
-                    msg, info,
-                    cmdLine.hasOption("player")
-                )
-            }
+
+        val info = if (cmdLine.hasOption("server"))
+            cmdLine.getOptionValue("server").findByName()
+        else
+            "mcg".findByName()
+
+        if (info != null) {
+            sendInfo(
+                msg, info,
+                cmdLine.hasOption("player")
+            )
         }
         return true
     }
@@ -105,9 +105,10 @@ class MinecraftServerStats : NfApp(), IFshApp {
                 it.send(msg)
                 it.save()
             }
-        }else
+        } else
             players?.players?.save()
     }
+
     suspend fun check(info: MinecraftServer) {
         PluginMain.launch {
             val information = getServerInfo(info.host, info.port)
@@ -143,7 +144,7 @@ class MinecraftServerStats : NfApp(), IFshApp {
                     id = info.id
                     status = statusT
                 }.update()
-            }else {
+            } else {
                 return@launch
             }
 
