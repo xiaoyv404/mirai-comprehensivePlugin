@@ -126,6 +126,9 @@ class MinecraftServerStats : NfApp(), IFshApp {
             else
                 1
 
+            //更新在线玩家列表
+            players?.players?.save()
+
             //发送log并获取服务器的关联群
             if ((statusT == -1 && info.status != -1) || (statusT == 1 && info.status == -1)) {
                 if (statusT == 1)
@@ -146,12 +149,6 @@ class MinecraftServerStats : NfApp(), IFshApp {
 
             val data = info.msgMaker(statusT, players, groups[1])
 
-            //更新在线玩家列表
-            players?.players?.save()
-
-            players?.players?.forEach{
-                log.info(it.name)
-            }
 
             groups.forEach {
                 it.sendMessage(data)
