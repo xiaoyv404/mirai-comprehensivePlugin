@@ -39,7 +39,7 @@ class MinecraftServerStats : NfApp(), IFshApp {
         val info = if (cmdLine.hasOption("server"))
             cmdLine.getOptionValue("server").findByName()
         else
-            "mcg".findByName()
+            "MCG".findByName()
 
         if (info != null) {
             sendInfo(
