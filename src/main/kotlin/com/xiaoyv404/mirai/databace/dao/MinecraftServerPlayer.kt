@@ -24,6 +24,9 @@ fun MinecraftServerPlayer.findById(): MinecraftServerPlayer? {
     return db.minecraftServerPlayer.find { it.id eq this.id }
 }
 
+fun MinecraftServerPlayer.findByName(): MinecraftServerPlayer? {
+    return db.minecraftServerPlayer.find { it.name eq this.name }
+}
 
 fun MinecraftServerPlayer.save(): Boolean {
     return if (this.findById() == null) {
