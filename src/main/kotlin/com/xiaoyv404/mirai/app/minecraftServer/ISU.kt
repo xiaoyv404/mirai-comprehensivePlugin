@@ -19,7 +19,7 @@ class ISU : NfApp(), IFshApp {
 
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
         val player = MinecraftServerPlayer {
-            this.name = "a2429334909"
+            this.name = "2429334909"
         }.findByName()
 
         if (player == null) {
