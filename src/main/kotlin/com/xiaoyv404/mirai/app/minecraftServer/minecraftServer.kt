@@ -99,9 +99,14 @@ class MinecraftServerStats : NfApp(), IFshApp {
             msg.reply(data, false)
 
         //如果有需求并且服务器在线，发送玩家列表
+        //并更新在线玩家列表
         if (statusT == 1 && playerList) {
-            getPlayerList(info.host, info.port, players!!).send(msg)
-        }
+            getPlayerList(info.host, info.port, players!!).let {
+                it.send(msg)
+                it.save()
+            }
+        }else
+            players?.players?.save()
     }
     suspend fun check(info: MinecraftServer) {
         PluginMain.launch {
@@ -140,6 +145,10 @@ class MinecraftServerStats : NfApp(), IFshApp {
             }
 
             val data = info.msgMaker(statusT, players, groups[1])
+
+            //更新在线玩家列表
+            players?.players?.save()
+
             groups.forEach {
                 it.sendMessage(data)
             }
