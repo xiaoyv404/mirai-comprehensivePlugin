@@ -12,31 +12,37 @@ import net.mamoe.mirai.contact.*
 
 fun Route.getConversationsInfoList() {
     post("/getConversationsInfoList") {
-        val principal = call.principal<UserIdPrincipal>() ?: error(WebApi.noPrincipal)
-        principal.name.permissionRequiredAdmin()
+        try {
 
-        val bot = Bot.getInstance(2079373402)
-        val groups = mutableMapOf<Long, Map<String, Any>>()
-        bot.groups.forEach {
-            val group = mapOf<String, Any>(
-                "name" to it.name,
-                "botPermission" to it.botPermission,
-                "avatarUrl" to it.avatarUrl,
+
+            val principal = call.principal<UserIdPrincipal>() ?: error(WebApi.noPrincipal)
+            principal.name.permissionRequiredAdmin()
+
+            val bot = Bot.getInstance(2079373402)
+            val groups = mutableMapOf<Long, Map<String, Any>>()
+            bot.groups.forEach {
+                val group = mapOf<String, Any>(
+                    "name" to it.name,
+                    "botPermission" to it.botPermission,
+                    "avatarUrl" to it.avatarUrl,
+                )
+                groups[it.id] = group
+            }
+
+            val friends = mutableMapOf<Long, Map<String, Any>>()
+            bot.friends.forEach {
+                val friend = mapOf<String, Any>(
+                    "name" to it.remarkOrNick,
+                    "avatarUrl" to it.avatarUrl,
+                )
+                friends[it.id] = friend
+            }
+
+            call.respond(
+                NfResult.success(mapOf("groups" to groups, "friends" to friends))
             )
-            groups[it.id] = group
+        }catch (e:Exception){
+            println(e.stackTrace)
         }
-
-        val friends = mutableMapOf<Long, Map<String, Any>>()
-        bot.friends.forEach {
-            val friend = mapOf<String, Any>(
-                "name" to it.remarkOrNick,
-                "avatarUrl" to it.avatarUrl,
-            )
-            friends[it.id] = friend
-        }
-
-        call.respond(
-            NfResult.success(mapOf("groups" to groups, "friends" to friends))
-        )
     }
 }
