@@ -102,11 +102,11 @@ class MinecraftServerStats : NfApp(), IFshApp {
         //并更新在线玩家列表
         if (statusT == 1 && playerList) {
             getPlayerList(info.host, info.port, players!!).let {
+                it.save(info.name)
                 it.send(msg)
-                it.save()
             }
         } else
-            players?.players?.save()
+            players?.players?.save(info.name)
     }
 
     suspend fun check(info: MinecraftServer) {
@@ -128,7 +128,7 @@ class MinecraftServerStats : NfApp(), IFshApp {
                 1
 
             //更新在线玩家列表
-            players?.players?.save()
+            players?.players?.save(info.name)
 
             //发送log并获取服务器的关联群
             if ((statusT == -1 && info.status != -1) || (statusT == 1 && info.status == -1)) {

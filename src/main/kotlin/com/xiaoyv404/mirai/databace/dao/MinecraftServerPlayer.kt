@@ -16,6 +16,7 @@ interface MinecraftServerPlayer : Entity<MinecraftServerPlayer> {
     var id: String
     var name: String
     var lastLoginTime: LocalDateTime
+    var lastLoginServer: String
 }
 
 private val Database.minecraftServerPlayer get() = this.sequenceOf(MinecraftServerPlayers)
@@ -42,12 +43,13 @@ fun MinecraftServerPlayer.update() {
     db.minecraftServerPlayer.update(this)
 }
 
-fun List<Player>.save() {
+fun List<Player>.save(sererName: String) {
     this.forEach {
         MinecraftServerPlayer {
             this.id = it.id
             this.name = it.name
             this.lastLoginTime = LocalDateTime.now()
+            this.lastLoginServer = sererName
         }.save()
     }
 }
@@ -56,4 +58,5 @@ object MinecraftServerPlayers : Table<MinecraftServerPlayer>("MinecraftServerPla
     val id = varchar("id").primaryKey().bindTo { it.id }
     val name = varchar("name").bindTo { it.name }
     val lastLoginTime = datetime("lastLoginTime").bindTo { it.lastLoginTime }
+    val lastLoginServer = varchar("lastLoginServer").bindTo { it.lastLoginServer }
 }
