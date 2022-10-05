@@ -33,6 +33,7 @@ class ISU : NfApp(), IFshApp {
                 名字: ${player.name}
                 ${if (Duration.between(player.lastLoginTime, LocalDateTime.now()).toMinutes() > 4) "不在线" else "在线"}
                 最后在线时间: ${player.lastLoginTime}
+                服务器: ${player.lastLoginServer}
             """.trimIndent()
             )
         return true
