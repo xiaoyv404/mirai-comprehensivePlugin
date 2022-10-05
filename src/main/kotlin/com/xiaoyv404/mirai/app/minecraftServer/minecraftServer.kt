@@ -103,7 +103,7 @@ class MinecraftServerStats : NfApp(), IFshApp {
         if (statusT == 1 && playerList) {
             getPlayerList(info.host, info.port, players!!).let {
                 it.save(info.name)
-                it.send(msg)
+                info.getOnlinePlayers().send(msg)
             }
         } else
             players?.players?.save(info.name)
@@ -215,7 +215,7 @@ class MinecraftServerStats : NfApp(), IFshApp {
         return playersL
     }
 
-    private suspend fun List<Player>.send(msg: MessageEvent) {
+    private suspend fun List<MinecraftServerPlayer>.send(msg: MessageEvent) {
         if (this.isEmpty())
             msg.reply("都没有玩家怎么播报列表啊（恼）", quote = true)
         else
@@ -225,7 +225,7 @@ class MinecraftServerStats : NfApp(), IFshApp {
                         msg.subject.bot.says(
                             """
                         name: ${player.name}
-                        d: ${player.id}
+                        id: ${player.id}
                         """.trimIndent()
                         )
                     }

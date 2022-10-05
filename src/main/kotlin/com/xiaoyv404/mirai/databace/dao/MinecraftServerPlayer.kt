@@ -54,6 +54,16 @@ fun List<Player>.save(sererName: String) {
     }
 }
 
+fun MinecraftServer.getOnlinePlayers(): List<MinecraftServerPlayer> {
+    val players = db.minecraftServerPlayer.filter { it.lastLoginServer eq this.name }.toMutableList()
+    val localDateTime = LocalDateTime.now()
+    players.forEachIndexed { index, it ->
+        if (Duration.between(it.lastLoginTime, localDateTime).toMinutes() > 4)
+            players[index].delete()
+    }
+    return players.toList()
+}
+
 object MinecraftServerPlayers : Table<MinecraftServerPlayer>("MinecraftServerPlayers") {
     val id = varchar("id").primaryKey().bindTo { it.id }
     val name = varchar("name").bindTo { it.name }
