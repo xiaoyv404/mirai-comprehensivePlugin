@@ -15,23 +15,26 @@ class ISU : NfApp(), IFshApp {
 
     override fun getAppDescription() = "我的世界玩家状态监控"
 
-    override fun getCommands() = arrayOf("-桃子在线不")
+    override fun getCommands() = arrayOf("-玩家状态")
 
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
-        val player = MinecraftServerPlayer {
-            this.name = "2429334909"
-        }.findByName()
+        val player = if(args.size>=2){
+             MinecraftServerPlayer {
+                this.name = args[1]
+            }.findByName()
+        }else
+            null
 
         if (player == null) {
-            msg.reply("屑桃子今天就没上线过")
+            msg.reply("无数据")
         } else
             msg.reply(
                 """
+                名字: ${player.name}
                 ${if (Duration.between(player.lastLoginTime, LocalDateTime.now()).toMinutes() > 4) "不在线" else "在线"}
                 最后在线时间: ${player.lastLoginTime}
             """.trimIndent()
             )
-
         return true
     }
 }
