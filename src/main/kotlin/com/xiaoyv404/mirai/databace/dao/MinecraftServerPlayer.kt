@@ -59,7 +59,7 @@ fun MinecraftServer.getOnlinePlayers(): List<MinecraftServerPlayer> {
     val localDateTime = LocalDateTime.now()
     players.forEachIndexed { index, it ->
         if (Duration.between(it.lastLoginTime, localDateTime).toMinutes() > 4)
-            players[index].delete()
+            players.removeAt(index)
     }
     return players.toList()
 }
