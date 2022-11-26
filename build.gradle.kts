@@ -3,7 +3,7 @@ plugins {
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.serialization") version kotlinVersion
 
-    id("net.mamoe.mirai-console") version "2.12.3"
+    id("net.mamoe.mirai-console") version "2.13.0"
 }
 
 group = "com.xiaoyv404"
@@ -30,31 +30,31 @@ repositories {
     maven("https://plugins.gradle.org/m2")
 }
 dependencies {
-    implementation("io.ktor:ktor-server-status-pages:2.1.1")
-    implementation("io.ktor:ktor-server-content-negotiation:2.1.1")
-    implementation("io.ktor:ktor-server-netty-jvm:2.1.1")
-    implementation("io.ktor:ktor-server-content-negotiation-jvm:2.1.1")
+    implementation("io.ktor:ktor-server-status-pages:2.1.3")
+    implementation("io.ktor:ktor-server-content-negotiation:2.1.3")
+    implementation("io.ktor:ktor-server-netty-jvm:2.1.3")
+    implementation("io.ktor:ktor-server-content-negotiation-jvm:2.1.3")
     implementation("io.ktor:ktor-server-auth-jvm:2.1.1")
     implementation("io.ktor:ktor-server-auth-jwt-jvm:2.1.1")
-    implementation("io.ktor:ktor-server-websockets-jvm:2.1.1")
-    implementation("io.ktor:ktor-server-sessions-jvm:2.1.1")
-    implementation("io.ktor:ktor-server-cors:2.1.1")
+    implementation("io.ktor:ktor-server-websockets-jvm:2.1.3")
+    implementation("io.ktor:ktor-server-sessions-jvm:2.1.3")
+    implementation("io.ktor:ktor-server-cors:2.1.3")
 
-    implementation("io.ktor:ktor-client-okhttp-jvm:2.1.1")
-    implementation("io.ktor:ktor-server-content-negotiation:2.1.1")
-    implementation("io.ktor:ktor-serialization-kotlinx-json:2.1.1")
+    implementation("io.ktor:ktor-client-okhttp-jvm:2.1.3")
+    implementation("io.ktor:ktor-server-content-negotiation:2.1.3")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:2.1.3")
     compileOnly("net.mamoe.yamlkt:yamlkt-jvm:0.10.2")
 
     implementation("org.ktorm:ktorm-jackson:3.5.0")
     implementation("org.ktorm:ktorm-support-postgresql:3.5.0")
 
-    implementation("ch.qos.logback:logback-classic:1.4.1")
+    implementation("ch.qos.logback:logback-classic:1.4.5")
 
     implementation("org.postgresql:postgresql:42.5.0")
     implementation("org.ktorm:ktorm-core:3.5.0")
     implementation("com.zaxxer:HikariCP:5.0.1")
 
-    implementation("io.lettuce:lettuce-core:6.2.0.RELEASE")
+    implementation("io.lettuce:lettuce-core:6.2.1.RELEASE")
 
     implementation("de.svenkubiak:jBCrypt:0.4.3")
 
@@ -68,5 +68,5 @@ dependencies {
     implementation("org.apache.commons:commons-lang3:3.12.0")
     implementation("commons-cli:commons-cli:1.5.0")
 
-    implementation("com.google.code.gson:gson:2.9.0")
+    implementation("com.google.code.gson:gson:2.10")
 }
