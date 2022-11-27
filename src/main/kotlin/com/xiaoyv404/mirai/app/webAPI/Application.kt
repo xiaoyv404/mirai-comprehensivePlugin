@@ -6,6 +6,7 @@ import com.xiaoyv404.mirai.app.webAPI.router.admin.action.*
 import com.xiaoyv404.mirai.app.webAPI.router.admin.conversation.*
 import com.xiaoyv404.mirai.app.webAPI.router.admin.conversation.group.member.*
 import com.xiaoyv404.mirai.app.webAPI.router.admin.conversation.group.member.permission.*
+import com.xiaoyv404.mirai.app.webAPI.router.admin.core.*
 import com.xiaoyv404.mirai.app.webAPI.router.admin.event.*
 import com.xiaoyv404.mirai.app.webAPI.router.admin.thesaurus.*
 import io.ktor.http.*
@@ -88,6 +89,7 @@ fun Application.module() {
                     getGroupMemberList()
                     getGroupMemberPermission()
                     thesaurusRouter()
+                    coreRouter()
                 }
             }
         }
