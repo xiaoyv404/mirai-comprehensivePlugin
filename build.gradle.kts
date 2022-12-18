@@ -50,7 +50,7 @@ dependencies {
 
     implementation("ch.qos.logback:logback-classic:1.4.5")
 
-    implementation("org.postgresql:postgresql:42.5.0")
+    implementation("org.postgresql:postgresql:42.5.1")
     implementation("org.ktorm:ktorm-core:3.5.0")
     implementation("com.zaxxer:HikariCP:5.0.1")
 
@@ -59,12 +59,12 @@ dependencies {
     implementation("de.svenkubiak:jBCrypt:0.4.3")
 
 
-    implementation("org.apache.httpcomponents:httpclient:4.5.13")
+    implementation("org.apache.httpcomponents:httpclient:4.5.14")
     implementation("org.apache.httpcomponents:fluent-hc:4.5.13")
     implementation("org.apache.httpcomponents:httpmime:4.5.13")
 
 
-    implementation("org.apache.tika:tika-core:2.3.0")
+    implementation("org.apache.tika:tika-core:2.6.0")
     implementation("org.apache.commons:commons-lang3:3.12.0")
     implementation("commons-cli:commons-cli:1.5.0")
 
