@@ -39,6 +39,7 @@ dependencies {
     implementation("io.ktor:ktor-server-websockets-jvm:2.1.3")
     implementation("io.ktor:ktor-server-sessions-jvm:2.1.3")
     implementation("io.ktor:ktor-server-cors:2.1.3")
+    implementation("io.ktor:ktor-server-content-negotiation:2.1.3")
 
     implementation("io.ktor:ktor-client-okhttp-jvm:2.1.3")
     implementation("io.ktor:ktor-server-content-negotiation:2.1.3")
