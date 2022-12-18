@@ -33,16 +33,13 @@ dependencies {
     implementation("io.ktor:ktor-server-status-pages:2.1.3")
     implementation("io.ktor:ktor-server-content-negotiation:2.1.3")
     implementation("io.ktor:ktor-server-netty-jvm:2.1.3")
-    implementation("io.ktor:ktor-server-content-negotiation-jvm:2.1.3")
     implementation("io.ktor:ktor-server-auth-jvm:2.1.1")
     implementation("io.ktor:ktor-server-auth-jwt-jvm:2.1.1")
     implementation("io.ktor:ktor-server-websockets-jvm:2.1.3")
     implementation("io.ktor:ktor-server-sessions-jvm:2.1.3")
     implementation("io.ktor:ktor-server-cors:2.1.3")
-    implementation("io.ktor:ktor-server-content-negotiation:2.1.3")
 
     implementation("io.ktor:ktor-client-okhttp-jvm:2.1.3")
-    implementation("io.ktor:ktor-server-content-negotiation:2.1.3")
     implementation("io.ktor:ktor-serialization-kotlinx-json:2.1.3")
     compileOnly("net.mamoe.yamlkt:yamlkt-jvm:0.10.2")
 
