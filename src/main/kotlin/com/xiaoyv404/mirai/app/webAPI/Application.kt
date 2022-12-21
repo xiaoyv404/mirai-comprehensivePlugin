@@ -10,7 +10,7 @@ import com.xiaoyv404.mirai.app.webAPI.router.admin.core.*
 import com.xiaoyv404.mirai.app.webAPI.router.admin.event.*
 import com.xiaoyv404.mirai.app.webAPI.router.admin.thesaurus.*
 import io.ktor.http.*
-import io.ktor.serialization.kotlinx.json.*
+import io.ktor.serialization.gson.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
@@ -38,7 +38,7 @@ fun Application.module() {
 
     val simpleJwt = WebApi.SimpleJWT("my-super-secret-for-jwt")
     install(ContentNegotiation) {
-        json()
+        gson()
     }
     install(Authentication) {
         jwt {

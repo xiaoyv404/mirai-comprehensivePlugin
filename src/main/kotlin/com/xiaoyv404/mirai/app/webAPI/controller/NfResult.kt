@@ -6,7 +6,6 @@ enum class ResultEnum(override val code: Int, override val msg: String) : IResul
     COMMON_FAILED(2003, "接口调用失败"),
     FORBIDDEN(2004, "没有权限访问资源");
 }
-@kotlinx.serialization.Serializable
 data class NfResult<T>(val code: Int, val msg: String, val data: T) {
     companion object{
         fun <T> success(data: T): NfResult<T> {

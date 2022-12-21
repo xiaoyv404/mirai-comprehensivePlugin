@@ -6,7 +6,6 @@ import com.xiaoyv404.mirai.core.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
-import kotlinx.serialization.*
 
 
 @App
@@ -25,16 +24,12 @@ class WebApi : NfApp() {
         fun sign(name: String): String = JWT.create().withClaim("name", name).sign(algorithm)
     }
 
-    @Serializable
     class SendMsg(val targets: List<Long>, val msg: String)
 
-    @Serializable
     class LoginRegister(val name: String, val password: String)
 
-    @Serializable
     class QQBind(val qqNumber: Long)
 
-    @Serializable
     data class UserSession(
         val uid: Long,
         val authority: Int,
