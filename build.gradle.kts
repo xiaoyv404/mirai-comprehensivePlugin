@@ -56,4 +56,6 @@ dependencies {
 
     implementation("org.apache.commons:commons-lang3:3.12.0")
     implementation("commons-cli:commons-cli:1.5.0")
+
+    implementation("org.apache.tika:tika-core:2.6.0")
 }
