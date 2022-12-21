@@ -47,8 +47,6 @@ dependencies {
     implementation("org.ktorm:ktorm-jackson:3.5.0")
     implementation("org.ktorm:ktorm-support-postgresql:3.5.0")
 
-    implementation("ch.qos.logback:logback-classic:1.4.5")
-
     implementation("org.postgresql:postgresql:42.5.1")
     implementation("org.ktorm:ktorm-core:3.5.0")
     implementation("com.zaxxer:HikariCP:5.0.1")
