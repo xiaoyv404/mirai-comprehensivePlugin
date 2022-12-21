@@ -47,10 +47,8 @@ dependencies {
     compileOnly("net.mamoe.yamlkt:yamlkt-jvm:0.10.2")
 
     implementation("org.ktorm:ktorm-support-postgresql:3.5.0")
-
     implementation("org.postgresql:postgresql:42.5.1")
     implementation("org.ktorm:ktorm-core:3.5.0")
-    implementation("com.zaxxer:HikariCP:5.0.1")
     implementation("io.lettuce:lettuce-core:6.2.2.RELEASE")
 
     implementation("org.apache.commons:commons-lang3:3.12.0")
