@@ -46,7 +46,6 @@ dependencies {
     implementation("io.ktor:ktor-serialization-gson:2.1.3")
     compileOnly("net.mamoe.yamlkt:yamlkt-jvm:0.10.2")
 
-    implementation("org.ktorm:ktorm-jackson:3.5.0")
     implementation("org.ktorm:ktorm-support-postgresql:3.5.0")
 
     implementation("org.postgresql:postgresql:42.5.1")
