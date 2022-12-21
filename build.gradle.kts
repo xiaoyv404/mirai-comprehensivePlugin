@@ -31,6 +31,7 @@ repositories {
 }
 dependencies {
     implementation("com.google.code.gson:gson:2.10")
+    implementation("io.ktor:ktor-serialization-gson:2.1.3")
 
     implementation("io.ktor:ktor-server-status-pages:2.1.3")
     implementation("io.ktor:ktor-server-content-negotiation:2.1.3")
@@ -43,7 +44,6 @@ dependencies {
     implementation("de.svenkubiak:jBCrypt:0.4.3")
 
     implementation("io.ktor:ktor-client-okhttp-jvm:2.1.3")
-    implementation("io.ktor:ktor-serialization-gson:2.1.3")
     compileOnly("net.mamoe.yamlkt:yamlkt-jvm:0.10.2")
 
     implementation("org.ktorm:ktorm-support-postgresql:3.5.0")
