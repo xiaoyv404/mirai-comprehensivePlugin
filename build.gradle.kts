@@ -54,14 +54,14 @@ dependencies {
     implementation("org.ktorm:ktorm-core:3.5.0")
     implementation("com.zaxxer:HikariCP:5.0.1")
 
-    implementation("io.lettuce:lettuce-core:6.2.1.RELEASE")
+    implementation("io.lettuce:lettuce-core:6.2.2.RELEASE")
 
     implementation("de.svenkubiak:jBCrypt:0.4.3")
 
 
     implementation("org.apache.httpcomponents:httpclient:4.5.14")
-    implementation("org.apache.httpcomponents:fluent-hc:4.5.13")
-    implementation("org.apache.httpcomponents:httpmime:4.5.13")
+    implementation("org.apache.httpcomponents:fluent-hc:4.5.14")
+    implementation("org.apache.httpcomponents:httpmime:4.5.14")
 
 
     implementation("org.apache.tika:tika-core:2.6.0")
