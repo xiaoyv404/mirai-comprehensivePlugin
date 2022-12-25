@@ -27,7 +27,7 @@ object Database {
         try {
             db = Database.connect(
                 hikariDataSourceProvider(),
-                logger = ConsoleLogger(threshold = LogLevel.INFO),
+                logger = ConsoleLogger(threshold = LogLevel.WARN),
                 dialect = MyPostgreSqlDialect()
             )
             rdb = lettuceDataSourceProvider().connect().async()
