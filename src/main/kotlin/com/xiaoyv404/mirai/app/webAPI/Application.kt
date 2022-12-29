@@ -9,6 +9,7 @@ import com.xiaoyv404.mirai.app.webAPI.router.admin.conversation.group.member.per
 import com.xiaoyv404.mirai.app.webAPI.router.admin.core.*
 import com.xiaoyv404.mirai.app.webAPI.router.admin.event.*
 import com.xiaoyv404.mirai.app.webAPI.router.admin.thesaurus.*
+import com.xiaoyv404.mirai.app.webAPI.router.mincreaftServer.*
 import io.ktor.http.*
 import io.ktor.serialization.gson.*
 import io.ktor.server.application.*
@@ -80,6 +81,7 @@ fun Application.module() {
             index()
             login()
             qBind()
+            minecraftSeverRouter()
             authenticate {
                 route("/admin") {
                     adminIndex()
