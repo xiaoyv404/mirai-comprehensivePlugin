@@ -16,6 +16,7 @@ interface MinecraftServerPlayer : Entity<MinecraftServerPlayer> {
     var name: String
     var lastLoginTime: LocalDateTime
     var lastLoginServer: String
+    var permissions: Long
 }
 
 object MinecraftServerPlayers : Table<MinecraftServerPlayer>("MinecraftServerPlayers") {
@@ -23,11 +24,15 @@ object MinecraftServerPlayers : Table<MinecraftServerPlayer>("MinecraftServerPla
     val name = varchar("name").bindTo { it.name }
     val lastLoginTime = datetime("lastLoginTime").bindTo { it.lastLoginTime }
     val lastLoginServer = varchar("lastLoginServer").bindTo { it.lastLoginServer }
-
+    val permissions = long("permissions").bindTo { it.permissions }
 }
 
-enum class Permissions(){
-
+enum class Permissions(val code: Long, val permissionName: String) {
+    Submit(0,"服主"),
+    OP(1,"妖怪贤者"),
+    WorldEditor(2,"工业妖怪"),
+    NPCEditor(3,"读心妖怪"),
+    Basic(4,"妖怪")
 }
 
 private val org.ktorm.database.Database.minecraftServerPlayer get() = this.sequenceOf(MinecraftServerPlayers)
@@ -66,7 +71,8 @@ fun List<Player>.save(sererName: String) {
 }
 
 fun MinecraftServer.getOnlinePlayers(): List<MinecraftServerPlayer> {
-    val players = Database.db.minecraftServerPlayer.filter { MinecraftServerPlayers.lastLoginServer eq this.name }.toMutableList()
+    val players =
+        Database.db.minecraftServerPlayer.filter { MinecraftServerPlayers.lastLoginServer eq this.name }.toMutableList()
     val localDateTime = LocalDateTime.now()
     players.removeIf {
         Duration.between(it.lastLoginTime, localDateTime).toMinutes() > 4
