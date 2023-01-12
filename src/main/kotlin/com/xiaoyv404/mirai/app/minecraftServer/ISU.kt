@@ -35,6 +35,7 @@ class ISU : NfApp(), IFshApp {
                 最后在线时间: ${player.lastLoginTime}
                 服务器: ${player.lastLoginServer}
                 UUID: ${player.id}
+                身份: ${player.permissions?.getPermissionByCode()?.permissionName ?: "毛玉"}
             """.trimIndent()
             )
         return true
