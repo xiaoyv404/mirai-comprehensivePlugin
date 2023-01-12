@@ -26,6 +26,16 @@ fun Group.noticeSwitchRead(func: String): Boolean {
     }.isNotEmpty()
 }
 
+/**
+ * 权限检查函数
+ * @author xiaoyv_404
+ * @create 2023/1/12
+ *
+ * @param uid
+ * @param gid
+ * @param func
+ * @return True 无权限 False 有权限
+ */
 fun authorityIdentification(uid: Long, gid: Long, func: String): Boolean {
     val gp = Groups.permission
     val sUid = uid.toString()
