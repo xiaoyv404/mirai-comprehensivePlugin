@@ -11,11 +11,11 @@ import java.time.*
 class ISU : NfApp(), IFshApp {
     override fun getAppName() = "ISU"
 
-    override fun getVersion() = "1.0.0"
+    override fun getVersion() = "1.0.1"
 
     override fun getAppDescription() = "我的世界玩家状态监控"
 
-    override fun getCommands() = arrayOf("-玩家状态")
+    override fun getCommands() = arrayOf("-玩家状态", "-有妖怪在线吗")
 
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
         return when (args[0]) {
