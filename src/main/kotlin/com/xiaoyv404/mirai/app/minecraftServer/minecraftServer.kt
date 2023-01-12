@@ -281,7 +281,7 @@ class MinecraftServerStats : NfApp(), IFshApp {
             msg.reply("更新完成")
         else {
             msg.reply(
-                "未找到: ${notfoundPlayers.joinToString(", ")}"
+                "未找到: ${notfoundPlayers.joinToString("，")}"
             )
         }
 
