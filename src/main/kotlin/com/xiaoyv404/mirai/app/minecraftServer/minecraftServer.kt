@@ -272,7 +272,7 @@ class MinecraftServerStats : NfApp(), IFshApp {
             }
 
             MinecraftServerPlayer {
-                this.name = player.id
+                this.id = player.id
                 this.permissions = Permissions.valueOf(permissionName).code
             }.update()
         }
