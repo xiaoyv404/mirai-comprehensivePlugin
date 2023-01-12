@@ -4,7 +4,9 @@ import com.xiaoyv404.mirai.*
 import com.xiaoyv404.mirai.app.fsh.*
 import com.xiaoyv404.mirai.core.*
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
+import com.xiaoyv404.mirai.databace.dao.*
 import com.xiaoyv404.mirai.databace.dao.mincraftServer.*
+import com.xiaoyv404.mirai.databace.dao.mincraftServer.Permissions
 import com.xiaoyv404.mirai.tool.*
 import kotlinx.coroutines.*
 import kotlinx.serialization.*
@@ -47,7 +49,7 @@ class MinecraftServerStats : NfApp(), IFshApp {
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
         val cmdLine = IFshApp.cmdLine(options, args)
 
-        if (args[0] == "-UpdatePermission") {
+        if (args[0] == "-UpdatePermission" && authorityIdentification(msg.uid(),msg.gid(),"MinecraftServerPlayerPermission")) {
             updatePermission(msg,args.getOrNull(1)?:return false)
             return true
         }
