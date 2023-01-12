@@ -49,12 +49,13 @@ class MinecraftServerStats : NfApp(), IFshApp {
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
         val cmdLine = IFshApp.cmdLine(options, args)
 
-        if (args[0] == "-UpdatePermission" && authorityIdentification(
-                msg.uid(),
-                msg.gid(),
-                "MinecraftServerPlayerPermission"
+        if (args[0] == "-UpdatePermission") {
+            if (msg.authorityIdentification(
+                    "MinecraftServerPlayerPermission"
+                )
             )
-        ) {
+                return false
+
             updatePermission(msg, args.getOrNull(1) ?: return false)
             return true
         }
