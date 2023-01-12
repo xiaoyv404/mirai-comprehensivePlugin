@@ -3,7 +3,7 @@ package com.xiaoyv404.mirai.app.minecraftServer
 import com.xiaoyv404.mirai.app.fsh.*
 import com.xiaoyv404.mirai.core.*
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
-import com.xiaoyv404.mirai.databace.dao.*
+import com.xiaoyv404.mirai.databace.dao.mincraftServer.*
 import net.mamoe.mirai.event.events.*
 import java.time.*
 

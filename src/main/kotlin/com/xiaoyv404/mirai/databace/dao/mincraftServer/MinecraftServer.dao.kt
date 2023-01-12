@@ -1,4 +1,4 @@
-package com.xiaoyv404.mirai.databace.dao
+package com.xiaoyv404.mirai.databace.dao.mincraftServer
 
 import com.xiaoyv404.mirai.databace.Database.db
 import org.ktorm.database.*
@@ -19,7 +19,7 @@ interface MinecraftServer : Entity<MinecraftServer> {
 private val Database.minecraftServers get() = this.sequenceOf(MinecraftServers)
 
 fun MinecraftServer.findById(): MinecraftServer? {
-    return db.minecraftServers.find { it.id eq this.id }
+    return db.minecraftServers.find { MinecraftServers.id eq this.id }
 }
 
 fun MinecraftServer.update(){
@@ -31,7 +31,7 @@ fun getAll(): List<MinecraftServer> {
 }
 
 fun String.findByName(): MinecraftServer?{
-    return db.minecraftServers.find { it.name eq this }
+    return db.minecraftServers.find { MinecraftServers.name eq this }
 }
 
 

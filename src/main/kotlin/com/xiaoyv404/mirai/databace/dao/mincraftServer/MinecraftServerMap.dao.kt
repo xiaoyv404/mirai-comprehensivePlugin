@@ -1,4 +1,4 @@
-package com.xiaoyv404.mirai.databace.dao
+package com.xiaoyv404.mirai.databace.dao.mincraftServer
 
 import com.xiaoyv404.mirai.databace.Database.db
 import org.ktorm.database.Database
@@ -20,11 +20,11 @@ interface MinecraftServerMap : Entity<MinecraftServerMap> {
 private val Database.minecraftServerMap get() = this.sequenceOf(MinecraftServerMaps)
 
 fun MinecraftServerMap.findByServerId(): List<MinecraftServerMap> {
-    return db.minecraftServerMap.filter { it.serverID eq this.serverID }.toList()
+    return db.minecraftServerMap.filter { MinecraftServerMaps.serverID eq this.serverID }.toList()
 }
 
 fun MinecraftServerMap.findByGroupId(): List<MinecraftServerMap> {
-    return db.minecraftServerMap.filter { it.groupID eq this.groupID }.toList()
+    return db.minecraftServerMap.filter { MinecraftServerMaps.groupID eq this.groupID }.toList()
 }
 
 object MinecraftServerMaps : Table<MinecraftServerMap>("MinecraftServer_Map") {
