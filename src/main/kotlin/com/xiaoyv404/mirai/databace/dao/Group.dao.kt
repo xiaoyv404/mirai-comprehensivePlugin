@@ -72,7 +72,8 @@ data class Permissions(
     val ThesaurusAdd: Permission,
     val SauceNaoSearch: Permission,
     val BiliBiliParsing: Permission,
-    val ThesaurusResponse: Permission
+    val ThesaurusResponse: Permission,
+    val MinecraftServerPlayerPermission: Permission
 )
 
 data class Permission(
