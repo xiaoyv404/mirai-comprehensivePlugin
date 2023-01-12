@@ -18,12 +18,20 @@ class ISU : NfApp(), IFshApp {
     override fun getCommands() = arrayOf("-玩家状态")
 
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
-        val player = if(args.size>=2){
-             MinecraftServerPlayer {
+        return when (args[0]) {
+            "-玩家状态" -> isOnline(args, msg)
+            "-有妖怪在线吗" -> findOP(msg)
+            else -> false
+        }
+    }
+
+    private suspend fun isOnline(args: Array<String>, msg: MessageEvent): Boolean {
+        val player = if (args.size >= 2) {
+            MinecraftServerPlayer {
                 this.name = args[1]
             }.findByName()
-        }else
-            null
+        } else
+            return false
 
         if (player == null) {
             msg.reply("无数据")
@@ -38,6 +46,19 @@ class ISU : NfApp(), IFshApp {
                 身份: ${player.permissions?.getPermissionByCode()?.permissionName ?: "毛玉"}
             """.trimIndent()
             )
+        return true
+    }
+
+    private suspend fun findOP(msg: MessageEvent): Boolean {
+        val op = MinecraftServerPlayer().getAllOnlinePlayers()
+        op.removeIf {
+            it.permissions == null
+        }
+        if (op.isEmpty())
+            msg.reply("没有呢 :(")
+        else
+            msg.reply("有: ${op.joinToString(",")}")
+
         return true
     }
 }

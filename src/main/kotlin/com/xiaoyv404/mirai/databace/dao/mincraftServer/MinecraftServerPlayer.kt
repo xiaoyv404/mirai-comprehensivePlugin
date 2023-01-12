@@ -9,7 +9,6 @@ import java.time.*
 
 
 interface MinecraftServerPlayer : Entity<MinecraftServerPlayer> {
-
     companion object : Entity.Factory<MinecraftServerPlayer>()
 
     var id: String
@@ -17,6 +16,14 @@ interface MinecraftServerPlayer : Entity<MinecraftServerPlayer> {
     var lastLoginTime: LocalDateTime
     var lastLoginServer: String
     var permissions: Long?
+    fun getAllOnlinePlayers(): MutableList<MinecraftServerPlayer> {
+        val players = Database.db.minecraftServerPlayer.toMutableList()
+        val localDateTime = LocalDateTime.now()
+        players.removeIf {
+            Duration.between(it.lastLoginTime, localDateTime).toMinutes() > 4
+        }
+        return players
+    }
 }
 
 object MinecraftServerPlayers : Table<MinecraftServerPlayer>("MinecraftServerPlayers") {
