@@ -49,8 +49,13 @@ class MinecraftServerStats : NfApp(), IFshApp {
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
         val cmdLine = IFshApp.cmdLine(options, args)
 
-        if (args[0] == "-UpdatePermission" && authorityIdentification(msg.uid(),msg.gid(),"MinecraftServerPlayerPermission")) {
-            updatePermission(msg,args.getOrNull(1)?:return false)
+        if (args[0] == "-UpdatePermission" && authorityIdentification(
+                msg.uid(),
+                msg.gid(),
+                "MinecraftServerPlayerPermission"
+            )
+        ) {
+            updatePermission(msg, args.getOrNull(1) ?: return false)
             return true
         }
 
@@ -256,13 +261,21 @@ class MinecraftServerStats : NfApp(), IFshApp {
         val players = Regex(".+").findAll(msg.nextMessage().contentToString())
         val notfoundPlayers = mutableListOf<String>()
         players.forEach {
-            val effects = MinecraftServerPlayer {
+            val player = MinecraftServerPlayer {
                 this.name = it.value
+            }.findByName()
+
+            if (player == null) {
+                notfoundPlayers.add(it.value)
+                return@forEach
+            }
+
+            MinecraftServerPlayer {
+                this.name = player.id
                 this.permissions = Permissions.valueOf(permissionName).code
             }.update()
-            if (effects == 0)
-                notfoundPlayers.add(it.value)
         }
+
         if (notfoundPlayers.isEmpty())
             msg.reply("更新完成")
         else {
@@ -270,6 +283,7 @@ class MinecraftServerStats : NfApp(), IFshApp {
                 "未找到: ${notfoundPlayers.joinToString(", ")}"
             )
         }
+
     }
 }
 
