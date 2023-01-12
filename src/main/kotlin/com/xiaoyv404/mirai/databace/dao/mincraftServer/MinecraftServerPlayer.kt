@@ -16,7 +16,7 @@ interface MinecraftServerPlayer : Entity<MinecraftServerPlayer> {
     var name: String
     var lastLoginTime: LocalDateTime
     var lastLoginServer: String
-    var permissions: Long
+    var permissions: Long?
 }
 
 object MinecraftServerPlayers : Table<MinecraftServerPlayer>("MinecraftServerPlayers") {
@@ -33,6 +33,10 @@ enum class Permissions(val code: Long, val permissionName: String) {
     WorldEditor(2,"工业妖怪"),
     NPCEditor(3,"读心妖怪"),
     Basic(4,"妖怪")
+}
+
+fun Long.getPermissionByCode(): Permissions {
+    return Permissions.values()[this.toInt()]
 }
 
 private val org.ktorm.database.Database.minecraftServerPlayer get() = this.sequenceOf(MinecraftServerPlayers)

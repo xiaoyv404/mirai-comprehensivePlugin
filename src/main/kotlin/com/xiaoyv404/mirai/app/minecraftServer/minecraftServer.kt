@@ -226,6 +226,7 @@ class MinecraftServerStats : NfApp(), IFshApp {
                             """
                         name: ${player.name}
                         id: ${player.id}
+                        身份: ${player.permissions?.getPermissionByCode()?.permissionName?:"毛玉"}
                         """.trimIndent()
                         )
                     }
