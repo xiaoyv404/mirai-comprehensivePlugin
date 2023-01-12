@@ -13,6 +13,7 @@ import net.mamoe.mirai.*
 import net.mamoe.mirai.contact.*
 import net.mamoe.mirai.contact.Contact.Companion.uploadImage
 import net.mamoe.mirai.event.events.*
+import net.mamoe.mirai.message.*
 import net.mamoe.mirai.message.code.*
 import net.mamoe.mirai.message.data.*
 import org.apache.commons.cli.*
@@ -25,7 +26,17 @@ class MinecraftServerStats : NfApp(), IFshApp {
     override fun getVersion() = "1.0.2"
     override fun getAppDescription() = "我的世界服务器状态监测"
     override fun getCommands() =
-        arrayOf("-服务器熟了没", "-服务器状态", "-土豆熟了没", "-土豆状态", "-破推头熟了没", "-破推头状态", "-ServerStatus", "-PotatoStatus")
+        arrayOf(
+            "-服务器熟了没",
+            "-服务器状态",
+            "-土豆熟了没",
+            "-土豆状态",
+            "-破推头熟了没",
+            "-破推头状态",
+            "-ServerStatus",
+            "-PotatoStatus",
+            "-UpdatePermission"
+        )
 
 
     private val options = Options().apply {
@@ -35,6 +46,11 @@ class MinecraftServerStats : NfApp(), IFshApp {
 
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
         val cmdLine = IFshApp.cmdLine(options, args)
+
+        if (args[0] == "-UpdatePermission") {
+            updatePermission(msg,args.getOrNull(1)?:return false)
+            return true
+        }
 
         val info = if (cmdLine.hasOption("server"))
             cmdLine.getOptionValue("server").findByName()
@@ -226,12 +242,32 @@ class MinecraftServerStats : NfApp(), IFshApp {
                             """
                         name: ${player.name}
                         id: ${player.id}
-                        身份: ${player.permissions?.getPermissionByCode()?.permissionName?:"毛玉"}
+                        身份: ${player.permissions?.getPermissionByCode()?.permissionName ?: "毛玉"}
                         """.trimIndent()
                         )
                     }
                 }.toMessageChain(), quote = false
             )
+    }
+
+    private suspend fun updatePermission(msg: MessageEvent, permissionName: String) {
+        val players = Regex(".+").findAll(msg.nextMessage().contentToString())
+        val notfoundPlayers = mutableListOf<String>()
+        players.forEach {
+            val effects = MinecraftServerPlayer {
+                this.name = it.value
+                this.permissions = Permissions.valueOf(permissionName).code
+            }.update()
+            if (effects == 0)
+                notfoundPlayers.add(it.value)
+        }
+        if (notfoundPlayers.isEmpty())
+            msg.reply("更新完成")
+        else {
+            msg.reply(
+                "未找到: ${notfoundPlayers.joinToString(", ")}"
+            )
+        }
     }
 }
 

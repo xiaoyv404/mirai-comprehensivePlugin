@@ -59,8 +59,8 @@ fun MinecraftServerPlayer.save(): Boolean {
     }
 }
 
-fun MinecraftServerPlayer.update() {
-    Database.db.minecraftServerPlayer.update(this)
+fun MinecraftServerPlayer.update(): Int {
+    return Database.db.minecraftServerPlayer.update(this)
 }
 
 fun List<Player>.save(sererName: String) {
