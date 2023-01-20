@@ -250,7 +250,6 @@ class MinecraftServerStats : NfApp(), IFshApp {
                             """
                         name: ${player.name}
                         id: ${player.id}
-                        服务器: ${player.lastLoginServer}
                         身份: ${player.permissions?.getPermissionByCode()?.permissionName ?: "毛玉"}
                         """.trimIndent()
                         )
