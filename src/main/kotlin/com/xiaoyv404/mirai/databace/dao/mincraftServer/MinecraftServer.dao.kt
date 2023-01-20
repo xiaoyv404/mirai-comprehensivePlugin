@@ -22,8 +22,8 @@ fun MinecraftServer.findById(): MinecraftServer? {
     return db.minecraftServers.find { MinecraftServers.id eq this.id }
 }
 
-fun MinecraftServer.update(){
-    db.minecraftServers.update(this)
+fun MinecraftServer.update(): Int {
+    return db.minecraftServers.update(this)
 }
 
 fun getAll(): List<MinecraftServer> {

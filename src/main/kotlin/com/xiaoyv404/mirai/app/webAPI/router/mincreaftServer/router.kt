@@ -4,6 +4,7 @@ import io.ktor.server.routing.*
 
 fun Route.minecraftSeverRouter(){
     route("/minecraftSever"){
-        getAllServer()
+        server()
+        player()
     }
 }
