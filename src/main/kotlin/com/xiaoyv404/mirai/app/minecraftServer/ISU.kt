@@ -26,7 +26,7 @@ class ISU : NfApp(), IFshApp {
     }
 
     private suspend fun isOnline(args: Array<String>, msg: MessageEvent): Boolean {
-        val player = if (args.size >= 2) {
+        val player = if (args.size >= 2 || args[0] == "-桃呢") {
             MinecraftServerPlayer {
                 this.name = if (args[0] == "-桃呢") "2429334909" else args[1]
             }.findByName()
