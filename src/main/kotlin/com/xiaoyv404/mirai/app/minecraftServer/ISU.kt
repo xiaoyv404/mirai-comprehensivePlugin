@@ -15,12 +15,12 @@ class ISU : NfApp(), IFshApp {
 
     override fun getAppDescription() = "我的世界玩家状态监控"
 
-    override fun getCommands() = arrayOf("-玩家状态", "-有妖怪在线吗")
+    override fun getCommands() = arrayOf("-玩家状态", "-有妖怪在线吗", "-桃呢", "-有无妖怪")
 
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
         return when (args[0]) {
-            "-玩家状态" -> isOnline(args, msg)
-            "-有妖怪在线吗" -> findOP(msg)
+            "-玩家状态", "-桃呢" -> isOnline(args, msg)
+            "-有妖怪在线吗", "-有无妖怪" -> findOP(msg)
             else -> false
         }
     }
@@ -28,7 +28,7 @@ class ISU : NfApp(), IFshApp {
     private suspend fun isOnline(args: Array<String>, msg: MessageEvent): Boolean {
         val player = if (args.size >= 2) {
             MinecraftServerPlayer {
-                this.name = args[1]
+                this.name = if (args[0] == "-桃呢") "2429334909" else args[1]
             }.findByName()
         } else
             return false
