@@ -37,7 +37,8 @@ class MinecraftServerStats : NfApp(), IFshApp {
             "-破推头状态",
             "-ServerStatus",
             "-PotatoStatus",
-            "-UpdatePermission"
+            "-UpdatePermission",
+            "-更新权限"
         )
 
 
@@ -49,13 +50,14 @@ class MinecraftServerStats : NfApp(), IFshApp {
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
         val cmdLine = IFshApp.cmdLine(options, args)
 
-        if (args[0] == "-UpdatePermission") {
+        if (args[0] == "-UpdatePermission" || args[0] == "-更新权限") {
             if (msg.authorityIdentification(
                     "MinecraftServerPlayerPermission"
                 )
             )
                 return false
 
+            msg.reply("请发送要更新的玩家名称，一行一个")
             updatePermission(msg, args.getOrNull(1) ?: return false)
             return true
         }
@@ -261,6 +263,18 @@ class MinecraftServerStats : NfApp(), IFshApp {
     private suspend fun updatePermission(msg: MessageEvent, permissionName: String) {
         val players = Regex(".+").findAll(msg.nextMessage().contentToString())
         val notfoundPlayers = mutableListOf<String>()
+        val permissionCode = try {
+            Permissions.valueOf(permissionName).code
+        } catch (_: IllegalArgumentException) {
+            Permissions.values().find {
+                it.permissionName == permissionName
+            }?.code
+        }
+        if (permissionCode == null) {
+            msg.reply("未找到相应名称的权限")
+            return
+        }
+
         players.forEach {
             val player = MinecraftServerPlayer {
                 this.name = it.value
@@ -273,7 +287,7 @@ class MinecraftServerStats : NfApp(), IFshApp {
 
             MinecraftServerPlayer {
                 this.id = player.id
-                this.permissions = Permissions.valueOf(permissionName).code
+                this.permissions = permissionCode
             }.update()
         }
 
