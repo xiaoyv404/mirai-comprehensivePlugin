@@ -12,7 +12,9 @@ class MemberJoinRequest : NfAppMemberJoinRequestHandler() {
             return
 
         val requester = event.bot.getStranger(event.fromId)?: return
-        if(requester.queryProfile().qLevel > 64)
+        if(requester.queryProfile().qLevel >= 32) {
             event.accept()
+            event.bot.getFriend(2083664136)!!.sendMessage("通过 ${event.fromNick}的群申请")
+        }
     }
 }
