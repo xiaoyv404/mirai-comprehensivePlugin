@@ -15,6 +15,7 @@ class MemberJoinRequest : NfAppMemberJoinRequestHandler() {
         if(requester.queryProfile().qLevel >= 32) {
             event.accept()
             event.bot.getFriend(2083664136)!!.sendMessage("通过 ${event.fromNick}的群申请")
-        }
+        }else
+            event.bot.getFriend(2083664136)!!.sendMessage(requester.queryProfile().qLevel.toString())
     }
 }
