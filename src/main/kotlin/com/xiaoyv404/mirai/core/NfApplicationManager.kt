@@ -1,13 +1,11 @@
 package com.xiaoyv404.mirai.core
 
-import com.xiaoyv404.mirai.PluginMain
-import com.xiaoyv404.mirai.app.fsh.IFshApp
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import net.mamoe.mirai.event.GlobalEventChannel
-import net.mamoe.mirai.event.events.MessageEvent
-import net.mamoe.mirai.event.events.MessageRecallEvent
+import com.xiaoyv404.mirai.*
+import com.xiaoyv404.mirai.app.fsh.*
+import com.xiaoyv404.mirai.app.groupHelper.*
+import kotlinx.coroutines.*
+import net.mamoe.mirai.event.*
+import net.mamoe.mirai.event.events.*
 
 object NfApplicationManager {
     private val log = PluginMain.logger
@@ -37,6 +35,14 @@ object NfApplicationManager {
 
         if (app is NfAppMessageRecallHandler){
             GlobalEventChannel.subscribeAlways(MessageRecallEvent::class.java){
+                GlobalScope.launch {
+                    app.handleMessage(it)
+                }
+            }
+            log.info("注册撤回消息处理器${app.getAppName()}")
+        }
+        if (app is NfAppMemberJoinRequestHandler){
+            GlobalEventChannel.subscribeAlways(MemberJoinRequestEvent::class.java){
                 GlobalScope.launch {
                     app.handleMessage(it)
                 }
