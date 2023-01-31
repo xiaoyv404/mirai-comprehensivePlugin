@@ -13,10 +13,7 @@ class MemberJoinRequest : NfAppMemberJoinRequestHandler() {
             return
 
         val profile = Mirai.queryProfile(event.bot, event.fromId)
-        if(profile.qLevel >= 32) {
+        if(profile.qLevel >= 32)
             event.accept()
-            event.bot.getFriend(2083664136)!!.sendMessage("通过 ${event.fromNick}的群申请")
-        }else
-            event.bot.getFriend(2083664136)!!.sendMessage(profile.qLevel.toString())
     }
 }
