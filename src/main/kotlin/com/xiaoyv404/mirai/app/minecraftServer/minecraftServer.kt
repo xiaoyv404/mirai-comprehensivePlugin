@@ -117,14 +117,15 @@ class MinecraftServerStats : NfApp(), IFshApp {
             }.findByServerId().forEach {
                 (bot.getGroup(it.groupID) ?: return@forEach).sendMessage(data)
             }
-            MinecraftServer {
-                id = info.id
-                status = statusT
-                playerNum = players?.online ?: 0
-                playerMaxNum = players?.max ?: info.playerMaxNum
-            }.update()
         } else
             msg.reply(data, false)
+
+        MinecraftServer {
+            id = info.id
+            status = statusT
+            playerNum = players?.online ?: 0
+            playerMaxNum = players?.max ?: info.playerMaxNum
+        }.update()
 
         //如果有需求并且服务器在线，发送玩家列表
         //并更新在线玩家列表
@@ -175,6 +176,11 @@ class MinecraftServerStats : NfApp(), IFshApp {
                     playerMaxNum = information.serverInformationFormat?.players?.max ?: info.playerMaxNum
                 }.update()
             } else {
+                MinecraftServer {
+                    id = info.id
+                    playerNum = information.serverInformationFormat?.players?.online ?: 0
+                    playerMaxNum = information.serverInformationFormat?.players?.max ?: info.playerMaxNum
+                }.update()
                 return@launch
             }
 
