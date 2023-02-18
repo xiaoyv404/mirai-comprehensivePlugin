@@ -7,7 +7,7 @@ import com.xiaoyv404.mirai.databace.dao.mincraftServer.*
 import net.mamoe.mirai.contact.Contact.Companion.uploadImage
 import net.mamoe.mirai.event.events.*
 import net.mamoe.mirai.message.data.*
-
+@App
 class MinecraftServerList : NfApp(), IFshApp {
     override fun getAppName() = "MinecraftServerList"
     override fun getVersion() = "1.0.2"
