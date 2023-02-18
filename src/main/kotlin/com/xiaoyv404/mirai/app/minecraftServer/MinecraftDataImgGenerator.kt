@@ -212,7 +212,7 @@ class MinecraftDataImgGenerator {
         g2d.drawString("/$playerMaxNum", roundX + 140 + 130, roundY + 55 + 55 + 12)
 
         g2d.drawImage(
-            ImageIO.read(File("F:\\code\\kotlin\\test\\mcg_data\\logo.png")),
+            ImageIO.read(PluginMain.resolveDataFile("resources/Minecraft/logo.png")),
             (roundX + 365),
             roundY + 3, 53, 53,
             null
