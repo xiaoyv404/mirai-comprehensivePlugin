@@ -177,8 +177,8 @@ class MinecraftDataImgGenerator {
                 g2d,
                 10 + k * 150,
                 v.name.uppercase(Locale.getDefault()),
-                String.format("%s%03d", v.playerNum),
-                String.format("%s%03d", v.playerMaxNum),
+                "%03d".format(v.playerNum),
+                "%03d".format(v.playerMaxNum),
                 font,
                 font6
             )
