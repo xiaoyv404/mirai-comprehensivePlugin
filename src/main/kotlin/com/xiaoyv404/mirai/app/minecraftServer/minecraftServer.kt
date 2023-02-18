@@ -120,6 +120,8 @@ class MinecraftServerStats : NfApp(), IFshApp {
             MinecraftServer {
                 id = info.id
                 status = statusT
+                playerNum = players?.online ?: 0
+                playerMaxNum = players?.max ?: info.playerMaxNum
             }.update()
         } else
             msg.reply(data, false)
@@ -169,6 +171,8 @@ class MinecraftServerStats : NfApp(), IFshApp {
                 MinecraftServer {
                     id = info.id
                     status = statusT
+                    playerNum = information.serverInformationFormat?.players?.online ?: 0
+                    playerMaxNum = information.serverInformationFormat?.players?.max ?: info.playerMaxNum
                 }.update()
             } else {
                 return@launch
