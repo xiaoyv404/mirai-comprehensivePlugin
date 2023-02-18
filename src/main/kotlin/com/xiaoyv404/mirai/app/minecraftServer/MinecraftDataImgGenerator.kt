@@ -5,6 +5,7 @@ import com.xiaoyv404.mirai.databace.dao.mincraftServer.*
 import java.awt.*
 import java.awt.image.*
 import java.io.*
+import java.util.*
 import javax.imageio.*
 import kotlin.math.*
 
@@ -175,7 +176,7 @@ class MinecraftDataImgGenerator {
             drawOne(
                 g2d,
                 10 + k * 150,
-                v.name,
+                v.name.uppercase(Locale.getDefault()),
                 String.format("%s%03d", v.playerNum),
                 String.format("%s%03d", v.playerMaxNum),
                 font,
