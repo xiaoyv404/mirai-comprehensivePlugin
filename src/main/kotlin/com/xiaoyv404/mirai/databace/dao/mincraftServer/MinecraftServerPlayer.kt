@@ -106,12 +106,6 @@ suspend fun List<MinecraftServerPlayer>.send(msg: MessageEvent) {
                 msg.subject.bot.says(
                     """
                         名字: ${player.name}
-                        ${
-                        if (Duration.between(player.lastLoginTime, LocalDateTime.now())
-                                .toMinutes() > 4
-                        ) "不在线" else "在线"
-                    }
-                        最后在线时间: ${player.lastLoginTime}
                         服务器: ${player.lastLoginServer}
                         UUID: ${player.id}
                         身份: ${player.permissions?.getPermissionByCode()?.permissionName ?: "毛玉"}
