@@ -1,7 +1,10 @@
 package com.xiaoyv404.mirai.databace.dao.mincraftServer
 
 import com.xiaoyv404.mirai.app.minecraftServer.*
+import com.xiaoyv404.mirai.core.MessageProcessor.reply
 import com.xiaoyv404.mirai.databace.*
+import net.mamoe.mirai.event.events.*
+import net.mamoe.mirai.message.data.*
 import org.ktorm.dsl.*
 import org.ktorm.entity.*
 import org.ktorm.schema.*
@@ -16,12 +19,12 @@ interface MinecraftServerPlayer : Entity<MinecraftServerPlayer> {
     var lastLoginTime: LocalDateTime
     var lastLoginServer: String
     var permissions: Long?
-    fun getAllOnlinePlayers(): MutableList<MinecraftServerPlayer> {
-        val players = Database.db.minecraftServerPlayer.toMutableList()
-        val localDateTime = LocalDateTime.now()
-        players.removeIf {
-            Duration.between(it.lastLoginTime, localDateTime).toMinutes() > 4
-        }
+    fun getAllOnlinePlayers(): List<MinecraftServerPlayer> {
+        val players =
+            Database.db.minecraftServerPlayer.filter {
+                MinecraftServerPlayers.lastLoginTime between (LocalDateTime.now()
+                    .plusMinutes(-4))..(LocalDateTime.now())
+            }.toList()
         return players
     }
 }
@@ -84,10 +87,37 @@ fun List<Player>.save(sererName: String) {
 
 fun MinecraftServer.getOnlinePlayers(): List<MinecraftServerPlayer> {
     val players =
-        Database.db.minecraftServerPlayer.filter { MinecraftServerPlayers.lastLoginServer eq this.name }.toMutableList()
-    val localDateTime = LocalDateTime.now()
-    players.removeIf {
-        Duration.between(it.lastLoginTime, localDateTime).toMinutes() > 4
+        Database.db.minecraftServerPlayer.filter {
+            MinecraftServerPlayers.lastLoginTime between (LocalDateTime.now()
+                .plusMinutes(-4))..(LocalDateTime.now()) and (MinecraftServerPlayers.lastLoginServer eq this.name)
+        }.toList()
+    return players
+}
+
+suspend fun List<MinecraftServerPlayer>.send(msg: MessageEvent) {
+    if (this.isEmpty()) {
+        msg.reply("都没有玩家怎么播报列表啊（恼）", quote = true)
+        return
     }
-    return players.toList()
+
+    msg.reply(
+        buildForwardMessage(msg.subject) {
+            this@send.forEach { player ->
+                msg.subject.bot.says(
+                    """
+                        名字: ${player.name}
+                        ${
+                        if (Duration.between(player.lastLoginTime, LocalDateTime.now())
+                                .toMinutes() > 4
+                        ) "不在线" else "在线"
+                    }
+                        最后在线时间: ${player.lastLoginTime}
+                        服务器: ${player.lastLoginServer}
+                        UUID: ${player.id}
+                        身份: ${player.permissions?.getPermissionByCode()?.permissionName ?: "毛玉"}
+                    """.trimIndent()
+                )
+            }
+        }.toMessageChain(), quote = false
+    )
 }

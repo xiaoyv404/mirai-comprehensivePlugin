@@ -234,24 +234,5 @@ class MinecraftServerStats : NfApp(), IFshApp {
         return playersL
     }
 
-    private suspend fun List<MinecraftServerPlayer>.send(msg: MessageEvent) {
-        if (this.isEmpty())
-            msg.reply("都没有玩家怎么播报列表啊（恼）", quote = true)
-        else
-            msg.reply(
-                buildForwardMessage(msg.subject) {
-                    this@send.forEach { player ->
-                        msg.subject.bot.says(
-                            """
-                        name: ${player.name}
-                        id: ${player.id}
-                        身份: ${player.permissions?.getPermissionByCode()?.permissionName ?: "毛玉"}
-                        """.trimIndent()
-                        )
-                    }
-                }.toMessageChain(), quote = false
-            )
-    }
-
 }
 

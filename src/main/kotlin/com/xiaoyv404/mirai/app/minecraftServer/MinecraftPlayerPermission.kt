@@ -10,9 +10,9 @@ import net.mamoe.mirai.message.*
 
 @App
 class MinecraftPlayerPermission : NfApp(), IFshApp {
-    override fun getAppName() = "MinecraftServerStats"
-    override fun getVersion() = "1.0.2"
-    override fun getAppDescription() = "我的世界服务器状态监测"
+    override fun getAppName() = "MinecraftPlayerPermission"
+    override fun getVersion() = "1.0.0"
+    override fun getAppDescription() = "我的世界玩家权限"
     override fun getCommands() =
         arrayOf(
             "-UpdatePermission",
