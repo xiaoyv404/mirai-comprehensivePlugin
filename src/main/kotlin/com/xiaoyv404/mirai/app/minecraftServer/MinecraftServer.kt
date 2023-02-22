@@ -4,9 +4,7 @@ import com.xiaoyv404.mirai.*
 import com.xiaoyv404.mirai.app.fsh.*
 import com.xiaoyv404.mirai.core.*
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
-import com.xiaoyv404.mirai.databace.dao.*
 import com.xiaoyv404.mirai.databace.dao.mincraftServer.*
-import com.xiaoyv404.mirai.databace.dao.mincraftServer.Permissions
 import com.xiaoyv404.mirai.tool.*
 import kotlinx.coroutines.*
 import kotlinx.serialization.*
@@ -15,7 +13,6 @@ import net.mamoe.mirai.*
 import net.mamoe.mirai.contact.*
 import net.mamoe.mirai.contact.Contact.Companion.uploadImage
 import net.mamoe.mirai.event.events.*
-import net.mamoe.mirai.message.*
 import net.mamoe.mirai.message.code.*
 import net.mamoe.mirai.message.data.*
 import org.apache.commons.cli.*
@@ -50,29 +47,18 @@ class MinecraftServerStats : NfApp(), IFshApp {
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
         val cmdLine = IFshApp.cmdLine(options, args)
 
-        if (args[0] == "-UpdatePermission" || args[0] == "-更新权限") {
-            if (msg.authorityIdentification(
-                    "MinecraftServerPlayerPermission"
-                )
-            )
-                return false
-
-            msg.reply("请发送要更新的玩家名称，一行一个")
-            updatePermission(msg, args.getOrNull(1) ?: return false)
-            return true
-        }
-
         val info = if (cmdLine.hasOption("server"))
             cmdLine.getOptionValue("server").findByName()
         else
             "MCG".findByName()
 
-        if (info != null) {
-            sendInfo(
-                msg, info,
-                cmdLine.hasOption("player")
-            )
-        }
+        if (info == null)
+            return false
+
+        sendInfo(
+            msg, info,
+            cmdLine.hasOption("player")
+        )
         return true
     }
 
@@ -87,33 +73,36 @@ class MinecraftServerStats : NfApp(), IFshApp {
     private val timer = Timer()
     private val task = object : TimerTask() {
         override fun run() {
+
             PluginMain.launch {
                 getAll().forEach {
-                    check(it)
+                    PluginMain.launch {
+                        check(it)
+                    }
                 }
             }
         }
     }
 
-    private suspend fun sendInfo(msg: MessageEvent, info: MinecraftServer, playerList: Boolean = false) {
-        val infoD = getServerInfo(info.host, info.port)
+    private suspend fun sendInfo(msg: MessageEvent, server: MinecraftServer, playerList: Boolean = false) {
+        val info = getServerInfo(server.host, server.port)
         val bot = msg.bot
-        val players = infoD.serverInformationFormat?.players
+        val players = info.serverInformationFormat?.players
 
         //判断当前服务器状态
-        val statusT = if (infoD.status != 1)
+        val statusT = if (info.status != 1)
             -1
         else
             1
 
         //通过状态生成提示语
-        val data = info.msgMaker(statusT, players, msg.subject)
+        val data = server.msgMaker(statusT, players, msg.subject)
 
 
         //获取服务器关联群，并发送提示
-        if (statusT != info.status) {
+        if (statusT != server.status) {
             MinecraftServerMap {
-                serverID = info.id
+                serverID = server.id
             }.findByServerId().forEach {
                 (bot.getGroup(it.groupID) ?: return@forEach).sendMessage(data)
             }
@@ -121,75 +110,69 @@ class MinecraftServerStats : NfApp(), IFshApp {
             msg.reply(data, false)
 
         MinecraftServer {
-            id = info.id
+            id = server.id
             status = statusT
             playerNum = players?.online ?: 0
-            playerMaxNum = players?.max ?: info.playerMaxNum
+            playerMaxNum = players?.max ?: server.playerMaxNum
         }.update()
 
         //如果有需求并且服务器在线，发送玩家列表
         //并更新在线玩家列表
-        if (statusT == 1 && playerList) {
-            getPlayerList(info.host, info.port, players!!).let {
-                it.save(info.name)
-                info.getOnlinePlayers().send(msg)
+        if (!(statusT == 1 && playerList)) {
+            getPlayerList(server.host, server.port, players!!).let {
+                it.save(server.name)
+                server.getOnlinePlayers().send(msg)
             }
         } else
-            players?.players?.save(info.name)
+            players?.players?.save(server.name)
     }
 
     suspend fun check(info: MinecraftServer) {
-        PluginMain.launch {
-            val information = getServerInfo(info.host, info.port)
-            val groups = mutableListOf<Contact>()
-            val bot = Bot.getInstanceOrNull(2079373402) ?: return@launch
+        val information = getServerInfo(info.host, info.port)
+        val groups = mutableListOf<Contact>()
+        val bot = Bot.getInstanceOrNull(2079373402) ?: return
 
-            val statusD = information.status
-            val players = information.serverInformationFormat?.players
+        val statusD = information.status
+        val players = information.serverInformationFormat?.players
 
-            //判断服务器现在是什么状态
-            val statusT = if (statusD != 1)
-                if (info.status == 1)
-                    0
-                else
-                    -1
+        //判断服务器现在是什么状态
+        val statusT = if (statusD != 1)
+            if (info.status == 1)
+                0
             else
-                1
+                -1
+        else
+            1
 
-            //更新在线玩家列表
-            players?.players?.save(info.name)
+        //更新在线玩家列表
+        players?.players?.save(info.name)
 
-            //发送log并获取服务器的关联群
-            if ((statusT == -1 && info.status != -1) || (statusT == 1 && info.status == -1)) {
-                if (statusT == 1)
-                    log.info("服务器 ${info.name} 上线")
-                else
-                    log.info("服务器 ${info.name} 离线")
-                MinecraftServerMap { serverID = info.id }.findByServerId().forEach {
-                    groups.add(bot.getGroup(it.groupID) ?: return@forEach)
-                }
-                //更新数据库内状态
-                MinecraftServer {
-                    id = info.id
-                    status = statusT
-                    playerNum = information.serverInformationFormat?.players?.online ?: 0
-                    playerMaxNum = information.serverInformationFormat?.players?.max ?: info.playerMaxNum
-                }.update()
-            } else {
-                MinecraftServer {
-                    id = info.id
-                    playerNum = information.serverInformationFormat?.players?.online ?: 0
-                    playerMaxNum = information.serverInformationFormat?.players?.max ?: info.playerMaxNum
-                }.update()
-                return@launch
-            }
+        //更新数据库内状态
+        MinecraftServer {
+            id = info.id
+            status = statusT
+            playerNum = information.serverInformationFormat?.players?.online ?: 0
+            playerMaxNum = information.serverInformationFormat?.players?.max ?: info.playerMaxNum
+        }.update()
 
-            val data = info.msgMaker(statusT, players, groups[1])
+        //发送log并获取服务器的关联群
+        if (!((statusT == -1 && info.status != -1) || (statusT == 1 && info.status == -1)))
+            return
 
 
-            groups.forEach {
-                it.sendMessage(data)
-            }
+        if (statusT == 1)
+            log.info("服务器 ${info.name} 上线")
+        else
+            log.info("服务器 ${info.name} 离线")
+
+        MinecraftServerMap { serverID = info.id }.findByServerId().forEach {
+            groups.add(bot.getGroup(it.groupID) ?: return@forEach)
+        }
+
+        val data = info.msgMaker(statusT, players, groups[1])
+
+        groups.forEach {
+            it.sendMessage(data)
         }
     }
 
@@ -270,45 +253,5 @@ class MinecraftServerStats : NfApp(), IFshApp {
             )
     }
 
-    private suspend fun updatePermission(msg: MessageEvent, permissionName: String) {
-        val players = Regex(".+").findAll(msg.nextMessage().contentToString())
-        val notfoundPlayers = mutableListOf<String>()
-        val permissionCode = try {
-            Permissions.valueOf(permissionName).code
-        } catch (_: IllegalArgumentException) {
-            Permissions.values().find {
-                it.permissionName == permissionName
-            }?.code
-        }
-        if (permissionCode == null) {
-            msg.reply("未找到相应名称的权限")
-            return
-        }
-
-        players.forEach {
-            val player = MinecraftServerPlayer {
-                this.name = it.value
-            }.findByName()
-
-            if (player == null) {
-                notfoundPlayers.add(it.value)
-                return@forEach
-            }
-
-            MinecraftServerPlayer {
-                this.id = player.id
-                this.permissions = permissionCode
-            }.update()
-        }
-
-        if (notfoundPlayers.isEmpty())
-            msg.reply("更新完成")
-        else {
-            msg.reply(
-                "未找到: ${notfoundPlayers.joinToString("，")}"
-            )
-        }
-
-    }
 }
 
