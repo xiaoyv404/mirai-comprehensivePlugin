@@ -50,7 +50,7 @@ class ISU : NfApp(), IFshApp {
     }
 
     private suspend fun findOP(msg: MessageEvent): Boolean {
-        val op = MinecraftServerPlayer().getAllOnlinePlayers()
+        val op = MinecraftServerPlayer().getAllOnlinePlayers().toMutableList()
         op.removeIf {
             it.permissions == null
         }

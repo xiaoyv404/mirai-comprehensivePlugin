@@ -7,6 +7,8 @@ import com.xiaoyv404.mirai.databace.dao.mincraftServer.*
 import net.mamoe.mirai.contact.Contact.Companion.uploadImage
 import net.mamoe.mirai.event.events.*
 import net.mamoe.mirai.message.data.*
+import org.apache.commons.cli.*
+
 @App
 class MinecraftServerList : NfApp(), IFshApp {
     override fun getAppName() = "MinecraftServerList"
@@ -18,10 +20,20 @@ class MinecraftServerList : NfApp(), IFshApp {
             "-服务器列表"
         )
 
+    private val options = Options().apply {
+        addOption("p", "player", false, "获取玩家列表")
+    }
+
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
+        val cmdLine = IFshApp.cmdLine(options, args)
+
         val list = MinecraftServer().toList()
         val img = MinecraftDataImgGenerator().drawList(list)
         msg.reply(msg.subject.uploadImage(img).toMessageChain())
+
+        if (!cmdLine.hasOption("player"))
+            return true
+        MinecraftServerPlayer().getAllOnlinePlayers().send(msg)
         return true
     }
 
