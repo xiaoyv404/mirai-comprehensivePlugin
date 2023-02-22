@@ -118,13 +118,13 @@ class MinecraftServerStats : NfApp(), IFshApp {
 
         //如果有需求并且服务器在线，发送玩家列表
         //并更新在线玩家列表
-        if (!(statusT == 1 && playerList)) {
+        if (statusT == 1 && playerList)
+            players?.players?.save(server.name)
+        else
             getPlayerList(server.host, server.port, players!!).let {
                 it.save(server.name)
                 server.getOnlinePlayers().send(msg)
             }
-        } else
-            players?.players?.save(server.name)
     }
 
     suspend fun check(info: MinecraftServer) {
