@@ -34,8 +34,6 @@ class MinecraftServerStats : NfApp(), IFshApp {
             "-破推头状态",
             "-ServerStatus",
             "-PotatoStatus",
-            "-UpdatePermission",
-            "-更新权限"
         )
 
 
