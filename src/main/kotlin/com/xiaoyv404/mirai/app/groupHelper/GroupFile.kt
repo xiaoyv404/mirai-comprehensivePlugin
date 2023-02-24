@@ -1,14 +1,12 @@
 package com.xiaoyv404.mirai.app.groupHelper
 
-import com.xiaoyv404.mirai.app.fsh.IFshApp
-import com.xiaoyv404.mirai.core.App
+import com.xiaoyv404.mirai.app.fsh.*
+import com.xiaoyv404.mirai.core.*
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
-import com.xiaoyv404.mirai.core.NfApp
-import net.mamoe.mirai.contact.Group
+import net.mamoe.mirai.contact.*
 import net.mamoe.mirai.contact.file.AbsoluteFileFolder.Companion.extension
 import net.mamoe.mirai.contact.file.AbsoluteFileFolder.Companion.nameWithoutExtension
-import net.mamoe.mirai.contact.isOperator
-import net.mamoe.mirai.event.events.MessageEvent
+import net.mamoe.mirai.event.events.*
 import java.util.*
 
 @App
@@ -72,7 +70,10 @@ class GroupFile : NfApp(), IFshApp {
         "flv" to "视频",
         "bmp" to "图片",
         "avi" to "视频",
-        "txt" to "数据"
+        "txt" to "数据",
+        "svg" to "图片",
+        "log" to "垃圾桶",
+        "link" to "垃圾桶"
     )
 
     private suspend fun pack(msg: MessageEvent) {

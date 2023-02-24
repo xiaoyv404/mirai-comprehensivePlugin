@@ -179,6 +179,7 @@ class MinecraftDataImgGenerator {
                 v.name.uppercase(Locale.getDefault()),
                 "%03d".format(v.playerNum),
                 "%03d".format(v.playerMaxNum),
+                v.status,
                 font,
                 font6
             )
@@ -196,13 +197,21 @@ class MinecraftDataImgGenerator {
         name: String,
         playerNum: String,
         playerMaxNum: String,
+        status: Int,
         font: Font,
         font6: Font
     ) {
+        val red = Color.decode("#FF3D38")
+        val green = Color.decode("#76FFA1")
         val roundX = 10
 
-        g2d.color = Color.decode("#76FFA1")
+        g2d.color = if (status != 0)
+            green
+        else
+            red
+
         g2d.fillOval(roundX, roundY, 130, 130)
+        g2d.color = green
 
         g2d.font = font
         g2d.color = Color.BLACK
