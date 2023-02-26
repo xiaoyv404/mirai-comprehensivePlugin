@@ -65,7 +65,7 @@ class ISU : NfApp(), IFshApp {
         if (op.isEmpty())
             msg.reply("没有呢 :(")
         else
-            msg.reply("有: ${op.map { it.name }.joinToString(",")}")
+            msg.reply("有: ${op.joinToString(",") { it.name }}")
 
         return true
     }
