@@ -56,9 +56,14 @@ fun MinecraftServerPlayer.findById(): MinecraftServerPlayer? {
     return Database.db.minecraftServerPlayer.find { MinecraftServerPlayers.id eq this.id }
 }
 
+fun MinecraftServerPlayer.findByNameAndServer(): MinecraftServerPlayer? {
+    return Database.db.minecraftServerPlayer.find { MinecraftServerPlayers.name eq this.name and (MinecraftServerPlayers.lastLoginServer eq this.lastLoginServer) }
+}
+
 fun MinecraftServerPlayer.findByName(): MinecraftServerPlayer? {
     return Database.db.minecraftServerPlayer.find { MinecraftServerPlayers.name eq this.name }
 }
+
 
 fun MinecraftServerPlayer.save(): Boolean {
     return if (this.findById() == null) {
