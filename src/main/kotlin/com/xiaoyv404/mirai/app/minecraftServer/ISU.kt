@@ -26,18 +26,26 @@ class ISU : NfApp(), IFshApp {
     }
 
     private suspend fun isOnline(args: Array<String>, msg: MessageEvent): Boolean {
-        val player = if (args.size >= 2 || args[0] == "-桃呢") {
-            MinecraftServerPlayer {
-                this.name = if (args[0] == "-桃呢") "2429334909" else args[1]
-            }.findByName()
-        } else
+        if (args.size < 2 && args[0] != "-桃呢")
             return false
+        val name = if (args[0] == "-桃呢") "2429334909" else args[1]
+        val player = if (msg.gid() == 113594190L)
+            MinecraftServerPlayer {
+                this.name = name
+                this.lastLoginServer = "gtnh"
+            }.findByNameAndServer()
+        else
+            MinecraftServerPlayer {
+                this.name = name
+            }.findByName()
 
         if (player == null) {
             msg.reply("无数据")
-        } else
-            msg.reply(
-                """
+            return false
+        }
+
+        msg.reply(
+            """
                 名字: ${player.name}
                 ${if (Duration.between(player.lastLoginTime, LocalDateTime.now()).toMinutes() > 4) "不在线" else "在线"}
                 最后在线时间: ${player.lastLoginTime}
@@ -45,7 +53,7 @@ class ISU : NfApp(), IFshApp {
                 UUID: ${player.id}
                 身份: ${player.permissions?.getPermissionByCode()?.permissionName ?: "毛玉"}
             """.trimIndent()
-            )
+        )
         return true
     }
 
