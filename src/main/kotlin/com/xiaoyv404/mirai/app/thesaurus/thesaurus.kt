@@ -5,7 +5,6 @@ import com.xiaoyv404.mirai.app.fsh.*
 import com.xiaoyv404.mirai.core.*
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
 import com.xiaoyv404.mirai.dao.*
-import com.xiaoyv404.mirai.databace.entity.*
 import com.xiaoyv404.mirai.entity.*
 import com.xiaoyv404.mirai.tool.*
 import net.mamoe.mirai.contact.*

@@ -13,7 +13,6 @@ import net.mamoe.mirai.message.*
 import net.mamoe.mirai.message.code.*
 import net.mamoe.mirai.utils.*
 import org.apache.commons.cli.*
-import com.xiaoyv404.mirai.entity.User as NfUser
 
 @App
 class AdminTools : NfApp(), IFshApp {
