@@ -205,7 +205,7 @@ class MinecraftDataImgGenerator {
         val green = Color.decode("#76FFA1")
         val roundX = 10
 
-        g2d.color = if (status != 0)
+        g2d.color = if (status == 1)
             green
         else
             red
