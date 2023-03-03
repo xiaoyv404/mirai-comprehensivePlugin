@@ -2,7 +2,9 @@ package com.xiaoyv404.mirai.app.ero.localGallery
 
 import com.xiaoyv404.mirai.*
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
-import com.xiaoyv404.mirai.databace.dao.gallery.*
+import com.xiaoyv404.mirai.dao.*
+import com.xiaoyv404.mirai.databace.entity.gallery.*
+import com.xiaoyv404.mirai.entity.gallery.*
 import com.xiaoyv404.mirai.tool.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*

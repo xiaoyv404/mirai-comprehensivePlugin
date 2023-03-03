@@ -4,8 +4,8 @@ import com.xiaoyv404.mirai.*
 import com.xiaoyv404.mirai.app.fsh.*
 import com.xiaoyv404.mirai.core.*
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
-import com.xiaoyv404.mirai.databace.dao.*
-import com.xiaoyv404.mirai.databace.dao.gallery.*
+import com.xiaoyv404.mirai.dao.*
+import com.xiaoyv404.mirai.entity.gallery.*
 import kotlinx.serialization.*
 import net.mamoe.mirai.event.events.*
 import net.mamoe.mirai.message.*

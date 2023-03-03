@@ -1,23 +1,13 @@
-package com.xiaoyv404.mirai.databace.dao
+package com.xiaoyv404.mirai.dao
 
-import com.xiaoyv404.mirai.databace.Database.db
-import org.ktorm.database.Database
-import org.ktorm.dsl.eq
+import com.xiaoyv404.mirai.databace.*
+import com.xiaoyv404.mirai.databace.entity.*
+import com.xiaoyv404.mirai.entity.*
+import org.ktorm.dsl.*
 import org.ktorm.entity.*
-import org.ktorm.schema.*
-import org.mindrot.jbcrypt.BCrypt
+import org.mindrot.jbcrypt.*
 
-interface WebApiUser : Entity<WebApiUser> {
-    companion object : Entity.Factory<WebApiUser>()
-
-    val id: Long
-    var name: String
-    var password: String
-    var qid: Long
-    val authority: Int
-}
-
-private val Database.webApiUser get() = this.sequenceOf(WebApiUsers)
+private val org.ktorm.database.Database.webApiUser get() = this.sequenceOf(WebApiUsers)
 
 /**
  * 通过用户名查找用户
@@ -27,7 +17,7 @@ private val Database.webApiUser get() = this.sequenceOf(WebApiUsers)
  * @return WebApiUser?
  */
 fun WebApiUser.findByName(): WebApiUser? {
-    return db.webApiUser.find { it.name eq this.name }
+    return Database.db.webApiUser.find { it.name eq this.name }
 }
 
 /**
@@ -37,7 +27,7 @@ fun WebApiUser.findByName(): WebApiUser? {
  *
  */
 fun WebApiUser.update(){
-    db.webApiUser.update(this)
+    Database.db.webApiUser.update(this)
 }
 
 /**
@@ -49,7 +39,7 @@ fun WebApiUser.update(){
  */
 fun WebApiUser.add(): WebApiUser {
     this.password = BCrypt.hashpw(this.password, BCrypt.gensalt())
-    db.webApiUser.add(this)
+    Database.db.webApiUser.add(this)
     return this
 }
 
@@ -70,7 +60,7 @@ fun WebApiUser.save(){
  * @return WebApiUser
  */
 fun WebApiUser.findByNameOrSave(): WebApiUser {
-   return this.findByName()?: this.add()
+    return this.findByName()?: this.add()
 }
 
 
@@ -98,12 +88,4 @@ fun String.permissionRequiredAdmin(){
     if (!this.itWebAdmin()) {
         error("No permission")
     }
-}
-
-object WebApiUsers : Table<WebApiUser>("WebApiUsers") {
-    val id = long("id").primaryKey().bindTo { it.id }
-    val name = varchar("name").bindTo { it.name }
-    val password = text("password").bindTo { it.password }
-    val qid = long("qid").bindTo { it.qid }
-    val authority = int("authority").bindTo { it.authority }
 }

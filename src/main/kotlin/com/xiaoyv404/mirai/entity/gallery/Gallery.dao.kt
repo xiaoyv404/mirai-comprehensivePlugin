@@ -1,13 +1,7 @@
-package com.xiaoyv404.mirai.databace.dao.gallery
+package com.xiaoyv404.mirai.entity.gallery
 
-import com.xiaoyv404.mirai.databace.Database.db
-import org.ktorm.database.Database
-import org.ktorm.dsl.eq
 import org.ktorm.entity.*
-import org.ktorm.schema.Table
-import org.ktorm.schema.int
-import org.ktorm.schema.long
-import org.ktorm.schema.varchar
+import org.ktorm.schema.*
 
 
 interface Gallery : Entity<Gallery> {
@@ -22,33 +16,6 @@ interface Gallery : Entity<Gallery> {
     var extension: String
 }
 
-private val Database.gallerys get() = this.sequenceOf(Gallerys)
-
-/**
- * @return false 新增
- * @return true 更新
- */
-fun Gallery.save(): Boolean {
-    return if (this.findById() == null) {
-        db.gallerys.add(this)
-        false
-    } else {
-        this.update()
-        true
-    }
-}
-
-fun Gallery.update() {
-    db.gallerys.update(this)
-}
-
-fun Gallery.findById(): Gallery? {
-    return db.gallerys.find { it.id eq this.id }
-}
-
-fun Gallery.deleteById(){
-    db.gallerys.removeIf { it.id eq this.id }
-}
 
 
 object Gallerys : Table<Gallery>("Gallerys") {

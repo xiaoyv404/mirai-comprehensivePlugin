@@ -3,7 +3,9 @@ package com.xiaoyv404.mirai.app.minecraftServer
 import com.xiaoyv404.mirai.app.fsh.*
 import com.xiaoyv404.mirai.core.*
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
-import com.xiaoyv404.mirai.databace.dao.mincraftServer.*
+import com.xiaoyv404.mirai.dao.*
+import com.xiaoyv404.mirai.databace.entity.mincraftServer.*
+import com.xiaoyv404.mirai.entity.mincraftServer.*
 import net.mamoe.mirai.contact.Contact.Companion.uploadImage
 import net.mamoe.mirai.event.events.*
 import net.mamoe.mirai.message.data.*

@@ -1,8 +1,5 @@
-package com.xiaoyv404.mirai.databace.dao.mincraftServer
+package com.xiaoyv404.mirai.entity.mincraftServer
 
-import com.xiaoyv404.mirai.databace.Database.db
-import org.ktorm.database.*
-import org.ktorm.dsl.*
 import org.ktorm.entity.*
 import org.ktorm.schema.*
 
@@ -18,27 +15,6 @@ interface MinecraftServer : Entity<MinecraftServer> {
     var playerMaxNum: Int
 }
 
-private val Database.minecraftServers get() = this.sequenceOf(MinecraftServers)
-
-fun MinecraftServer.findById(): MinecraftServer? {
-    return db.minecraftServers.find { MinecraftServers.id eq this.id }
-}
-
-fun MinecraftServer.update(): Int {
-    return db.minecraftServers.update(this)
-}
-
-fun getAll(): List<MinecraftServer> {
-    return db.minecraftServers.toList()
-}
-
-fun String.findByName(): MinecraftServer?{
-    return db.minecraftServers.find { MinecraftServers.name eq this }
-}
-
-fun MinecraftServer.toList(): List<MinecraftServer>{
-    return db.minecraftServers.toList()
-}
 
 
 object MinecraftServers : Table<MinecraftServer>("MinecraftServer") {

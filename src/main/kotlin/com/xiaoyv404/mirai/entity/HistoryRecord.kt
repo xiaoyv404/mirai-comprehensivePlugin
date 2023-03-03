@@ -1,12 +1,8 @@
-package com.xiaoyv404.mirai.databace.dao
+package com.xiaoyv404.mirai.entity
 
-import com.xiaoyv404.mirai.databace.Database.db
-import org.ktorm.database.Database
-import org.ktorm.entity.Entity
-import org.ktorm.entity.add
-import org.ktorm.entity.sequenceOf
+import org.ktorm.entity.*
 import org.ktorm.schema.*
-import java.time.LocalDateTime
+import java.time.*
 
 interface HistoryRecord : Entity<HistoryRecord> {
     companion object : Entity.Factory<HistoryRecord>()
@@ -19,12 +15,6 @@ interface HistoryRecord : Entity<HistoryRecord> {
     var senderName: String
     var msgId: Long
     var content: String
-}
-
-private val Database.historyRecord get() = this.sequenceOf(HistoryRecords)
-
-fun HistoryRecord.save(){
-    db.historyRecord.add(this)
 }
 
 object HistoryRecords : Table<HistoryRecord>("History_Record") {

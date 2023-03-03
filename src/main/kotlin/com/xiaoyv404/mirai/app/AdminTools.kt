@@ -4,16 +4,16 @@ import com.xiaoyv404.mirai.*
 import com.xiaoyv404.mirai.app.fsh.*
 import com.xiaoyv404.mirai.core.*
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
-import com.xiaoyv404.mirai.databace.dao.*
-import com.xiaoyv404.mirai.databace.dao.User
+import com.xiaoyv404.mirai.dao.*
+import com.xiaoyv404.mirai.entity.User
 import net.mamoe.mirai.contact.*
-import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.event.*
 import net.mamoe.mirai.event.events.*
 import net.mamoe.mirai.message.*
 import net.mamoe.mirai.message.code.*
 import net.mamoe.mirai.utils.*
 import org.apache.commons.cli.*
+import com.xiaoyv404.mirai.entity.User as NfUser
 
 @App
 class AdminTools : NfApp(), IFshApp {
@@ -185,7 +185,7 @@ class AdminTools : NfApp(), IFshApp {
                 }
                 if (entryMassage != "") {
                     bot.groups.forEach { gp ->
-                        val status = com.xiaoyv404.mirai.databace.dao.Group {
+                        val status = com.xiaoyv404.mirai.entity.Group {
                             id = gp.id
                         }.noticeSwitchRead("AdminBroadcast")
                         if (status) {

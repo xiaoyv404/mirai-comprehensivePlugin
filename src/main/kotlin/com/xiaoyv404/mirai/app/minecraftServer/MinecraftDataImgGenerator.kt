@@ -1,7 +1,7 @@
 package com.xiaoyv404.mirai.app.minecraftServer
 
 import com.xiaoyv404.mirai.*
-import com.xiaoyv404.mirai.databace.dao.mincraftServer.*
+import com.xiaoyv404.mirai.entity.mincraftServer.*
 import java.awt.*
 import java.awt.image.*
 import java.io.*
