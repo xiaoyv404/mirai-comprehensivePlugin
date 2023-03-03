@@ -1,15 +1,13 @@
 package com.xiaoyv404.mirai.app.ero.sauceNao
 
-import com.xiaoyv404.mirai.app.fsh.IFshApp
-import com.xiaoyv404.mirai.core.App
+import com.xiaoyv404.mirai.app.fsh.*
+import com.xiaoyv404.mirai.core.*
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
-import com.xiaoyv404.mirai.core.NfApp
-import com.xiaoyv404.mirai.databace.dao.authorityIdentification
-import net.mamoe.mirai.event.events.MessageEvent
-import net.mamoe.mirai.message.data.Image
+import com.xiaoyv404.mirai.dao.*
+import net.mamoe.mirai.event.events.*
+import net.mamoe.mirai.message.*
+import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.data.MessageSource.Key.quote
-import net.mamoe.mirai.message.data.time
-import net.mamoe.mirai.message.nextMessage
 
 @App
 class SauceNaoImgSearch : NfApp(), IFshApp {

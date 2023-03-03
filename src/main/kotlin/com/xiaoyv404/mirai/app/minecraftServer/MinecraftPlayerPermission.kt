@@ -3,8 +3,9 @@ package com.xiaoyv404.mirai.app.minecraftServer
 import com.xiaoyv404.mirai.app.fsh.*
 import com.xiaoyv404.mirai.core.*
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
-import com.xiaoyv404.mirai.databace.dao.*
-import com.xiaoyv404.mirai.databace.dao.mincraftServer.*
+import com.xiaoyv404.mirai.dao.*
+import com.xiaoyv404.mirai.databace.entity.mincraftServer.*
+import com.xiaoyv404.mirai.entity.mincraftServer.*
 import net.mamoe.mirai.event.events.*
 import net.mamoe.mirai.message.*
 
@@ -34,9 +35,9 @@ class MinecraftPlayerPermission : NfApp(), IFshApp {
         val players = Regex(".+").findAll(msg.nextMessage().contentToString())
         val notfoundPlayers = mutableListOf<String>()
         val permissionCode = try {
-            com.xiaoyv404.mirai.databace.dao.mincraftServer.Permissions.valueOf(permissionName).code
+            Permissions.valueOf(permissionName).code
         } catch (_: IllegalArgumentException) {
-            com.xiaoyv404.mirai.databace.dao.mincraftServer.Permissions.values().find {
+            Permissions.values().find {
                 it.permissionName == permissionName
             }?.code
         }

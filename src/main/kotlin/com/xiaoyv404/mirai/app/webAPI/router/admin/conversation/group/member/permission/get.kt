@@ -2,7 +2,7 @@ package com.xiaoyv404.mirai.app.webAPI.router.admin.conversation.group.member.pe
 
 import com.xiaoyv404.mirai.app.webAPI.*
 import com.xiaoyv404.mirai.app.webAPI.controller.*
-import com.xiaoyv404.mirai.databace.dao.*
+import com.xiaoyv404.mirai.dao.*
 import com.xiaoyv404.mirai.extension.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*

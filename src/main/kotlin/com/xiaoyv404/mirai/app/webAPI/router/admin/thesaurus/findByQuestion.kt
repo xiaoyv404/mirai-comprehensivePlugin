@@ -2,7 +2,9 @@ package com.xiaoyv404.mirai.app.webAPI.router.admin.thesaurus
 
 import com.xiaoyv404.mirai.app.webAPI.*
 import com.xiaoyv404.mirai.app.webAPI.controller.*
-import com.xiaoyv404.mirai.databace.dao.*
+import com.xiaoyv404.mirai.dao.*
+import com.xiaoyv404.mirai.databace.entity.*
+import com.xiaoyv404.mirai.entity.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.response.*
