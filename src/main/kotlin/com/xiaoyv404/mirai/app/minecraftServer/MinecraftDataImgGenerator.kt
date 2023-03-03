@@ -169,8 +169,8 @@ class MinecraftDataImgGenerator {
             RenderingHints.KEY_ALPHA_INTERPOLATION,
             RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY
         )
-        g2d.paint = Color.WHITE;//设置画笔颜色
-        g2d.fillRect(0, 0, imgWidth, imgHeight);//填充区域，将区域背景设置为白色
+        g2d.paint = Color.WHITE//设置画笔颜色
+        g2d.fillRect(0, 0, imgWidth, imgHeight)//填充区域，将区域背景设置为白色
 
         list.forEachIndexed { k, v ->
             drawOne(
