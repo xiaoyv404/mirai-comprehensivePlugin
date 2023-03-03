@@ -1,7 +1,6 @@
 package com.xiaoyv404.mirai.dao
 
 import com.xiaoyv404.mirai.databace.*
-import com.xiaoyv404.mirai.databace.entity.mincraftServer.*
 import com.xiaoyv404.mirai.entity.mincraftServer.*
 import org.ktorm.dsl.*
 import org.ktorm.entity.*
