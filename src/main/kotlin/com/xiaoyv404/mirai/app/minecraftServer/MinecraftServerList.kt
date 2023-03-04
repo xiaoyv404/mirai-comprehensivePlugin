@@ -36,18 +36,18 @@ class MinecraftServerList : NfApp(), IFshApp {
             ), Performance::class.java
         ).tps.takeLast(720)
 
-        val low = mutableListOf<Long>()
-        val average = mutableListOf<Long>()
+        val low = mutableListOf<Float>()
+        val average = mutableListOf<Float>()
 
-        var lowi: Long = 0
-        var averagei: Long = 0
+        var lowi: Float = 0f
+        var averagei: Float = 0f
         var k = 0
         tps.forEach {
             if (k == 60) {
                 low.add(lowi)
-                average.add(averagei / 60)
-                lowi = 0
-                averagei = 0
+                average.add(averagei / 60f)
+                lowi = 0f
+                averagei = 0f
                 k = 0
             }
             if (lowi > it[1])

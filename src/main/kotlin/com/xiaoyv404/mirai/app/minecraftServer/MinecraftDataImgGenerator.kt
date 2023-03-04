@@ -138,7 +138,7 @@ class MinecraftDataImgGenerator {
         }
     }
 
-    fun drawList(list: List<MinecraftServer>, low: List<Long>, average: List<Long>): ByteArrayInputStream {
+    fun drawList(list: List<MinecraftServer>, low: List<Float>, average: List<Float>): ByteArrayInputStream {
         val imgWidth = 800
         val imgHeight = 150 * list.size + 10
         val img = BufferedImage(imgWidth, imgHeight, BufferedImage.TYPE_INT_RGB)
@@ -202,8 +202,8 @@ class MinecraftDataImgGenerator {
         status: Int,
         font: Font,
         font6: Font,
-        low: List<Long>,
-        average: List<Long>
+        low: List<Float>,
+        average: List<Float>
     ) {
         val red = Color.decode("#FF3D38")
         val green = Color.decode("#76FFA1")
@@ -258,10 +258,11 @@ class MinecraftDataImgGenerator {
         }
     }
 
-    private fun setColorByTPS(g2d: Graphics2D, tps: Long) {
+    @OptIn(ExperimentalStdlibApi::class)
+    private fun setColorByTPS(g2d: Graphics2D, tps: Float) {
         g2d.color = when (tps) {
-            in 17..100 -> Color.decode("#76FFA1")
-            in 10 until 17 -> Color.decode("FF9C38")
+            in 17f..100f -> Color.decode("#76FFA1")
+            in 10f.rangeUntil(17f) -> Color.decode("FF9C38")
             else -> Color.decode("FF3D38")
         }
     }
