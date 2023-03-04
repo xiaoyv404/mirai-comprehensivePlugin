@@ -247,7 +247,7 @@ class MinecraftDataImgGenerator {
                     intArrayOf(roundY + 72 + 56 - 10, roundY + 72 + 56 - 10, roundY + 72, roundY + 72),
                     4
                 )
-                g2d.color = setColorByTPS(low[i])
+                g2d.color = setColorByTPS(1)
                 g2d.fillPolygon(
                     intArrayOf(
                         (roundX + 365 + 28 * i),
