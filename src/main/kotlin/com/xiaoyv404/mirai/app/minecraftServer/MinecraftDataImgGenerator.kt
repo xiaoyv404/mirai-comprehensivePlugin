@@ -232,30 +232,44 @@ class MinecraftDataImgGenerator {
         )
 
         g2d.color = Color.decode("#76FFA1")
-        for (i in 0..11) {
-            setColorByTPS(g2d, average[i])
-            g2d.fillPolygon(
-                intArrayOf(
-                    (roundX + 365 + 28 * i + 6),
-                    (roundX + 365 + 16 + 28 * i + 6),
-                    (roundX + 365 + 16 + 35 + 28 * i),
-                    (roundX + 365 + 35 + 28 * i)
-                ),
-                intArrayOf(roundY + 72 + 56 - 10, roundY + 72 + 56 - 10, roundY + 72, roundY + 72),
-                4
-            )
-            setColorByTPS(g2d, low[i])
+        if (name == "MCG")
+            for (i in 0..11) {
+                println(average[i])
+                println(low[i])
+                setColorByTPS(g2d, average[i])
+                g2d.fillPolygon(
+                    intArrayOf(
+                        (roundX + 365 + 6 + 28 * i),
+                        (roundX + 365 + 6 + 16 + 28 * i),
+                        (roundX + 365 + 16 + 35 + 28 * i),
+                        (roundX + 365 + 35 + 28 * i)
+                    ),
+                    intArrayOf(roundY + 72 + 56 - 10, roundY + 72 + 56 - 10, roundY + 72, roundY + 72),
+                    4
+                )
+                setColorByTPS(g2d, low[i])
+                g2d.fillPolygon(
+                    intArrayOf(
+                        (roundX + 365 + 28 * i),
+                        (roundX + 365 + 16 + 28 * i),
+                        (roundX + 365 + 6 + 16 + 35 + 28 * i),
+                        (roundX + 365 + 6 + 35 + 28 * i)
+                    ),
+                    intArrayOf(roundY + 72 + 56, roundY + 72 + 56, roundY + 72 + 56 - 10, roundY + 72 + 56 - 10),
+                    4
+                )
+            }
+        for (i in 0..11)
             g2d.fillPolygon(
                 intArrayOf(
                     (roundX + 365 + 28 * i),
                     (roundX + 365 + 16 + 28 * i),
-                    (roundX + 365 + 16 + 35 + 28 * i + 6),
-                    (roundX + 365 + 35 + 28 * i + 6)
+                    (roundX + 365 + 16 + 35 + 28 * i),
+                    (roundX + 365 + 35 + 28 * i)
                 ),
-                intArrayOf(roundY + 72 + 56, roundY + 72 + 56, roundY + 72 + 56 - 10, roundY + 72 + 56 - 10),
+                intArrayOf(roundY + 72 + 56, roundY + 72 + 56, roundY + 72, roundY + 72),
                 4
             )
-        }
     }
 
     @OptIn(ExperimentalStdlibApi::class)
