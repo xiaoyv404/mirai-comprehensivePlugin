@@ -262,8 +262,8 @@ class MinecraftDataImgGenerator {
     private fun setColorByTPS(g2d: Graphics2D, tps: Long) {
         g2d.color = when (tps) {
             in 17..100 -> Color.decode("#76FFA1")
-            in 10.rangeUntil(17) -> Color.decode("FF9C38")
-            else -> Color.decode("FF3D38")
+            in 10.rangeUntil(17) -> Color.decode("#FF9C38")
+            else -> Color.decode("#FF3D38")
         }
     }
 }
