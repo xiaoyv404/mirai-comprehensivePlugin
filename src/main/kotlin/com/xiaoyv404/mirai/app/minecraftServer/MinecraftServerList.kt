@@ -1,10 +1,12 @@
 package com.xiaoyv404.mirai.app.minecraftServer
 
+import com.google.gson.*
 import com.xiaoyv404.mirai.app.fsh.*
 import com.xiaoyv404.mirai.core.*
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
 import com.xiaoyv404.mirai.dao.*
 import com.xiaoyv404.mirai.entity.mincraftServer.*
+import com.xiaoyv404.mirai.tool.*
 import net.mamoe.mirai.contact.Contact.Companion.uploadImage
 import net.mamoe.mirai.event.events.*
 import net.mamoe.mirai.message.data.*
@@ -28,8 +30,34 @@ class MinecraftServerList : NfApp(), IFshApp {
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
         val cmdLine = IFshApp.cmdLine(options, args)
 
+        val tps = Gson().fromJson(
+            ClientUtils.get<String>(
+                "http://mc.touhou.site:8848/v1/graph?type=performance&server=Minecraft幻想乡"
+            ), Performance::class.java
+        ).tps.takeLast(720)
+
+        val low = mutableListOf<Long>()
+        val average = mutableListOf<Long>()
+
+        var lowi: Long = 0
+        var averagei: Long = 0
+        var k = 0
+        tps.forEach {
+            if (k == 60) {
+                low.add(lowi)
+                average.add(averagei / 60)
+                lowi = 0
+                averagei = 0
+                k = 0
+            }
+            if (lowi > it[1])
+                lowi = it[1]
+            k++
+            averagei += averagei
+        }
+
         val list = MinecraftServer().toList()
-        val img = MinecraftDataImgGenerator().drawList(list)
+        val img = MinecraftDataImgGenerator().drawList(list, low, average)
         msg.reply(msg.subject.uploadImage(img).toMessageChain())
 
         if (!cmdLine.hasOption("player"))
