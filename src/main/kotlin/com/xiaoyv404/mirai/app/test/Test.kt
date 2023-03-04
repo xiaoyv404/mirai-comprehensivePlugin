@@ -20,10 +20,6 @@ class Test : NfApp(), IFshApp {
         )
 
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
-        println(ClientUtils.get<String>(
-            "http://mc.touhou.site:8848/v1/serverOverview?" +
-                "server=Minecraft幻想乡"
-        ))
         val serverOverview = Gson().fromJson(
             ClientUtils.get<String>(
                 "http://mc.touhou.site:8848/v1/serverOverview?" +
