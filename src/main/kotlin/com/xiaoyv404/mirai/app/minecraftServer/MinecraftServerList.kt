@@ -39,18 +39,16 @@ class MinecraftServerList : NfApp(), IFshApp {
         val low = mutableListOf<Long>()
         val average = mutableListOf<Long>()
 
-        var lowi: Long = 0
+        var lowi: Long = 20
         var averagei: Long = 0
         var k = 1
         tps.forEach {
-            println(k)
             if (k == 60) {
                 low.add(lowi)
                 average.add(averagei / 60)
                 lowi = 0
                 averagei = 0
                 k = 0
-                println("1: $k")
             }
             if (lowi > it[1])
                 lowi = it[1].toLong()
