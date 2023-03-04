@@ -47,7 +47,7 @@ object NfApplicationManager {
                     app.handleMessage(it)
                 }
             }
-            log.info("注册撤回消息处理器${app.getAppName()}")
+            log.info("注册加入事件处理器${app.getAppName()}")
         }
         if (app is IFshApp) {
             for (command in app.getCommands()) {
