@@ -46,9 +46,9 @@ class MinecraftServerList : NfApp(), IFshApp {
             if (k == 60) {
                 low.add(lowi)
                 average.add(averagei / 60)
-                lowi = 0
+                lowi = 20
                 averagei = 0
-                k = 20
+                k = 0
             }
             if (lowi > it[1])
                 lowi = it[1].toLong()
