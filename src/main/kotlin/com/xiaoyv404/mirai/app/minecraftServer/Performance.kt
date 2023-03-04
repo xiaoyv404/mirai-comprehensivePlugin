@@ -3,7 +3,7 @@
 package com.xiaoyv404.mirai.app.minecraftServer
 
 data class Performance(
-    val timestamp: Int,
+    val timestamp: Long,
     val timestamp_f: String,
 //    val playersOnline:List<List<Number>>,
     val tps:List<List<Long>>,
