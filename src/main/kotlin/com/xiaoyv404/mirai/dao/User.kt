@@ -13,7 +13,7 @@ private val org.ktorm.database.Database.users get() = this.sequenceOf(Users)
  * @return false 新增
  * @return true 更新
  */
-fun User.save():Boolean{
+fun User.save(): Boolean {
     return if (this.findById() == null) {
         Database.db.users.add(this)
         false
@@ -23,11 +23,11 @@ fun User.save():Boolean{
     }
 }
 
-fun User.update(){
+fun User.update() {
     Database.db.users.update(this)
 }
 
-fun User.findById(): User?{
+fun User.findById(): User? {
     return Database.db.users.find { it.id eq this.id }
 }
 
@@ -49,6 +49,10 @@ fun Long.isBot(): Boolean {
     return User {
         id = this@isBot
     }.isBot()
+}
+
+fun MessageEvent.isBot(): Boolean {
+    return this.uid().isBot()
 }
 
 fun MessageEvent.isNotAdmin(): Boolean {

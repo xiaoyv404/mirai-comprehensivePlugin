@@ -8,7 +8,6 @@ import com.xiaoyv404.mirai.dao.*
 import com.xiaoyv404.mirai.entity.*
 import net.mamoe.mirai.event.events.*
 import net.mamoe.mirai.message.code.*
-import net.mamoe.mirai.message.data.*
 import org.apache.commons.cli.*
 import java.util.regex.*
 
@@ -16,7 +15,7 @@ import java.util.regex.*
 @App
 class Fsh : NfAppMessageHandler() {
     override fun getAppName() = "fsh"
-    override fun getVersion() = "1.0.1"
+    override fun getVersion() = "1.0.2"
     override fun getAppDescription() = "命令系统的底层实现"
     override fun getAppUsage() = "命令系统的底层实现模块, 具体使用见命令"
 
@@ -24,24 +23,8 @@ class Fsh : NfAppMessageHandler() {
     private val debug get() = NfPluginData.deBug
 
     override suspend fun handleMessage(msg: MessageEvent) {
-        val incoming = msg.source
-        val uid: Long
-        val gid: Long
-        when (incoming) {
-            is OnlineMessageSource.Incoming.FromGroup -> {
-                gid = incoming.group.id
-                uid = incoming.sender.id
-            }
-
-            is OnlineMessageSource.Incoming.FromFriend -> {
-                gid = 0
-                uid = incoming.sender.id
-            }
-
-            else -> {
-                return
-            }
-        }
+        val uid = msg.uid()
+        val gid = msg.gid()
         val line = msg.message.contentToString().trim()
 
         // 分割参数
@@ -64,7 +47,7 @@ class Fsh : NfAppMessageHandler() {
             argsList[0] = "-${argsList[0]}"
         }
 
-        if (uid.isBot())
+        if (msg.isBot())
             return
 
         // 最后参数的结果

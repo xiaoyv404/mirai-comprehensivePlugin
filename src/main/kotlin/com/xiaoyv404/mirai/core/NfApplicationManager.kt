@@ -24,37 +24,40 @@ object NfApplicationManager {
         }
         log.info("注册应用$name@${app.getVersion()}")
         app.init()
-        if (app is NfAppMessageHandler) {
-            GlobalEventChannel.subscribeAlways(MessageEvent::class.java) {
-                GlobalScope.launch {
-                    app.handleMessage(it)
+        when (app) {
+            is NfAppMessageHandler -> {
+                GlobalEventChannel.subscribeAlways(MessageEvent::class.java) {
+                    GlobalScope.launch {
+                        app.handleMessage(it)
+                    }
                 }
+                log.info("注册消息处理器${app.getAppName()}")
             }
-            log.info("注册消息处理器${app.getAppName()}")
-        }
 
-        if (app is NfAppMessageRecallHandler){
-            GlobalEventChannel.subscribeAlways(MessageRecallEvent::class.java){
-                GlobalScope.launch {
-                    app.handleMessage(it)
+            is NfAppMessageRecallHandler -> {
+                GlobalEventChannel.subscribeAlways(MessageRecallEvent::class.java) {
+                    GlobalScope.launch {
+                        app.handleMessage(it)
+                    }
                 }
+                log.info("注册撤回消息处理器${app.getAppName()}")
             }
-            log.info("注册撤回消息处理器${app.getAppName()}")
-        }
-        if (app is NfAppMemberJoinRequestHandler){
-            GlobalEventChannel.subscribeAlways(MemberJoinRequestEvent::class.java){
-                GlobalScope.launch {
-                    app.handleMessage(it)
+
+            is NfAppMemberJoinRequestHandler -> {
+                GlobalEventChannel.subscribeAlways(MemberJoinRequestEvent::class.java) {
+                    GlobalScope.launch {
+                        app.handleMessage(it)
+                    }
                 }
+                log.info("注册加入事件处理器${app.getAppName()}")
             }
-            log.info("注册加入事件处理器${app.getAppName()}")
-        }
-        if (app is IFshApp) {
-            for (command in app.getCommands()) {
-                fshCommands[command] = app
-                log.info("注册fsh命令$command")
+
+            is IFshApp -> {
+                for (command in app.getCommands()) {
+                    fshCommands[command] = app
+                    log.info("注册fsh命令$command")
+                }
             }
         }
     }
-
 }
