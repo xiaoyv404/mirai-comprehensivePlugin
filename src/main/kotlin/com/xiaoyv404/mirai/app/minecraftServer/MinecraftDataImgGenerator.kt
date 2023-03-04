@@ -267,8 +267,8 @@ class MinecraftDataImgGenerator {
                     intArrayOf(
                         (roundX + 365 + 16 + 28 * i),
                         (roundX + 365 + 28 * i),
-                        (roundX + 365 + 16 + 35 + 28 * i),
-                        (roundX + 365 + 35 + 28 * i)
+                        (roundX + 365 + 35 + 28 * i),
+                        (roundX + 365 + 16 + 35 + 28 * i)
                     ),
                     intArrayOf(roundY + 72 + 56, roundY + 72 + 56, roundY + 72, roundY + 72),
                     4
