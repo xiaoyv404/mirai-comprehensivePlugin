@@ -43,12 +43,14 @@ class MinecraftServerList : NfApp(), IFshApp {
         var averagei: Long = 0
         var k = 0
         tps.forEach {
+            println(k)
             if (k == 60) {
                 low.add(lowi)
                 average.add(averagei / 60)
                 lowi = 0
                 averagei = 0
                 k = 0
+                println("1: $k")
             }
             if (lowi > it[1])
                 lowi = it[1].toLong()
