@@ -17,7 +17,7 @@ class SomeThing : NfApp(), IFshApp {
     override fun getVersion() = "1.1.1"
     override fun getAppDescription() = "杂七杂八的东西"
     override fun getCommands(): Array<String> =
-        arrayOf("-status", "-help", "-test")
+        arrayOf("-status", "-help")
 
 
     private val eventList get() = NfPluginData.eventMap
@@ -26,15 +26,9 @@ class SomeThing : NfApp(), IFshApp {
         when (args[0]) {
             "-status" -> status(msg)
             "-help" -> help(msg)
-            "-test" -> test(msg)
         }
         return true
     }
-
-    private suspend fun test(msg: MessageEvent) {
-        msg.reply("test")
-    }
-
     private suspend fun status(msg: MessageEvent) {
         val bot = msg.bot
         msg.reply(
