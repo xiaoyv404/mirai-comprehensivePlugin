@@ -235,7 +235,7 @@ class MinecraftDataImgGenerator {
             for (i in 0..11) {
                 println(average[i])
                 println(low[i])
-                println(setColorByTPS(average[i]))
+                println(setColorByTPS(1))
                 g2d.color = setColorByTPS(average[i])
                 g2d.fillPolygon(
                     intArrayOf(
