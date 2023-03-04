@@ -237,16 +237,16 @@ class MinecraftDataImgGenerator {
                 println(low[i])
                 println(setColorByTPS(1))
                 g2d.color = setColorByTPS(average[i])
-                g2d.fillPolygon(
-                    intArrayOf(
-                        (roundX + 365 + 6 + 28 * i),
-                        (roundX + 365 + 6 + 16 + 28 * i),
-                        (roundX + 365 + 16 + 35 + 28 * i),
-                        (roundX + 365 + 35 + 28 * i)
-                    ),
-                    intArrayOf(roundY + 72 + 56 - 10, roundY + 72 + 56 - 10, roundY + 72, roundY + 72),
-                    4
-                )
+//                g2d.fillPolygon(
+//                    intArrayOf(
+//                        (roundX + 365 + 6 + 28 * i),
+//                        (roundX + 365 + 6 + 16 + 28 * i),
+//                        (roundX + 365 + 16 + 35 + 28 * i),
+//                        (roundX + 365 + 35 + 28 * i)
+//                    ),
+//                    intArrayOf(roundY + 72 + 56 - 10, roundY + 72 + 56 - 10, roundY + 72, roundY + 72),
+//                    4
+//                )
                 g2d.color = setColorByTPS(1)
                 g2d.fillPolygon(
                     intArrayOf(
