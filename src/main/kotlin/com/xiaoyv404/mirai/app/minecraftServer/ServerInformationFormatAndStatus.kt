@@ -1,6 +1,6 @@
 package com.xiaoyv404.mirai.app.minecraftServer
 
-import kotlinx.serialization.Serializable
+import kotlinx.serialization.*
 
 data class ServerInformationFormatAndStatus(
     var serverInformationFormat: ServerInformationFormat? = null,
