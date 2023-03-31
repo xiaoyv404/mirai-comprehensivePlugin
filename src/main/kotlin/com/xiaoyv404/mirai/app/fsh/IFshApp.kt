@@ -53,7 +53,7 @@ interface IFshApp {
             false
         )
         pw.flush()
-        return out.toString(StandardCharsets.UTF_8)
+        return out.toString()
             .replace(Regex("^usage"), "调用命令")
             .replace(Regex("\n+$"), "")
     }
