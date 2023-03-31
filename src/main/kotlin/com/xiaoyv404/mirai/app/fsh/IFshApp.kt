@@ -58,9 +58,7 @@ interface IFshApp {
             .replace(Regex("\n+$"), "")
     }
 
-    fun getOptions(): Options = Options().apply {
-        addOption("h", "help", false, "查看使用说明")
-    }
+    fun getOptions(): Options = NfOptions()
 
     fun getHelpCmdLineSyntax(): String = getCommands().joinToString("|")
 
