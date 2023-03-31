@@ -47,7 +47,7 @@ class MinecraftServerStats : NfApp(), IFshApp {
         val cmdLine = IFshApp.cmdLine(getOptions(), args)
 
         if (cmdLine.hasOption("help")) {
-            msg.reply(help(args[0]), quote = true)
+            msg.reply(help(), quote = true)
             return false
         }
 

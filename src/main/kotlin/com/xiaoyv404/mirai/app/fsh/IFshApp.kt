@@ -36,7 +36,7 @@ interface IFshApp {
      * @param cmd 命令
      * @return 命令说明
      */
-    fun help(cmd: String, width: Int = 60): String {
+    fun help(width: Int = 60): String {
         val formatter = HelpFormatter()
         val options = getOptions()
         val out = ByteArrayOutputStream()
@@ -44,7 +44,7 @@ interface IFshApp {
         formatter.printHelp(
             pw,
             width,
-            getHelpCmdLineSyntax(cmd),
+            getHelpCmdLineSyntax(),
             getHelpHeader(),
             options,
             1,
@@ -62,7 +62,7 @@ interface IFshApp {
         addOption("h", "help", false, "查看使用说明")
     }
 
-    fun getHelpCmdLineSyntax(cmd: String): String = cmd
+    fun getHelpCmdLineSyntax(): String = getCommands().joinToString("|")
 
     fun getHelpHeader(): String {
         this as NfApp
