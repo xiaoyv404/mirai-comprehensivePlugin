@@ -37,22 +37,21 @@ class MinecraftServerStats : NfApp(), IFshApp {
             "-PotatoStatus",
         )
 
-
-    private val options = Options().apply {
+    override fun getOptions(): Options = Options().apply {
         addOption("p", "player", false, "获取玩家列表")
         addOption("s", "server", true, "选择服务器")
     }
 
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
-        val cmdLine = IFshApp.cmdLine(options, args)
+        val cmdLine = IFshApp.cmdLine(getOptions(), args)
 
         if (cmdLine.hasOption("help")) {
             msg.reply(help(args[0]), quote = true)
             return false
         }
 
-        val info = when{
-            cmdLine.hasOption("server") ->  cmdLine.getOptionValue("server")
+        val info = when {
+            cmdLine.hasOption("server") -> cmdLine.getOptionValue("server")
             msg.gid() == 113594190L -> "gtnh"
             else -> "MCG"
         }.findByName() ?: return false

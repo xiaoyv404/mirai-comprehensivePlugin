@@ -38,7 +38,7 @@ interface IFshApp {
      */
     fun help(cmd: String, width: Int = 60): String {
         val formatter = HelpFormatter()
-        val options = getOptions(cmd)
+        val options = getOptions()
         val out = ByteArrayOutputStream()
         val pw = PrintWriter(out)
         formatter.printHelp(
@@ -58,7 +58,7 @@ interface IFshApp {
             .replace(Regex("\n+$"), "")
     }
 
-    fun getOptions(cmd: String): Options = Options().apply {
+    fun getOptions(): Options = Options().apply {
         addOption("h", "help", false, "查看使用说明")
     }
 
