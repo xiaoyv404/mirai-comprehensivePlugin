@@ -40,6 +40,7 @@ class MinecraftServerStats : NfApp(), IFshApp {
     override fun getOptions(): Options = Options().apply {
         addOption("p", "player", false, "获取玩家列表")
         addOption("s", "server", true, "选择服务器")
+        addOption("h", "help", false, "查看使用说明")
     }
 
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
