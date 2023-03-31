@@ -56,7 +56,6 @@ class Fsh : NfAppMessageHandler() {
             fshApp as NfApp
             fshApp.requireCallLimiter(msg, uid, gid, fshApp.getLimitHint()) {
                 try {
-                    println(fshApp.getOptions())
                     val cmdLine = IFshApp.cmdLine(fshApp.getOptions(), argsList.toTypedArray())
 
                     if (cmdLine.hasOption("help")) {
