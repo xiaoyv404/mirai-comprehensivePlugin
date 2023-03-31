@@ -231,36 +231,51 @@ class MinecraftDataImgGenerator {
             null
         )
 
-        g2d.color = Color.decode("#76FFA1")
-        for (i in 0..11) {
-            setColorByTPS(g2d, average[i])
-            g2d.fillPolygon(
-                intArrayOf(
-                    (roundX + 365 + 28 * i + 6),
-                    (roundX + 365 + 16 + 28 * i + 6),
-                    (roundX + 365 + 16 + 35 + 28 * i),
-                    (roundX + 365 + 35 + 28 * i)
-                ),
-                intArrayOf(roundY + 72 + 56 - 10, roundY + 72 + 56 - 10, roundY + 72, roundY + 72),
-                4
-            )
-            setColorByTPS(g2d, low[i])
-            g2d.fillPolygon(
-                intArrayOf(
-                    (roundX + 365 + 28 * i),
-                    (roundX + 365 + 16 + 28 * i),
-                    (roundX + 365 + 16 + 35 + 28 * i + 6),
-                    (roundX + 365 + 35 + 28 * i + 6)
-                ),
-                intArrayOf(roundY + 72 + 56, roundY + 72 + 56, roundY + 72 + 56 - 10, roundY + 72 + 56 - 10),
-                4
-            )
+        if (name == "MCG")
+            for (i in 0..11) {
+                g2d.color = setColorByTPS(average[i])
+                g2d.fillPolygon(
+                    intArrayOf(
+                        (roundX + 365 + 6 + 28 * i),
+                        (roundX + 365 + 6 + 16 + 28 * i),
+                        (roundX + 365 + 16 + 35 + 28 * i),
+                        (roundX + 365 + 35 + 28 * i)
+                    ),
+                    intArrayOf(roundY + 72 + 56 - 10, roundY + 72 + 56 - 10, roundY + 72, roundY + 72),
+                    4
+                )
+                g2d.color = setColorByTPS(low[1])
+                g2d.fillPolygon(
+                    intArrayOf(
+                        (roundX + 365 + 16 + 28 * i),
+                        (roundX + 365 + 28 * i),
+                        (roundX + 365 + 6 + 28 * i),
+                        (roundX + 365 + 6 + 16 + 28 * i),
+                    ),
+                    intArrayOf(roundY + 72 + 56, roundY + 72 + 56, roundY + 72 + 56 - 10, roundY + 72 + 56 - 10),
+                    4
+                )
+            }
+        else {
+            g2d.color = Color.decode("#76FFA1")
+
+            for (i in 0..11)
+                g2d.fillPolygon(
+                    intArrayOf(
+                        (roundX + 365 + 28 * i),
+                        (roundX + 365 + 16 + 28 * i),
+                        (roundX + 365 + 16 + 35 + 28 * i),
+                        (roundX + 365 + 35 + 28 * i)
+                    ),
+                    intArrayOf(roundY + 72 + 56, roundY + 72 + 56, roundY + 72, roundY + 72),
+                    4
+                )
         }
     }
 
     @OptIn(ExperimentalStdlibApi::class)
-    private fun setColorByTPS(g2d: Graphics2D, tps: Long) {
-        g2d.color = when (tps) {
+    private fun setColorByTPS(tps: Long): Color? {
+        return when (tps) {
             in 17..100 -> Color.decode("#76FFA1")
             in 10.rangeUntil(17) -> Color.decode("#FF9C38")
             else -> Color.decode("#FF3D38")

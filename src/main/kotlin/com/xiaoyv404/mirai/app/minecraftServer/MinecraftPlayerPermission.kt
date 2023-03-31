@@ -33,16 +33,15 @@ class MinecraftPlayerPermission : NfApp(), IFshApp {
     private suspend fun updatePermission(msg: MessageEvent, permissionName: String) {
         val players = Regex(".+").findAll(msg.nextMessage().contentToString())
         val notfoundPlayers = mutableListOf<String>()
-        val permissionCode = try {
+        val permissionCode = if(permissionName == "毛玉")
+            null
+        else
+            try {
             Permissions.valueOf(permissionName).code
         } catch (_: IllegalArgumentException) {
             Permissions.values().find {
                 it.permissionName == permissionName
             }?.code
-        }
-        if (permissionCode == null) {
-            msg.reply("未找到相应名称的权限")
-            return
         }
 
         players.forEach {
