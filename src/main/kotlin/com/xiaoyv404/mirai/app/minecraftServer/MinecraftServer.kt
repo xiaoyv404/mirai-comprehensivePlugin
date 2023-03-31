@@ -46,6 +46,11 @@ class MinecraftServerStats : NfApp(), IFshApp {
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
         val cmdLine = IFshApp.cmdLine(options, args)
 
+        if (cmdLine.hasOption("help")) {
+            msg.reply(help(args[0]), quote = true)
+            return false
+        }
+
         val info = when{
             cmdLine.hasOption("server") ->  cmdLine.getOptionValue("server")
             msg.gid() == 113594190L -> "gtnh"
