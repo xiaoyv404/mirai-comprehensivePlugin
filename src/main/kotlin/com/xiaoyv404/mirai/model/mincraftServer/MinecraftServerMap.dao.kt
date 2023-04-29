@@ -1,4 +1,4 @@
-package com.xiaoyv404.mirai.entity.mincraftServer
+package com.xiaoyv404.mirai.model.mincraftServer
 
 import org.ktorm.entity.*
 import org.ktorm.schema.*

@@ -5,7 +5,7 @@ import com.xiaoyv404.mirai.app.fsh.*
 import com.xiaoyv404.mirai.core.*
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
 import com.xiaoyv404.mirai.dao.*
-import com.xiaoyv404.mirai.entity.mincraftServer.*
+import com.xiaoyv404.mirai.model.mincraftServer.*
 import com.xiaoyv404.mirai.tool.*
 import kotlinx.coroutines.*
 import kotlinx.serialization.*

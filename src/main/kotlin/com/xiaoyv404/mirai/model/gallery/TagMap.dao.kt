@@ -1,4 +1,4 @@
-package com.xiaoyv404.mirai.entity.gallery
+package com.xiaoyv404.mirai.model.gallery
 
 import org.ktorm.entity.*
 import org.ktorm.schema.Table

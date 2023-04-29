@@ -1,4 +1,4 @@
-package com.xiaoyv404.mirai.entity
+package com.xiaoyv404.mirai.model
 
 import org.ktorm.entity.*
 import org.ktorm.schema.*

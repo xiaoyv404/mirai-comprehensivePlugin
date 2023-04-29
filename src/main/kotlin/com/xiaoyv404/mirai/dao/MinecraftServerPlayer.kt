@@ -3,7 +3,7 @@ package com.xiaoyv404.mirai.dao
 import com.xiaoyv404.mirai.app.minecraftServer.*
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
 import com.xiaoyv404.mirai.databace.*
-import com.xiaoyv404.mirai.entity.mincraftServer.*
+import com.xiaoyv404.mirai.model.mincraftServer.*
 import net.mamoe.mirai.event.events.*
 import net.mamoe.mirai.message.data.*
 import org.ktorm.dsl.*

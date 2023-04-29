@@ -5,7 +5,7 @@ import com.xiaoyv404.mirai.app.fsh.*
 import com.xiaoyv404.mirai.core.*
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
 import com.xiaoyv404.mirai.dao.*
-import com.xiaoyv404.mirai.entity.User
+import com.xiaoyv404.mirai.model.User
 import net.mamoe.mirai.contact.*
 import net.mamoe.mirai.event.*
 import net.mamoe.mirai.event.events.*
@@ -184,7 +184,7 @@ class AdminTools : NfApp(), IFshApp {
                 }
                 if (entryMassage != "") {
                     bot.groups.forEach { gp ->
-                        val status = com.xiaoyv404.mirai.entity.Group {
+                        val status = com.xiaoyv404.mirai.model.Group {
                             id = gp.id
                         }.noticeSwitchRead("AdminBroadcast")
                         if (status) {

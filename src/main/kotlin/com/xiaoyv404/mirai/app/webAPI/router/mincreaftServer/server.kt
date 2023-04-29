@@ -3,7 +3,7 @@ package com.xiaoyv404.mirai.app.webAPI.router.mincreaftServer
 import com.xiaoyv404.mirai.app.webAPI.*
 import com.xiaoyv404.mirai.app.webAPI.controller.*
 import com.xiaoyv404.mirai.dao.*
-import com.xiaoyv404.mirai.entity.mincraftServer.*
+import com.xiaoyv404.mirai.model.mincraftServer.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.request.*

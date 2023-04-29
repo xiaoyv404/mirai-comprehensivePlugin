@@ -1,7 +1,7 @@
 package com.xiaoyv404.mirai.dao
 
 import com.xiaoyv404.mirai.databace.*
-import com.xiaoyv404.mirai.entity.gallery.*
+import com.xiaoyv404.mirai.model.gallery.*
 import org.ktorm.dsl.*
 import org.ktorm.entity.*
 

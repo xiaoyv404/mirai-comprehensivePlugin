@@ -1,4 +1,4 @@
-package com.xiaoyv404.mirai.entity.mincraftServer
+package com.xiaoyv404.mirai.model.mincraftServer
 
 import com.xiaoyv404.mirai.databace.*
 import org.ktorm.dsl.*

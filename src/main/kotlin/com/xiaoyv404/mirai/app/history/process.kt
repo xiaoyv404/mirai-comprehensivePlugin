@@ -3,7 +3,7 @@ package com.xiaoyv404.mirai.app.history
 import com.xiaoyv404.mirai.*
 import com.xiaoyv404.mirai.core.*
 import com.xiaoyv404.mirai.dao.*
-import com.xiaoyv404.mirai.entity.*
+import com.xiaoyv404.mirai.model.*
 import com.xiaoyv404.mirai.tool.*
 import kotlinx.serialization.*
 import net.mamoe.mirai.contact.Group

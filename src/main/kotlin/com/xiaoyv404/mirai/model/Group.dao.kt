@@ -1,4 +1,4 @@
-package com.xiaoyv404.mirai.entity
+package com.xiaoyv404.mirai.model
 
 import com.xiaoyv404.mirai.core.*
 import com.xiaoyv404.mirai.extension.*
