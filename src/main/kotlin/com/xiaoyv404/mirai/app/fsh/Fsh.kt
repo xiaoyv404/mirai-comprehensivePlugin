@@ -20,7 +20,7 @@ class Fsh : NfAppMessageHandler() {
     override fun getAppUsage() = "命令系统的底层实现模块, 具体使用见命令"
 
     private val argsSplitPattern = Pattern.compile("([^\"]\\S*|\".+?(?<!\\\\)\")\\s*")
-    private val debug get() = NfPluginData.deBug
+    private val debug get() = PluginData.deBug
 
     override suspend fun handleMessage(msg: MessageEvent) {
         val uid = msg.uid()

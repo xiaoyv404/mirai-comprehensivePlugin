@@ -20,7 +20,7 @@ class SomeThing : NfApp(), IFshApp {
         arrayOf("-status", "-help")
 
 
-    private val eventList get() = NfPluginData.eventMap
+    private val eventList get() = PluginData.eventMap
 
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
         when (args[0]) {
@@ -57,7 +57,7 @@ class SomeThing : NfApp(), IFshApp {
         GlobalEventChannel.subscribeAlways(
             NewFriendRequestEvent::class
         ) {
-            eventList[it.eventId] = NfNewFriendRequestEvent(
+            eventList[it.eventId] = PluginData.NfNewFriendRequestEvent(
                 it.eventId,
                 it.message,
                 it.fromId,

@@ -32,7 +32,7 @@ class AdminTools : NfApp(), IFshApp {
         addOption("u", "uid", true, "成员ID")
     }
 
-    private val eventList get() = NfPluginData.eventMap
+    private val eventList get() = PluginData.eventMap
 
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
         if (msg.isNotAdmin())
@@ -60,7 +60,7 @@ class AdminTools : NfApp(), IFshApp {
     }
 
     private suspend fun debug(msg: MessageEvent, switch: Boolean) {
-        NfPluginData.deBug = switch
+        PluginData.deBug = switch
         msg.reply("Debug模式已切换至 $switch", true)
     }
 

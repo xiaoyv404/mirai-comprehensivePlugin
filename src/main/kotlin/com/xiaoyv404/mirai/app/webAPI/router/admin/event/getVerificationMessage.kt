@@ -14,7 +14,7 @@ fun Route.getVerificationMessage() {
         val principal = call.principal<UserIdPrincipal>() ?: error(WebApi.noPrincipal)
         principal.name.permissionRequiredAdmin()
         call.respond(
-            NfResult.success(NfPluginData.eventMap)
+            NfResult.success(PluginData.eventMap)
         )
     }
 }

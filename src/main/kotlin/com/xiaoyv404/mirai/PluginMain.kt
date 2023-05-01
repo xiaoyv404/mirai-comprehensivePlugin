@@ -17,7 +17,7 @@ object PluginMain : KotlinPlugin(
 ) {
     @OptIn(DelicateCoroutinesApi::class)
     override fun onEnable() {
-        NfPluginData.reload()
+        PluginData.reload()
         PluginConfig.reload()
         connect()
 
@@ -36,7 +36,7 @@ object PluginMain : KotlinPlugin(
     }
 
     override fun onDisable() {
-        NfPluginData.save()
+        PluginData.save()
         ClientUtils.uninit()
         NfApplicationManager.nfApps.forEach {
             it.uninit()
