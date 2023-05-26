@@ -21,7 +21,8 @@ class AdminTools : NfApp(), IFshApp {
     override fun getAppName() = "AdminTools"
     override fun getVersion() = "1.0.3"
     override fun getAppDescription() = "管理员管理工具"
-    override fun getCommands() = arrayOf("-sendto", "-ban", "!!开启全体广播", "-bot", "-accept", "-debug", "-admin")
+    override fun getCommands() =
+        arrayOf("-sendto", "-ban", "!!开启全体广播", "-bot", "-accept", "-debug", "-admin", "-test")
 
     private val banOptions = Options().apply {
         addOption("g", "group", true, "群聊ID")
@@ -46,9 +47,11 @@ class AdminTools : NfApp(), IFshApp {
                 if (args[1] == "add")
                     addBot(args.getOrNull(2) ?: return false, msg)
             }
+
             "-ban" -> {
                 ban((args.getOrNull(1) ?: return false).toLong(), IFshApp.cmdLine(banOptions, args), msg)
             }
+
             "!!开启全体广播" -> adminBroadcast(msg)
             "-accept" -> accept(msg, args.getOrNull(1)?.toLongOrNull() ?: return false)
             "-debug" -> debug(msg, args.getOrNull(1)?.toBooleanStrictOrNull() ?: return false)
@@ -57,8 +60,9 @@ class AdminTools : NfApp(), IFshApp {
                     msg,
                     IFshApp.cmdLine(adminOptions, args)
                 )
+
             "-test" ->
-                buildForwardMessage(msg.subject){
+                buildForwardMessage(msg.subject) {
                     msg.bot says "测试测试"
                 }
         }
