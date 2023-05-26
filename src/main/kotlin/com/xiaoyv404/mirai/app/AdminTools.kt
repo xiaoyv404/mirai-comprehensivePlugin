@@ -7,10 +7,12 @@ import com.xiaoyv404.mirai.core.MessageProcessor.reply
 import com.xiaoyv404.mirai.dao.*
 import com.xiaoyv404.mirai.model.User
 import net.mamoe.mirai.contact.*
+import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.event.*
 import net.mamoe.mirai.event.events.*
 import net.mamoe.mirai.message.*
 import net.mamoe.mirai.message.code.*
+import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.utils.*
 import org.apache.commons.cli.*
 
@@ -55,6 +57,10 @@ class AdminTools : NfApp(), IFshApp {
                     msg,
                     IFshApp.cmdLine(adminOptions, args)
                 )
+            "-test" ->
+                buildForwardMessage(msg.subject){
+                    msg.bot says "测试测试"
+                }
         }
         return true
     }
