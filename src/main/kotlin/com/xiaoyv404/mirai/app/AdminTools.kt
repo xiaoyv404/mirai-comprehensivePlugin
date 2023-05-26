@@ -62,9 +62,10 @@ class AdminTools : NfApp(), IFshApp {
                 )
 
             "-test" ->
-                buildForwardMessage(msg.subject) {
+                msg.reply(buildForwardMessage(msg.subject) {
                     msg.bot says "测试测试"
-                }
+                }.toMessageChain())
+
         }
         return true
     }
