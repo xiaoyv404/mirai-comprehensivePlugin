@@ -57,7 +57,7 @@ class MinecraftServerList : NfApp(), IFshApp {
         }
 
         val list = MinecraftServer().toList()
-        val img = MinecraftDataImgGenerator().drawList(list, low, average)
+        val img = MinecraftServerListGenerator().drawList(list, low, average)
         msg.reply(msg.subject.uploadImage(img).toMessageChain())
 
         if (!cmdLine.hasOption("player"))
