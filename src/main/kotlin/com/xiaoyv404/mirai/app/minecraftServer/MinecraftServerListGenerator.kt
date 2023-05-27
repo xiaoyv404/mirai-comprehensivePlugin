@@ -10,6 +10,9 @@ import javax.imageio.*
 
 class MinecraftServerListGenerator() {
     private val roundX = 10
+    private val red = Color.decode("#FF3D38")
+    private val green = Color.decode("#76FFA1")
+    private val yellow = Color.decode("#FF9C38")
     fun drawList(list: List<MinecraftServer>, low: List<Long>, average: List<Long>): ByteArrayInputStream {
         val imgWidth = 800
         val imgHeight = 150 * list.size + 10
@@ -77,9 +80,6 @@ class MinecraftServerListGenerator() {
         low: List<Long>,
         average: List<Long>
     ) {
-        val red = Color.decode("#FF3D38")
-        val green = Color.decode("#76FFA1")
-
         g2d.color = if (status == 1)
             green
         else
@@ -123,9 +123,9 @@ class MinecraftServerListGenerator() {
             return
         }
         g2d.color = if (status == 1)
-            Color.decode("#FF3D38")
+            red
         else
-            Color.decode("#76FFA1")
+            green
 
         for (i in 0..11)
             drawBarPart(g2d, roundX, i)
@@ -160,9 +160,9 @@ class MinecraftServerListGenerator() {
     @OptIn(ExperimentalStdlibApi::class)
     private fun setColorByTPS(tps: Long): Color? {
         return when (tps) {
-            in 17..100 -> Color.decode("#76FFA1")
-            in 10.rangeUntil(17) -> Color.decode("#FF9C38")
-            else -> Color.decode("#FF3D38")
+            in 17..100 -> green
+            in 10.rangeUntil(17) -> yellow
+            else -> red
         }
     }
 }
