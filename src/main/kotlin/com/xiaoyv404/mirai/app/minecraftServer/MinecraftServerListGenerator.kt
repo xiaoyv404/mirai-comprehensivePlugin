@@ -49,16 +49,11 @@ class MinecraftServerListGenerator() {
         g2d.fillRect(0, 0, imgWidth, imgHeight)//填充区域，将区域背景设置为白色
 
         list.forEachIndexed { k, v ->
-            drawOne(
-                g2d,
-                10 + k * 150,
-                v.name.uppercase(Locale.getDefault()),
-                "%03d".format(v.playerNum),
-                "%03d".format(v.playerMaxNum),
-                v.status,
-                low,
-                average
-            )
+            val name = v.name.uppercase(Locale.getDefault())
+            val status = v.status
+            val roundY = 10 + k * 150
+            drawInfo(g2d, status, roundY, name, "%03d".format(v.playerNum), "%03d".format(v.playerMaxNum))
+            drawBar(g2d, roundY, status, name, average, low)
         }
         g2d.dispose()
 
@@ -67,15 +62,13 @@ class MinecraftServerListGenerator() {
         return ByteArrayInputStream(os.toByteArray())
     }
 
-    private fun drawOne(
+    private fun drawInfo(
         g2d: Graphics2D,
+        status: Int,
         roundY: Int,
         name: String,
         playerNum: String,
-        playerMaxNum: String,
-        status: Int,
-        low: List<Long>,
-        average: List<Long>
+        playerMaxNum: String
     ) {
         g2d.color = if (status == 1)
             green
@@ -99,7 +92,6 @@ class MinecraftServerListGenerator() {
             null
         )
 
-        drawBar(g2d, roundY, status, name, average, low)
     }
 
     private fun drawBar(
