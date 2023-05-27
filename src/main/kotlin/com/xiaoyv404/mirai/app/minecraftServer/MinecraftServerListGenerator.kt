@@ -13,19 +13,20 @@ class MinecraftServerListGenerator() {
     private val red = Color.decode("#FF3D38")
     private val green = Color.decode("#76FFA1")
     private val yellow = Color.decode("#FF9C38")
+
+    private val font = Font.createFont(
+        Font.TRUETYPE_FONT,
+        PluginMain.resolveDataFile("resources/Minecraft/Minecraft AE.ttf")
+    ).deriveFont(Font.PLAIN, 55f)
+    private val font6 = Font.createFont(
+        Font.TRUETYPE_FONT,
+        PluginMain.resolveDataFile("resources/Minecraft/Minecraft AE.ttf"),
+    ).deriveFont(Font.PLAIN, 22f)
+
     fun drawList(list: List<MinecraftServer>, low: List<Long>, average: List<Long>): ByteArrayInputStream {
         val imgWidth = 800
         val imgHeight = 150 * list.size + 10
         val img = BufferedImage(imgWidth, imgHeight, BufferedImage.TYPE_INT_RGB)
-
-        val font = Font.createFont(
-            Font.TRUETYPE_FONT,
-            PluginMain.resolveDataFile("resources/Minecraft/Minecraft AE.ttf")
-        ).deriveFont(Font.PLAIN, 55f)
-        val font6 = Font.createFont(
-            Font.TRUETYPE_FONT,
-            PluginMain.resolveDataFile("resources/Minecraft/Minecraft AE.ttf"),
-        ).deriveFont(Font.PLAIN, 22f)
 
         val g2d = img.createGraphics()
 
@@ -55,8 +56,6 @@ class MinecraftServerListGenerator() {
                 "%03d".format(v.playerNum),
                 "%03d".format(v.playerMaxNum),
                 v.status,
-                font,
-                font6,
                 low,
                 average
             )
@@ -75,8 +74,6 @@ class MinecraftServerListGenerator() {
         playerNum: String,
         playerMaxNum: String,
         status: Int,
-        font: Font,
-        font6: Font,
         low: List<Long>,
         average: List<Long>
     ) {
