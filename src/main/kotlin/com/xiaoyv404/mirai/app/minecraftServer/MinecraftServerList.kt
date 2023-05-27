@@ -30,16 +30,11 @@ class MinecraftServerList : NfApp(), IFshApp {
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
         val cmdLine = IFshApp.cmdLine(options, args)
 
-        val tps = try {
-            Gson().fromJson(
-                ClientUtils.get<String>(
-                    "http://mc.touhou.site:8848/v1/graph?type=performance&server=Minecraft幻想乡"
-                ), Performance::class.java
-            ).tps.takeLast(720)
-        }catch (e:Exception){
-            null
-        }
-
+        val tps = Gson().fromJson(
+            ClientUtils.get<String>(
+                "http://mc.touhou.site:8848/v1/graph?type=performance&server=Minecraft幻想乡"
+            ), Performance::class.java
+        ).tps.takeLast(720)
 
         val low = mutableListOf<Long>()
         val average = mutableListOf<Long>()
@@ -47,7 +42,7 @@ class MinecraftServerList : NfApp(), IFshApp {
         var lowi: Long = 20
         var averagei: Long = 0
         var k = 1
-        tps?.forEach {
+        tps.forEach {
             if (k == 60) {
                 low.add(lowi)
                 average.add(averagei / 60)
