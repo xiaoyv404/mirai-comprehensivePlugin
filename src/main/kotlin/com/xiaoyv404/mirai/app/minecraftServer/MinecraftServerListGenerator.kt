@@ -112,9 +112,9 @@ class MinecraftServerListGenerator() {
             return
         }
         g2d.color = if (status == 1)
-            red
-        else
             green
+        else
+            red
 
         for (i in 0..11)
             drawBarPart(g2d, roundY, i)
