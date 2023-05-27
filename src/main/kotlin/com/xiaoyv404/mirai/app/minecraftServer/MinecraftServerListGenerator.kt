@@ -113,7 +113,7 @@ class MinecraftServerListGenerator() {
         average: List<Long>,
         low: List<Long>
     ) {
-        if (name == "MCG" && status != 0) {
+        if (name == "MCG" && status == 1) {
             for (i in 0..11) {
                 g2d.color = setColorByTPS(average[i])
                 drawBarPart(g2d, roundY, i)
