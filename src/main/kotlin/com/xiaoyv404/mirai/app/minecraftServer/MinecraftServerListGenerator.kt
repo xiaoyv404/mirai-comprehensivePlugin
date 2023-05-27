@@ -128,7 +128,7 @@ class MinecraftServerListGenerator() {
             green
 
         for (i in 0..11)
-            drawBarPart(g2d, roundX, i)
+            drawBarPart(g2d, roundY, i)
     }
 
     private fun drawBarPart(g2d: Graphics2D, roundY: Int, i: Int) {
