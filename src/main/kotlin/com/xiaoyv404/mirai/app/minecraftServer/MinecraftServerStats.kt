@@ -1,22 +1,28 @@
 package com.xiaoyv404.mirai.app.minecraftServer
 
-import com.xiaoyv404.mirai.*
-import com.xiaoyv404.mirai.app.fsh.*
-import com.xiaoyv404.mirai.core.*
+import com.xiaoyv404.mirai.PluginMain
+import com.xiaoyv404.mirai.app.fsh.IFshApp
+import com.xiaoyv404.mirai.app.fsh.NfOptions
+import com.xiaoyv404.mirai.core.App
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
+import com.xiaoyv404.mirai.core.NfApp
+import com.xiaoyv404.mirai.core.gid
 import com.xiaoyv404.mirai.dao.*
-import com.xiaoyv404.mirai.model.mincraftServer.*
-import com.xiaoyv404.mirai.tool.*
-import kotlinx.coroutines.*
-import kotlinx.serialization.*
-import kotlinx.serialization.json.*
-import net.mamoe.mirai.*
-import net.mamoe.mirai.contact.*
+import com.xiaoyv404.mirai.model.mincraftServer.MinecraftServer
+import com.xiaoyv404.mirai.model.mincraftServer.MinecraftServerMap
+import com.xiaoyv404.mirai.tool.ClientUtils
+import kotlinx.coroutines.launch
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
+import net.mamoe.mirai.Bot
+import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Contact.Companion.uploadImage
-import net.mamoe.mirai.event.events.*
-import net.mamoe.mirai.message.code.*
-import net.mamoe.mirai.message.data.*
-import org.apache.commons.cli.*
+import net.mamoe.mirai.event.events.MessageEvent
+import net.mamoe.mirai.message.code.CodableMessage
+import net.mamoe.mirai.message.data.PlainText
+import net.mamoe.mirai.message.data.toMessageChain
+import org.apache.commons.cli.Options
 import java.util.*
 
 @ExperimentalSerializationApi
@@ -45,14 +51,14 @@ class MinecraftServerStats : NfApp(), IFshApp {
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
         val cmdLine = IFshApp.cmdLine(getOptions(), args)
 
-        val info = when {
+        val severName = when {
             cmdLine.hasOption("server") -> cmdLine.getOptionValue("server")
             msg.gid() == 113594190L -> "gtnh"
             else -> "MCG"
         }.findByName() ?: return false
 
         sendInfo(
-            msg, info,
+            msg, severName,
             cmdLine.hasOption("player")
         )
         return true
@@ -82,7 +88,6 @@ class MinecraftServerStats : NfApp(), IFshApp {
 
     private suspend fun sendInfo(msg: MessageEvent, server: MinecraftServer, playerList: Boolean = false) {
         val info = getServerInfo(server.host, server.port)
-        val bot = msg.bot
         val players = info.serverInformationFormat?.players
 
         //判断当前服务器状态
@@ -100,7 +105,7 @@ class MinecraftServerStats : NfApp(), IFshApp {
             MinecraftServerMap {
                 serverID = server.id
             }.findByServerId().forEach {
-                (bot.getGroup(it.groupID) ?: return@forEach).sendMessage(data)
+                (msg.bot.getGroup(it.groupID) ?: return@forEach).sendMessage(data)
             }
         } else
             msg.reply(data, false)
@@ -119,9 +124,6 @@ class MinecraftServerStats : NfApp(), IFshApp {
                 it.save(server.name)
                 server.getOnlinePlayers().send(msg)
             }
-        else
-            players?.players?.save(server.name)
-
     }
 
     suspend fun check(info: MinecraftServer) {

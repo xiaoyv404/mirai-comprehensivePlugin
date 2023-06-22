@@ -1,8 +1,9 @@
 package com.xiaoyv404.mirai
 
-import kotlinx.serialization.*
-import net.mamoe.mirai.console.data.*
-import net.mamoe.yamlkt.*
+import kotlinx.serialization.Serializable
+import net.mamoe.mirai.console.data.AutoSavePluginConfig
+import net.mamoe.mirai.console.data.value
+import net.mamoe.yamlkt.Comment
 
 object PluginConfig : AutoSavePluginConfig("404.404ComprehensiveBotConfig") {
     val redis by value<RedisConfig>()
@@ -49,6 +50,8 @@ object PluginConfig : AutoSavePluginConfig("404.404ComprehensiveBotConfig") {
     @Serializable
     data class EtcConfig(
         @Comment("SauceNAOAPIKEY")
-        val sauceNaoApiKey: String = ""
+        val sauceNaoApiKey: String = "",
+        @Comment("planApiUrl")
+        val planPerformanceApiUrl: String = ""
     )
 }

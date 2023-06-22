@@ -1,10 +1,16 @@
 package com.xiaoyv404.mirai.model.mincraftServer
 
-import com.xiaoyv404.mirai.databace.*
-import org.ktorm.dsl.*
-import org.ktorm.entity.*
-import org.ktorm.schema.*
-import java.time.*
+import com.xiaoyv404.mirai.databace.Database
+import org.ktorm.dsl.between
+import org.ktorm.entity.Entity
+import org.ktorm.entity.filter
+import org.ktorm.entity.sequenceOf
+import org.ktorm.entity.toList
+import org.ktorm.schema.Table
+import org.ktorm.schema.datetime
+import org.ktorm.schema.enum
+import org.ktorm.schema.varchar
+import java.time.LocalDateTime
 
 
 interface MinecraftServerPlayer : Entity<MinecraftServerPlayer> {
@@ -14,7 +20,7 @@ interface MinecraftServerPlayer : Entity<MinecraftServerPlayer> {
     var name: String
     var lastLoginTime: LocalDateTime
     var lastLoginServer: String
-    var permissions: Long?
+    var permissions: Permissions
     fun getAllOnlinePlayers(): List<MinecraftServerPlayer> {
         val players =
             Database.db.minecraftServerPlayer.filter {
@@ -32,19 +38,15 @@ object MinecraftServerPlayers : Table<MinecraftServerPlayer>("MinecraftServerPla
     val name = varchar("name").bindTo { it.name }
     val lastLoginTime = datetime("lastLoginTime").bindTo { it.lastLoginTime }
     val lastLoginServer = varchar("lastLoginServer").bindTo { it.lastLoginServer }
-    val permissions = long("permissions").bindTo { it.permissions }
+    val permissions = enum<Permissions>("permissions").bindTo { it.permissions }
 }
 
-enum class Permissions(val code: Long, val permissionName: String) {
+enum class Permissions(val code: Long?, val permissionName: String) {
     Submit(0, "服主"),
     OP(1, "妖怪贤者"),
     WNEditor(2, "大妖怪"),
     WorldEditor(3, "工业妖怪"),
     NPCEditor(4, "读心妖怪"),
     Basic(5, "妖怪"),
+    Default(null,"毛玉")
 }
-
-fun Long.getPermissionByCode(): Permissions {
-    return Permissions.values()[this.toInt()]
-}
-
