@@ -1,12 +1,16 @@
 package com.xiaoyv404.mirai.app.minecraftServer
 
-import com.xiaoyv404.mirai.app.fsh.*
-import com.xiaoyv404.mirai.core.*
+import com.xiaoyv404.mirai.app.fsh.IFshApp
+import com.xiaoyv404.mirai.core.App
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
-import com.xiaoyv404.mirai.dao.*
-import com.xiaoyv404.mirai.model.mincraftServer.*
-import net.mamoe.mirai.event.events.*
-import java.time.*
+import com.xiaoyv404.mirai.core.NfApp
+import com.xiaoyv404.mirai.core.gid
+import com.xiaoyv404.mirai.dao.findByName
+import com.xiaoyv404.mirai.dao.findByNameAndServer
+import com.xiaoyv404.mirai.model.mincraftServer.MinecraftServerPlayer
+import net.mamoe.mirai.event.events.MessageEvent
+import java.time.Duration
+import java.time.LocalDateTime
 
 @App
 class ISU : NfApp(), IFshApp {
@@ -52,7 +56,7 @@ class ISU : NfApp(), IFshApp {
                 最后在线时间: ${player.lastLoginTime}
                 服务器: ${player.lastLoginServer}
                 UUID: ${player.id}
-                身份: ${player.permissions?.getPermissionByCode()?.permissionName ?: "毛玉"}
+                身份: ${player.permissions.permissionName}
             """.trimIndent()
         )
         return true
@@ -61,7 +65,7 @@ class ISU : NfApp(), IFshApp {
     private suspend fun findOP(msg: MessageEvent): Boolean {
         val op = MinecraftServerPlayer().getAllOnlinePlayers().toMutableList()
         op.removeIf {
-            it.permissions == null
+            it.permissions.code == null
         }
         if (op.isEmpty())
             msg.reply("没有呢 :(")

@@ -1,14 +1,19 @@
 package com.xiaoyv404.mirai.dao
 
-import com.xiaoyv404.mirai.app.minecraftServer.*
+import com.xiaoyv404.mirai.app.minecraftServer.Player
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
-import com.xiaoyv404.mirai.databace.*
-import com.xiaoyv404.mirai.model.mincraftServer.*
-import net.mamoe.mirai.event.events.*
-import net.mamoe.mirai.message.data.*
-import org.ktorm.dsl.*
+import com.xiaoyv404.mirai.databace.Database
+import com.xiaoyv404.mirai.model.mincraftServer.MinecraftServer
+import com.xiaoyv404.mirai.model.mincraftServer.MinecraftServerPlayer
+import com.xiaoyv404.mirai.model.mincraftServer.MinecraftServerPlayers
+import net.mamoe.mirai.event.events.MessageEvent
+import net.mamoe.mirai.message.data.buildForwardMessage
+import net.mamoe.mirai.message.data.toMessageChain
+import org.ktorm.dsl.and
+import org.ktorm.dsl.between
+import org.ktorm.dsl.eq
 import org.ktorm.entity.*
-import java.time.*
+import java.time.LocalDateTime
 
 suspend fun List<MinecraftServerPlayer>.send(msg: MessageEvent) {
     if (this.isEmpty()) {
@@ -24,13 +29,14 @@ suspend fun List<MinecraftServerPlayer>.send(msg: MessageEvent) {
                         名字: ${player.name}
                         服务器: ${player.lastLoginServer}
                         UUID: ${player.id}
-                        身份: ${player.permissions?.getPermissionByCode()?.permissionName ?: "毛玉"}
+                        身份: ${player.permissions.permissionName}
                     """.trimIndent()
                 )
             }
         }.toMessageChain(), quote = false
     )
 }
+
 private val org.ktorm.database.Database.minecraftServerPlayer get() = this.sequenceOf(MinecraftServerPlayers)
 
 fun MinecraftServerPlayer.findById(): MinecraftServerPlayer? {
