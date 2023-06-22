@@ -1,12 +1,16 @@
 package com.xiaoyv404.mirai.app.minecraftServer
 
-import com.xiaoyv404.mirai.app.fsh.*
-import com.xiaoyv404.mirai.core.*
+import com.xiaoyv404.mirai.app.fsh.IFshApp
+import com.xiaoyv404.mirai.core.App
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
-import com.xiaoyv404.mirai.dao.*
-import com.xiaoyv404.mirai.model.mincraftServer.*
-import net.mamoe.mirai.event.events.*
-import net.mamoe.mirai.message.*
+import com.xiaoyv404.mirai.core.NfApp
+import com.xiaoyv404.mirai.dao.authorityIdentification
+import com.xiaoyv404.mirai.dao.findByName
+import com.xiaoyv404.mirai.dao.update
+import com.xiaoyv404.mirai.model.mincraftServer.MinecraftServerPlayer
+import com.xiaoyv404.mirai.model.mincraftServer.Permissions
+import net.mamoe.mirai.event.events.MessageEvent
+import net.mamoe.mirai.message.nextMessage
 
 @App
 class MinecraftPlayerPermission : NfApp(), IFshApp {
@@ -30,18 +34,17 @@ class MinecraftPlayerPermission : NfApp(), IFshApp {
         updatePermission(msg, args.getOrNull(1) ?: return false)
         return true
     }
+
     private suspend fun updatePermission(msg: MessageEvent, permissionName: String) {
         val players = Regex(".+").findAll(msg.nextMessage().contentToString())
         val notfoundPlayers = mutableListOf<String>()
-        val permissionCode = if(permissionName == "毛玉")
-            null
-        else
-            try {
-            Permissions.valueOf(permissionName).code
-        } catch (_: IllegalArgumentException) {
-            Permissions.values().find {
-                it.permissionName == permissionName
-            }?.code
+        val permission = Permissions.values().find {
+            it.permissionName == permissionName
+        }
+
+        if (permission == null) {
+            msg.reply("未知权限", true)
+            return
         }
 
         players.forEach {
@@ -56,7 +59,7 @@ class MinecraftPlayerPermission : NfApp(), IFshApp {
 
             MinecraftServerPlayer {
                 this.id = player.id
-                this.permissions = permissionCode
+                this.permissions = permission
             }.update()
         }
 
