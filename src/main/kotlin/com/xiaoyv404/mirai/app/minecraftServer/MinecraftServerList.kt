@@ -1,16 +1,20 @@
 package com.xiaoyv404.mirai.app.minecraftServer
 
-import com.google.gson.*
-import com.xiaoyv404.mirai.app.fsh.*
-import com.xiaoyv404.mirai.core.*
+import com.google.gson.Gson
+import com.xiaoyv404.mirai.PluginConfig
+import com.xiaoyv404.mirai.app.fsh.IFshApp
+import com.xiaoyv404.mirai.core.App
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
-import com.xiaoyv404.mirai.dao.*
-import com.xiaoyv404.mirai.model.mincraftServer.*
-import com.xiaoyv404.mirai.tool.*
+import com.xiaoyv404.mirai.core.NfApp
+import com.xiaoyv404.mirai.dao.send
+import com.xiaoyv404.mirai.dao.toList
+import com.xiaoyv404.mirai.model.mincraftServer.MinecraftServer
+import com.xiaoyv404.mirai.model.mincraftServer.MinecraftServerPlayer
+import com.xiaoyv404.mirai.tool.ClientUtils
 import net.mamoe.mirai.contact.Contact.Companion.uploadImage
-import net.mamoe.mirai.event.events.*
-import net.mamoe.mirai.message.data.*
-import org.apache.commons.cli.*
+import net.mamoe.mirai.event.events.MessageEvent
+import net.mamoe.mirai.message.data.toMessageChain
+import org.apache.commons.cli.Options
 
 @App
 class MinecraftServerList : NfApp(), IFshApp {
@@ -33,10 +37,10 @@ class MinecraftServerList : NfApp(), IFshApp {
         val tps = try {
             Gson().fromJson(
                 ClientUtils.get<String>(
-                    "http://mc.touhou.site:8848/v1/graph?type=performance&server=Minecraft幻想乡"
+                    PluginConfig.etc.planPerformanceApiUrl
                 ), Performance::class.java
             ).tps.takeLast(720)
-        }catch (e:Exception){
+        } catch (e: Exception) {
             null
         }
 
