@@ -42,11 +42,11 @@ object MinecraftServerPlayers : Table<MinecraftServerPlayer>("MinecraftServerPla
 }
 
 enum class Permissions(val code: Long?, val permissionName: String) {
-    Submit(0, "服主"),
-    OP(1, "妖怪贤者"),
-    WNEditor(2, "大妖怪"),
-    WorldEditor(3, "工业妖怪"),
-    NPCEditor(4, "读心妖怪"),
+    Default(null,"毛玉"),
     Basic(5, "妖怪"),
-    Default(null,"毛玉")
+    NPCEditor(4, "读心妖怪"),
+    WorldEditor(3, "工业妖怪"),
+    WNEditor(2, "大妖怪"),
+    OP(1, "妖怪贤者"),
+    Submit(0, "服主"),
 }
