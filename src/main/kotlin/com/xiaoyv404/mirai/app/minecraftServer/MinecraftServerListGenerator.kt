@@ -1,12 +1,16 @@
 package com.xiaoyv404.mirai.app.minecraftServer
 
-import com.xiaoyv404.mirai.*
-import com.xiaoyv404.mirai.model.mincraftServer.*
-import java.awt.*
-import java.awt.image.*
-import java.io.*
+import com.xiaoyv404.mirai.PluginMain
+import com.xiaoyv404.mirai.model.mincraftServer.MinecraftServer
+import java.awt.Color
+import java.awt.Font
+import java.awt.Graphics2D
+import java.awt.RenderingHints
+import java.awt.image.BufferedImage
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
 import java.util.*
-import javax.imageio.*
+import javax.imageio.ImageIO
 
 class MinecraftServerListGenerator() {
     private val roundX = 10
@@ -99,25 +103,30 @@ class MinecraftServerListGenerator() {
         roundY: Int,
         status: Int,
         name: String,
-        average: List<Long>,
-        low: List<Long>
+        averages: List<Long>,
+        lows: List<Long>
     ) {
-        if (name == "MCG" && status == 1) {
-            for (i in 0..11) {
-                g2d.color = setColorByTPS(average[i])
+        if (name != "MCG") {
+            g2d.color = if (status == 1)
+                green
+            else
+                red
+
+            for (i in 0..11)
                 drawBarPart(g2d, roundY, i)
-                g2d.color = setColorByTPS(low[1])
-                drawBarLowTpsPart(g2d, roundY, i)
-            }
             return
         }
-        g2d.color = if (status == 1)
-            green
-        else
-            red
 
-        for (i in 0..11)
+        for (i in 0..11) {
+            (averages.getOrNull(i) ?: 0).let {
+                g2d.color = setColorByTPS(it)
+            }
             drawBarPart(g2d, roundY, i)
+            (lows.getOrNull(i) ?: 0).let {
+                g2d.color = setColorByTPS(it)
+            }
+            drawBarLowTpsPart(g2d, roundY, i)
+        }
     }
 
     private fun drawBarPart(g2d: Graphics2D, roundY: Int, i: Int) {
