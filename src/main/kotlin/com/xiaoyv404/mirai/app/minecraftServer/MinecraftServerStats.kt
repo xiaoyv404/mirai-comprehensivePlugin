@@ -1,5 +1,6 @@
 package com.xiaoyv404.mirai.app.minecraftServer
 
+import com.xiaoyv404.mirai.PluginConfig
 import com.xiaoyv404.mirai.PluginMain
 import com.xiaoyv404.mirai.app.fsh.IFshApp
 import com.xiaoyv404.mirai.app.fsh.NfOptions
@@ -201,7 +202,7 @@ class MinecraftServerStats : NfApp(), IFshApp {
         return try {
             pJ.serverInformationFormat = Json.decodeFromString(
                 ClientUtils.get(
-                    "http://127.0.0.1:8080/server?" +
+                    "${PluginConfig.etc.mcssApiUrl}/server?" +
                         "host=$host&" +
                         "port=$port"
                 )
