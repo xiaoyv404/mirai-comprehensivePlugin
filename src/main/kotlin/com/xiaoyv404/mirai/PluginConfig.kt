@@ -52,6 +52,8 @@ object PluginConfig : AutoSavePluginConfig("404.404ComprehensiveBotConfig") {
         @Comment("SauceNAOAPIKEY")
         val sauceNaoApiKey: String = "",
         @Comment("planApiUrl")
-        val planPerformanceApiUrl: String = ""
+        val planPerformanceApiUrl: String = "",
+        @Comment("mcssApiUrl")
+        val mcssApiUrl: String = ""
     )
 }
