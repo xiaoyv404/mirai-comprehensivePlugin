@@ -1,12 +1,21 @@
 package com.xiaoyv404.mirai.dao
 
-import com.xiaoyv404.mirai.core.*
-import com.xiaoyv404.mirai.databace.*
-import com.xiaoyv404.mirai.extension.*
-import com.xiaoyv404.mirai.model.*
-import net.mamoe.mirai.event.events.*
+import com.xiaoyv404.mirai.core.gid
+import com.xiaoyv404.mirai.core.uid
+import com.xiaoyv404.mirai.databace.Database
+import com.xiaoyv404.mirai.extension.asJson
+import com.xiaoyv404.mirai.extension.findOrNot
+import com.xiaoyv404.mirai.extension.get
+import com.xiaoyv404.mirai.extension.getAsString
+import com.xiaoyv404.mirai.model.Group
+import com.xiaoyv404.mirai.model.GroupType
+import com.xiaoyv404.mirai.model.Groups
+import net.mamoe.mirai.event.events.MessageEvent
 import org.ktorm.dsl.*
-import org.ktorm.entity.*
+import org.ktorm.entity.filter
+import org.ktorm.entity.find
+import org.ktorm.entity.isNotEmpty
+import org.ktorm.entity.sequenceOf
 
 private val org.ktorm.database.Database.group get() = this.sequenceOf(Groups)
 
@@ -41,6 +50,10 @@ fun authorityIdentification(uid: Long, gid: Long, func: String): Boolean {
 
 fun MessageEvent.authorityIdentification(func: String): Boolean {
     return authorityIdentification(this.uid(), this.gid(), func)
+}
+
+fun MessageEvent.groupType(): GroupType? {
+    return Database.db.group.find { it.id eq gid() }?.type
 }
 
 fun Group.noticeSwitchRead(func: String): Boolean {

@@ -4,10 +4,11 @@ import com.xiaoyv404.mirai.core.App
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
 import com.xiaoyv404.mirai.core.NfAppMessageHandler
 import com.xiaoyv404.mirai.dao.findById
+import com.xiaoyv404.mirai.dao.groupType
 import com.xiaoyv404.mirai.dao.isNotAdmin
 import com.xiaoyv404.mirai.dao.save
+import com.xiaoyv404.mirai.model.GroupType
 import com.xiaoyv404.mirai.model.User
-import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.contact.Member
 import net.mamoe.mirai.contact.isOperator
 import net.mamoe.mirai.event.events.MessageEvent
@@ -22,7 +23,7 @@ class UserAlert : NfAppMessageHandler() {
     override suspend fun handleMessage(msg: MessageEvent) {
         if (!msg.message.contentToString().startsWith("警告"))
             return
-        if (msg.subject !is Group)
+        if (msg.groupType() != GroupType.MCG)
             return
         val sender = msg.sender as Member
         if (msg.isNotAdmin() && !sender.permission.isOperator())
