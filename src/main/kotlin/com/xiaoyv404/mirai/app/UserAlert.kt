@@ -25,7 +25,7 @@ class UserAlert : NfApp(), IFshApp {
         if (msg.subject !is Group)
             return false
         val sender = msg.sender as Member
-        if (msg.isNotAdmin() || !sender.permission.isOperator())
+        if (msg.isNotAdmin() && !sender.permission.isOperator())
             return false
 
         val at: At? by msg.message.orNull()
