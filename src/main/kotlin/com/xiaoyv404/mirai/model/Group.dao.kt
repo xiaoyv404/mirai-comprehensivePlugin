@@ -22,7 +22,7 @@ object Groups : Table<Group>("Groups") {
     val notice = json<Notice>("notice", typeRef()).bindTo { it.notice }
     val permission = json<Permissions>("permission", typeRef()).bindTo { it.permission }
     val salutatory = json<Salutatory>("salutatory", typeRef()).bindTo { it.salutatory }
-    val type = enum<GroupType>("type")
+    val type = enum<GroupType>("type").bindTo { it.type }
 }
 
 enum class GroupType {
