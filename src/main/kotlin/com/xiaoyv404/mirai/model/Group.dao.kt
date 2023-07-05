@@ -1,12 +1,11 @@
 package com.xiaoyv404.mirai.model
 
-import com.xiaoyv404.mirai.core.*
-import com.xiaoyv404.mirai.extension.*
-import net.mamoe.mirai.event.events.*
-import org.ktorm.database.*
-import org.ktorm.dsl.*
-import org.ktorm.entity.*
-import org.ktorm.schema.*
+import com.xiaoyv404.mirai.extension.json
+import org.ktorm.entity.Entity
+import org.ktorm.schema.Table
+import org.ktorm.schema.enum
+import org.ktorm.schema.long
+import org.ktorm.schema.typeRef
 
 interface Group : Entity<Group> {
     companion object : Entity.Factory<Group>()
@@ -15,6 +14,7 @@ interface Group : Entity<Group> {
     val notice: Notice
     val permission: Permissions
     val salutatory: Salutatory
+    val type: GroupType
 }
 
 object Groups : Table<Group>("Groups") {
@@ -22,6 +22,12 @@ object Groups : Table<Group>("Groups") {
     val notice = json<Notice>("notice", typeRef()).bindTo { it.notice }
     val permission = json<Permissions>("permission", typeRef()).bindTo { it.permission }
     val salutatory = json<Salutatory>("salutatory", typeRef()).bindTo { it.salutatory }
+    val type = enum<GroupType>("type")
+}
+
+enum class GroupType {
+    Default,
+    MCG,
 }
 
 @Suppress("PropertyName")
