@@ -20,7 +20,7 @@ class UserAlert : NfAppMessageHandler() {
     override fun getVersion() = "1.0.0"
     override fun getAppDescription() = "用户警告相关"
     override suspend fun handleMessage(msg: MessageEvent) {
-        if (msg.message.contentToString().startsWith("警告"))
+        if (!msg.message.contentToString().startsWith("警告"))
             return
         if (msg.subject !is Group)
             return
