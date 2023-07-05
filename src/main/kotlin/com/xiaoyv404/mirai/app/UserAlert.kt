@@ -13,7 +13,9 @@ import net.mamoe.mirai.contact.Member
 import net.mamoe.mirai.contact.isOperator
 import net.mamoe.mirai.event.events.MessageEvent
 import net.mamoe.mirai.message.data.At
-import net.mamoe.mirai.message.data.orNull
+import net.mamoe.mirai.message.data.MessageChainBuilder
+import net.mamoe.mirai.message.data.PlainText
+import net.mamoe.mirai.message.data.buildMessageChain
 
 @App
 class UserAlert : NfAppMessageHandler() {
@@ -29,21 +31,30 @@ class UserAlert : NfAppMessageHandler() {
         if (msg.isNotAdmin() && !sender.permission.isOperator())
             return
 
-        val at: At? by msg.message.orNull()
-
-        if (at == null)
+        val ats = msg.message.filterIsInstance<At>()
+        if (ats.isEmpty())
             return
 
-        val user = User {
-            this.id = at!!.target
-        }.findById() ?: User {
-            this.id = at!!.target
+        val str = MessageChainBuilder()
+        ats.forEachIndexed { k, v ->
+            val user = User {
+                this.id = v.target
+            }.findById() ?: User {
+                this.id = v.target
+            }
+            user.warningTimes++
+
+            user.save()
+            str.append(buildMessageChain {
+                +"已警告"
+                +v
+                +"，本次为第${user.warningTimes}次警告"
+                if (k != ats.size - 1)
+                    +PlainText("\n")
+            })
         }
-        user.warningTimes++
 
-        user.save()
-
-        msg.reply("已警告，本次为第${user.warningTimes}次警告")
+        msg.reply(str.build())
 
         return
     }
