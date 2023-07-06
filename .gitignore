@@ -1,7 +1,6 @@
 # Project exclude paths
 /.gradle/
 /run/
-/src/test/
 /build/
 /.idea/
 
