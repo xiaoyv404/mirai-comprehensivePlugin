@@ -1,17 +1,17 @@
 package com.xiaoyv404.mirai.core
 
-import com.xiaoyv404.mirai.*
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
-import com.xiaoyv404.mirai.databace.*
-import net.mamoe.mirai.event.events.*
-import java.util.concurrent.*
+import com.xiaoyv404.mirai.databace.Database
+import net.mamoe.mirai.event.events.MessageEvent
+import net.mamoe.mirai.utils.MiraiLogger
+import java.util.concurrent.TimeUnit
 
 
 abstract class NfApp {
 
     val rdb = Database.rdb
 
-    val log = PluginMain.logger
+    val log = MiraiLogger.Factory.create(NfApp::class)
 
     /**
      * 应用名称
