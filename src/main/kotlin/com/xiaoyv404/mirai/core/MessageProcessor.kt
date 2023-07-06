@@ -1,6 +1,5 @@
 package com.xiaoyv404.mirai.core
 
-import com.xiaoyv404.mirai.PluginMain
 import com.xiaoyv404.mirai.databace.Database
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Contact.Companion.sendImage
@@ -8,10 +7,11 @@ import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.event.events.MessageEvent
 import net.mamoe.mirai.message.MessageReceipt
 import net.mamoe.mirai.message.data.*
+import net.mamoe.mirai.utils.MiraiLogger
 import java.io.InputStream
 
 object MessageProcessor {
-    private val log = PluginMain.logger
+    private val log = MiraiLogger.Factory.create(MessageProcessor::class)
 
     private fun markSent(src: MessageEvent, sent: MessageReceipt<Contact>) {
         val originIdentity = src.source.rgwMsgIdentity()
