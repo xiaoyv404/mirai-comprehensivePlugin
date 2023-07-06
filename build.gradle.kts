@@ -3,7 +3,7 @@ plugins {
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.serialization") version kotlinVersion
 
-    id("net.mamoe.mirai-console") version "2.13.0"
+    id("net.mamoe.mirai-console") version "2.15.0-RC"
 }
 
 group = "com.xiaoyv404"
@@ -57,4 +57,13 @@ dependencies {
     implementation("commons-cli:commons-cli:1.5.0")
 
     implementation("org.apache.tika:tika-core:2.7.0")
+    testImplementation("com.h2database:h2:2.1.214")
+    testImplementation("net.mamoe:mirai-core-mock:2.15.0-RC")
+    testImplementation("org.mockito:mockito-core:5.4.0")
+    testApi(kotlin("test-junit5"))
+    testApi("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.2")
+
+}
+tasks.test {
+    useJUnitPlatform()
 }
