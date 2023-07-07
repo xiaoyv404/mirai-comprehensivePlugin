@@ -4,7 +4,6 @@ import com.xiaoyv404.mirai.BaseTest
 import net.mamoe.mirai.LowLevelApi
 import net.mamoe.mirai.contact.MemberPermission
 import net.mamoe.mirai.event.events.GroupMessagePostSendEvent
-import net.mamoe.mirai.event.events.MessageEvent
 import net.mamoe.mirai.message.data.At
 import net.mamoe.mirai.mock.utils.simpleMemberInfo
 import org.junit.jupiter.api.Test
@@ -27,7 +26,7 @@ internal class UserAlertTest : BaseTest() {
                 +At(1008611)
                 +At(464)
             }
-        }.filterIsInstance<MessageEvent>().runNfMessageEventApp {
+        }.runNfAppMessageHandlerApp {
             UserAlert().handleMessage(this)
         }.filterIsInstance<GroupMessagePostSendEvent>().let { msg ->
             assertEquals("已警告@1111，本次为第1次警告", msg[0].message.contentToString())
