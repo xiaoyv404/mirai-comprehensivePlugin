@@ -58,7 +58,7 @@ internal abstract class BaseTest : TestBase() {
         return result
     }
 
-    internal suspend fun  List<MessageEvent>.runNfAppMessageHandlerApp(
+    private suspend fun List<MessageEvent>.runNfAppMessageHandlerApp(
         action: suspend MessageEvent.() -> Unit
     ): List<Event> {
         val result = mutableListOf<Event>()
@@ -74,8 +74,8 @@ internal abstract class BaseTest : TestBase() {
 
     internal suspend fun List<Event>.runNfAppMessageHandlerApp(
         action: suspend MessageEvent.() -> Unit
-    ): List<Event>{
-        return this.filterIsInstance<MessageEvent>().runNfAppMessageHandlerApp { action }
+    ): List<Event> {
+        return this.filterIsInstance<MessageEvent>().runNfAppMessageHandlerApp(action)
     }
 
     @AfterEach
