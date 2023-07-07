@@ -1,5 +1,6 @@
 package com.xiaoyv404.mirai
 
+import com.xiaoyv404.mirai.tool.CommandSplit
 import net.mamoe.mirai.event.Event
 import net.mamoe.mirai.event.GlobalEventChannel
 import net.mamoe.mirai.event.events.MessageEvent
@@ -67,6 +68,22 @@ internal abstract class BaseTest : TestBase() {
         }
         this.filterIsInstance<MessageEvent>().forEach {
             action(it)
+        }
+        listener.cancel()
+        return result
+    }
+
+    internal suspend fun List<Event>.runIFsApp(
+        action: suspend (array: Array<String>, msg: MessageEvent) -> Boolean
+    ): List<Event> {
+        val result = mutableListOf<Event>()
+        val listener = GlobalEventChannel.subscribeAlways<Event> {
+            result.add(this)
+        }
+        this.filterIsInstance<MessageEvent>().forEach { msg ->
+            CommandSplit.splitWhit404(msg.message.contentToString())?.let {
+                action(it.toTypedArray(), msg)
+            }
         }
         listener.cancel()
         return result
