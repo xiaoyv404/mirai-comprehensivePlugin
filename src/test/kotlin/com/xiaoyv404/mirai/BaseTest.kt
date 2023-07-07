@@ -1,5 +1,6 @@
 package com.xiaoyv404.mirai
 
+import com.xiaoyv404.mirai.extension.MyPostgreSqlDialect
 import com.xiaoyv404.mirai.tool.CommandSplit
 import net.mamoe.mirai.event.Event
 import net.mamoe.mirai.event.GlobalEventChannel
@@ -31,7 +32,8 @@ internal abstract class BaseTest : TestBase() {
                 Database.connect(
                     "jdbc:h2:mem:ktorm;DB_CLOSE_DELAY=-1",
                     alwaysQuoteIdentifiers = true,
-                    logger = ConsoleLogger(threshold = LogLevel.INFO)
+                    logger = ConsoleLogger(threshold = LogLevel.INFO),
+                    dialect = MyPostgreSqlDialect()
                 )
             rdb = Mockito.mock()
             execSqlScript("init-data.sql")
