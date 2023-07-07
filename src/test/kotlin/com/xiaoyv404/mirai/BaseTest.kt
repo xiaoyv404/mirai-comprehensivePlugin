@@ -2,6 +2,7 @@ package com.xiaoyv404.mirai
 
 import net.mamoe.mirai.event.Event
 import net.mamoe.mirai.event.GlobalEventChannel
+import net.mamoe.mirai.event.events.MessageEvent
 import net.mamoe.mirai.mock.MockBotFactory
 import net.mamoe.mirai.mock.utils.MockActionsScope
 import net.mamoe.mirai.mock.utils.broadcastMockEvents
@@ -52,6 +53,20 @@ internal abstract class BaseTest : TestBase() {
         }
         broadcastMockEvents {
             action()
+        }
+        listener.cancel()
+        return result
+    }
+
+    internal suspend fun  List<MessageEvent>.runNfMessageEventApp(
+        action: suspend MessageEvent.() -> Unit
+    ): List<Event> {
+        val result = mutableListOf<Event>()
+        val listener = GlobalEventChannel.subscribeAlways<Event> {
+            result.add(this)
+        }
+        this.forEach {
+            action(it)
         }
         listener.cancel()
         return result
