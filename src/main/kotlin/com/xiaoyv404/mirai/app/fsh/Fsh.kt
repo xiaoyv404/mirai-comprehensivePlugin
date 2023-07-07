@@ -1,15 +1,18 @@
 package com.xiaoyv404.mirai.app.fsh
 
-import com.xiaoyv404.mirai.*
-import com.xiaoyv404.mirai.app.thesaurus.*
+import com.xiaoyv404.mirai.PluginData
+import com.xiaoyv404.mirai.app.thesaurus.cMsgToMiraiMsg
+import com.xiaoyv404.mirai.app.thesaurus.parseMsg
 import com.xiaoyv404.mirai.core.*
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
-import com.xiaoyv404.mirai.dao.*
-import com.xiaoyv404.mirai.model.*
-import net.mamoe.mirai.event.events.*
-import net.mamoe.mirai.message.code.*
-import org.apache.commons.cli.*
-import java.util.regex.*
+import com.xiaoyv404.mirai.dao.authorityIdentification
+import com.xiaoyv404.mirai.dao.findByQuestion
+import com.xiaoyv404.mirai.dao.isBot
+import com.xiaoyv404.mirai.model.Thesauru
+import com.xiaoyv404.mirai.tool.CommandSplit
+import net.mamoe.mirai.event.events.MessageEvent
+import net.mamoe.mirai.message.code.MiraiCode
+import org.apache.commons.cli.UnrecognizedOptionException
 
 
 @App
@@ -19,33 +22,12 @@ class Fsh : NfAppMessageHandler() {
     override fun getAppDescription() = "命令系统的底层实现"
     override fun getAppUsage() = "命令系统的底层实现模块, 具体使用见命令"
 
-    private val argsSplitPattern = Pattern.compile("([^\"]\\S*|\".+?(?<!\\\\)\")\\s*")
     private val debug get() = PluginData.deBug
 
     override suspend fun handleMessage(msg: MessageEvent) {
         val uid = msg.uid()
         val gid = msg.gid()
-        val line = msg.message.contentToString().trim()
-
-        // 分割参数
-        val matcher = argsSplitPattern.matcher(line)
-        val argsList: ArrayList<String> = ArrayList()
-        while (matcher.find()) {
-            var s = matcher.group(1)
-            if (s.startsWith("\"") && s.endsWith("\"") && s.length > 1) {
-                s = s.substring(1, s.length - 1)
-            }
-            s = s.replace("\\\"", "\"")
-            argsList.add(s)
-        }
-
-        if (argsList.isEmpty())
-            return
-
-        if (argsList.size > 1 && argsList[0] == "404") {
-            argsList.removeAt(0)
-            argsList[0] = "-${argsList[0]}"
-        }
+        val argsList = CommandSplit.splitWhit404(msg.message.contentToString()) ?: return
 
         if (msg.isBot())
             return
