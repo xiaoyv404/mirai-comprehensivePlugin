@@ -1,11 +1,15 @@
 package com.xiaoyv404.mirai.dao
 
-import com.xiaoyv404.mirai.core.*
-import com.xiaoyv404.mirai.databace.*
-import com.xiaoyv404.mirai.model.*
-import net.mamoe.mirai.event.events.*
-import org.ktorm.dsl.*
-import org.ktorm.entity.*
+import com.xiaoyv404.mirai.core.uid
+import com.xiaoyv404.mirai.databace.Database
+import com.xiaoyv404.mirai.model.User
+import com.xiaoyv404.mirai.model.Users
+import net.mamoe.mirai.event.events.MessageEvent
+import org.ktorm.dsl.eq
+import org.ktorm.entity.add
+import org.ktorm.entity.find
+import org.ktorm.entity.sequenceOf
+import org.ktorm.entity.update
 
 private val org.ktorm.database.Database.users get() = this.sequenceOf(Users)
 
@@ -36,7 +40,7 @@ fun User.isBot(): Boolean {
 }
 
 fun User.isNotAdmin(): Boolean {
-    return this.findById()?.admin == false
+    return this.findById()?.admin != true
 }
 
 fun Long.isNotAdmin(): Boolean {
