@@ -7,6 +7,7 @@ import org.ktorm.dsl.eq
 import org.ktorm.entity.add
 import org.ktorm.entity.find
 import org.ktorm.entity.sequenceOf
+import org.ktorm.entity.update
 
 private val org.ktorm.database.Database.minecraftServerPlayerQQMapping
     get() = this.sequenceOf(
@@ -18,15 +19,16 @@ private val org.ktorm.database.Database.minecraftServerPlayerQQMapping
  * @return false 新增
  * @return true 更新
  */
-fun MinecraftServerPlayerQQMapping.save(): MinecraftServerPlayerQQMapping? {
-    val data = this.findByPlayerName()
-    return if (data == null) {
+fun MinecraftServerPlayerQQMapping.save(): Boolean {
+    return if (this.findByQQId() == null) {
         Database.db.minecraftServerPlayerQQMapping.add(this)
-        null
-    } else data
+        false
+    } else {
+        Database.db.minecraftServerPlayerQQMapping.update(this)
+        true
+    }
 }
 
-
-fun MinecraftServerPlayerQQMapping.findByPlayerName(): MinecraftServerPlayerQQMapping? {
-    return Database.db.minecraftServerPlayerQQMapping.find { it.playerName eq this.playerName }
+fun MinecraftServerPlayerQQMapping.findByQQId(): MinecraftServerPlayerQQMapping? {
+    return Database.db.minecraftServerPlayerQQMapping.find { it.qq eq this.qq }
 }
