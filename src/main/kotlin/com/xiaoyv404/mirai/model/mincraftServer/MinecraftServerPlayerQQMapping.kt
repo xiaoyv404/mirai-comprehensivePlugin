@@ -8,11 +8,11 @@ import org.ktorm.schema.varchar
 interface MinecraftServerPlayerQQMapping:Entity<MinecraftServerPlayerQQMapping> {
     companion object : Entity.Factory<MinecraftServerPlayerQQMapping>()
 
-    var qq: Long
     var playerName: String
+    var qq: Long
 }
 
 object MinecraftServerPlayerQQMappings : Table<MinecraftServerPlayerQQMapping>("MinecraftServerPlayer_qq_mapping") {
-    val qq = long("qq").primaryKey().bindTo { it.qq }
     val playerName = varchar("playerName").primaryKey().bindTo { it.playerName }
+    val qq = long("qq").primaryKey().bindTo { it.qq }
 }
