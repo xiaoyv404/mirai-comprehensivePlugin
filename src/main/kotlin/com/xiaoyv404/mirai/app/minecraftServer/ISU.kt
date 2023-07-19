@@ -33,7 +33,7 @@ class ISU : NfApp(), IFshApp {
         }
     }
 
-    val regex = Regex("\\w")
+    val regex = Regex("\\w+")
 
     private suspend fun isOnline(args: Array<String>, msg: MessageEvent): Boolean {
         val name = when {
