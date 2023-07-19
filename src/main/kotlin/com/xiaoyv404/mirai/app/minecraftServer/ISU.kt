@@ -5,9 +5,12 @@ import com.xiaoyv404.mirai.core.App
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
 import com.xiaoyv404.mirai.core.NfApp
 import com.xiaoyv404.mirai.core.gid
+import com.xiaoyv404.mirai.core.uid
 import com.xiaoyv404.mirai.dao.findByName
 import com.xiaoyv404.mirai.dao.findByNameAndServer
+import com.xiaoyv404.mirai.dao.save
 import com.xiaoyv404.mirai.model.mincraftServer.MinecraftServerPlayer
+import com.xiaoyv404.mirai.model.mincraftServer.MinecraftServerPlayerQQMapping
 import net.mamoe.mirai.event.events.MessageEvent
 import java.time.Duration
 import java.time.LocalDateTime
@@ -30,10 +33,19 @@ class ISU : NfApp(), IFshApp {
         }
     }
 
+    val regex = Regex("\\w")
+
     private suspend fun isOnline(args: Array<String>, msg: MessageEvent): Boolean {
-        if (args.size < 2 && args[0] != "-桃呢")
+        val name = when {
+            args[0] == "-桃呢" -> "2429334909"
+            args.getOrNull(1) != null -> args[1]
+            else -> regex.find(msg.senderName)?.value
+        }
+        if (name == null) {
+            msg.reply("快去修改群名片为自己的服务器ID！")
             return false
-        val name = if (args[0] == "-桃呢") "2429334909" else args[1]
+        }
+
         val player = if (msg.gid() == 113594190L)
             MinecraftServerPlayer {
                 this.name = name
@@ -45,9 +57,18 @@ class ISU : NfApp(), IFshApp {
             }.findByName()
 
         if (player == null) {
-            msg.reply("无数据")
+            if (args.getOrNull(1) == null)
+                msg.reply("无数据呢，请把服务器ID放到群名片的最前面")
+            else
+                msg.reply("无数据")
             return false
         }
+
+        if (args.getOrNull(1) == null)
+            MinecraftServerPlayerQQMapping {
+                this.qq = msg.uid()
+                this.playerName = name
+            }.save()
 
         msg.reply(
             """
