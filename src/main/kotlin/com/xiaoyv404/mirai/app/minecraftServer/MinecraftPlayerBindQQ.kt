@@ -59,7 +59,7 @@ class MinecraftPlayerBindQQ : NfApp(), IFshApp {
         val replay = buildMessageChain {
             +"存在相同玩家名称："
             duplicateList.forEach {
-                +"\n${it.value.joinToString { ", " }} 为 ${it.key}"
+                +"\n${it.value.joinToString("，")} 为 ${it.key}"
             }
         }
         msg.reply(replay, true)
