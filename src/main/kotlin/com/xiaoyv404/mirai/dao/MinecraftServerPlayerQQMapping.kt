@@ -20,7 +20,7 @@ private val org.ktorm.database.Database.minecraftServerPlayerQQMapping
  * @return true 更新
  */
 fun MinecraftServerPlayerQQMapping.save(): Boolean {
-    return if (this.findById() == null) {
+    return if (this.findByPlayerName() == null) {
         Database.db.minecraftServerPlayerQQMapping.add(this)
         false
     } else {
@@ -33,6 +33,6 @@ fun MinecraftServerPlayerQQMapping.update() {
     Database.db.minecraftServerPlayerQQMapping.update(this)
 }
 
-fun MinecraftServerPlayerQQMapping.findById(): MinecraftServerPlayerQQMapping? {
+fun MinecraftServerPlayerQQMapping.findByPlayerName(): MinecraftServerPlayerQQMapping? {
     return Database.db.minecraftServerPlayerQQMapping.find { it.playerName eq this.playerName }
 }
