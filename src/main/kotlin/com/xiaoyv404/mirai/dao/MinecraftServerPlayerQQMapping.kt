@@ -33,6 +33,7 @@ fun MinecraftServerPlayerQQMapping.update() {
     Database.db.minecraftServerPlayerQQMapping.update(this)
 }
 
+
 fun MinecraftServerPlayerQQMapping.findByPlayerName(): MinecraftServerPlayerQQMapping? {
     return Database.db.minecraftServerPlayerQQMapping.find { it.playerName eq this.playerName }
 }
