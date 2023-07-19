@@ -18,7 +18,7 @@ class MinecraftPlayerBindQQ : NfApp(), IFshApp {
     override fun getAppDescription() = "我的世界玩家绑定QQ"
     override fun getCommands() = arrayOf("-McBindQQ")
 
-    private val regex = Regex("\\d+")
+    private val regex = Regex("\\w+")
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
         if (msg.isNotAdmin())
             return false
