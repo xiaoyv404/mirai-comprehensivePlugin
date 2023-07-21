@@ -2,6 +2,8 @@ package com.xiaoyv404.mirai
 
 import com.xiaoyv404.mirai.extension.MyPostgreSqlDialect
 import com.xiaoyv404.mirai.tool.CommandSplit
+import com.zaxxer.hikari.HikariConfig
+import com.zaxxer.hikari.HikariDataSource
 import net.mamoe.mirai.event.Event
 import net.mamoe.mirai.event.GlobalEventChannel
 import net.mamoe.mirai.event.events.MessageEvent
@@ -13,10 +15,9 @@ import org.ktorm.database.Database
 import org.ktorm.logging.ConsoleLogger
 import org.ktorm.logging.LogLevel
 import org.mockito.Mockito
-import org.testcontainers.containers.GenericContainer
+import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
-import org.testcontainers.utility.DockerImageName
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
@@ -24,10 +25,11 @@ import kotlin.test.BeforeTest
 
 @Testcontainers
 internal abstract class BaseTest : TestBase() {
-//    @Container
-//    var redis: GenericContainer<*> = GenericContainer(DockerImageName.parse("redis:7.0.11-alpine"))
     @Container
-    var postgres: GenericContainer<*> = GenericContainer(DockerImageName.parse("postgres")).withExposedPorts(2001)
+    private val postgres: PostgreSQLContainer<*> = PostgreSQLContainer("postgres:latest").withDatabaseName("404")
+        .withUsername("test")
+        .withPassword("test")
+
 
     internal val bot = MockBotFactory.newMockBotBuilder()
         .id(2079373402)
@@ -39,9 +41,15 @@ internal abstract class BaseTest : TestBase() {
         com.xiaoyv404.mirai.databace.Database.apply {
             db =
                 Database.connect(
-                    "jdbc:postgresql://${postgres.host}:${postgres.firstMappedPort}/404",
+                    HikariDataSource(HikariConfig().apply {
+                        jdbcUrl = postgres.jdbcUrl
+                        driverClassName = "org.postgresql.Driver"
+                        username = postgres.username
+                        password = postgres.password
+                        maximumPoolSize = 10
+                    }),
                     alwaysQuoteIdentifiers = true,
-                    logger = ConsoleLogger(threshold = LogLevel.TRACE),
+                    logger = ConsoleLogger(threshold = LogLevel.INFO),
                     dialect = MyPostgreSqlDialect()
                 )
             rdb = Mockito.mock()
