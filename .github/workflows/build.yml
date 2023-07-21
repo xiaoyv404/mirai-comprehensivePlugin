@@ -25,14 +25,13 @@ jobs:
       - name: Build all
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: assemble --scan
+          arguments: assemble
 
       - name: All Tests
         uses: gradle/gradle-build-action@v2
         with:
           arguments: |
             check
-            --scan
             -Dmirai.network.show.all.components=true
             -Dkotlinx.coroutines.debug=on
             -Dmirai.network.show.packet.details=true
