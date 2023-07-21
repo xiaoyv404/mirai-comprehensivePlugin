@@ -12,30 +12,30 @@ jobs:
           - ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Checkout submodules
-        run: git submodule update --init --recursive
 
       - name: Setup JDK 17
         uses: actions/setup-java@v3
         with:
-          distribution: 'temurin'
           java-version: '17'
+          distribution: 'temurin'
 
-      - name: chmod -R 777 *
-        run: chmod -R 777 *
-
-      - name: Init gradle project
-        run: ./gradlew clean --scan
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
 
       - name: Build all
-        run: ./gradlew assemble --scan
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: assemble
 
       - name: All Tests
-        run: >
-          ./gradlew check --scan
-          "-Dmirai.network.show.all.components=true"
-          "-Dkotlinx.coroutines.debug=on"
-          "-Dmirai.network.show.packet.details=true"
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: |
+            check
+            --scan
+            -Dmirai.network.show.all.components=true
+            -Dkotlinx.coroutines.debug=on
+            -Dmirai.network.show.packet.details=true
 
       - name: Upload build artifacts
         uses: ./.github/actions/upload-build-artifacts
