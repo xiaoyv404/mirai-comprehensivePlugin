@@ -25,7 +25,7 @@ jobs:
       - name: Build all
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: assemble
+          arguments: assemble --scan
 
       - name: All Tests
         uses: gradle/gradle-build-action@v2
