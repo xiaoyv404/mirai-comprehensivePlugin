@@ -23,7 +23,7 @@ internal class DebuMeTest : BaseTest() {
         }.runIFsApp { array, msg ->
             DebuMe().executeRsh(array, msg)
         }.filterIsInstance<GroupMessagePostSendEvent>().let { msg ->
-            assertEquals("", msg[0].message.contentToString())
+            assertEquals(null, msg.getOrNull(0)?.message?.contentToString())
         }
     }
 }
