@@ -23,4 +23,6 @@ alter table "Users"
 
 insert into "Groups" ("id", "notice", "permission", "salutatory", "type")
 values (1147939635, null, null, null, 'MCG'),
-       (2020, null, null, null, 'MCG');
+       (2020, null,
+        '{"MinecraftServerPlayerPermission":{"all":true,"black":[],"white":[],"controller":{"white":[],"groupAdmin":true}},"DebuMe": {"all": true, "black": [], "white": [], "controller": {"white": [], "groupAdmin": true}}, "NetworkEro": {"all": true, "black": [], "white": [], "controller": {"white": [], "groupAdmin": true}}, "LocalGallery": {"all": true, "black": [], "white": [], "controller": {"white": [], "groupAdmin": true}}, "ThesaurusAdd": {"all": true, "black": [], "white": [], "controller": {"white": [], "groupAdmin": true}}, "SauceNaoSearch": {"all": true, "black": [], "white": [], "controller": {"white": [], "groupAdmin": true}}, "BiliBiliParsing": {"all": true, "black": [], "white": [], "controller": {"white": [], "groupAdmin": true}}, "ThesaurusResponse": {"all": true, "black": [], "white": [], "controller": {"white": [], "groupAdmin": true}}}'
+       , null, 'MCG');
