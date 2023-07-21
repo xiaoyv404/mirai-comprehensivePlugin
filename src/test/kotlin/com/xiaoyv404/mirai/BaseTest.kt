@@ -49,7 +49,7 @@ internal abstract class BaseTest : TestBase() {
                         maximumPoolSize = 10
                     }),
                     alwaysQuoteIdentifiers = true,
-                    logger = ConsoleLogger(threshold = LogLevel.DEBUG),
+                    logger = ConsoleLogger(threshold = LogLevel.INFO),
                     dialect = MyPostgreSqlDialect()
                 )
             rdb = Mockito.mock()

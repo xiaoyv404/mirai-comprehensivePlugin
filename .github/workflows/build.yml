@@ -32,7 +32,7 @@ jobs:
 
       - name: All Tests
         run: >
-          ./gradlew check --scan --debug
+          ./gradlew check --scan
           "-Dmirai.network.show.all.components=true"
           "-Dkotlinx.coroutines.debug=on"
           "-Dmirai.network.show.packet.details=true"
