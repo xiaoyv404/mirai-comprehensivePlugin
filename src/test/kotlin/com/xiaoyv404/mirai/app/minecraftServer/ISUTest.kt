@@ -25,7 +25,7 @@ internal class ISUTest : BaseTest() {
             mockMember.says {
                 +"404 玩家状态 tEsT"
             }
-        }.runIFsApp { args, msg -> ISU().executeRsh(args, msg) }
+        }.runIFsApp(ISU())
             .filterIsInstance<GroupMessagePostSendEvent>().let { msg ->
                 assertEquals(
                     "无数据",

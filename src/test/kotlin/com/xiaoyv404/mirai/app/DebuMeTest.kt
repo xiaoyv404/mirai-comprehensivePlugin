@@ -20,9 +20,8 @@ internal class DebuMeTest : BaseTest() {
             mockMember.says {
                 +"~me"
             }
-        }.runIFsApp { array, msg ->
-            DebuMe().executeRsh(array, msg)
-        }.filterIsInstance<GroupMessagePostSendEvent>().let { msg ->
+        }.runIFsApp(DebuMe())
+            .filterIsInstance<GroupMessagePostSendEvent>().let { msg ->
             assertEquals(
                 "*test坐在地上哭着说道「可怜哒test什么时候才有大佬们百分之一厉害呀……」",
                 msg[0].message.contentToString()
