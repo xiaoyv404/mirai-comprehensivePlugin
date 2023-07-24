@@ -44,11 +44,16 @@ fun MinecraftServerPlayer.findById(): MinecraftServerPlayer? {
 }
 
 fun MinecraftServerPlayer.findByNameAndServer(): MinecraftServerPlayer? {
-    return Database.db.minecraftServerPlayer.find { MinecraftServerPlayers.name eq this.name and (MinecraftServerPlayers.lastLoginServer eq this.lastLoginServer) }
+    return Database.db.minecraftServerPlayer.filter { (MinecraftServerPlayers.lastLoginServer eq this.lastLoginServer) }
+        .toList().find {
+        it.name.lowercase() == this.name.lowercase()
+    }
 }
 
 fun MinecraftServerPlayer.findByName(): MinecraftServerPlayer? {
-    return Database.db.minecraftServerPlayer.find { MinecraftServerPlayers.name eq this.name }
+    return Database.db.minecraftServerPlayer.toList().find {
+        it.name.lowercase() == this.name.lowercase()
+    }
 }
 
 
