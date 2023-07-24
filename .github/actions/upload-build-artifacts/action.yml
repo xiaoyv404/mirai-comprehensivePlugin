@@ -8,10 +8,10 @@ runs:
     - name: Ensure build
       shell: bash
       run: >
-        ./gradlew build buildPlugin --scan
+        ./gradlew build buildPlugin
         --exclude-task test
         --exclude-task check
-    - name: Upload mirai-core-utils
+    - name: Upload mirai-comprehensivePlugin
       uses: actions/upload-artifact@v3
       with:
         name: mirai-comprehensivePlugin
