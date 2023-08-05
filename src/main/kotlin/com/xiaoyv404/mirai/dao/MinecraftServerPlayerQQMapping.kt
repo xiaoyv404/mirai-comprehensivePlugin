@@ -4,10 +4,7 @@ import com.xiaoyv404.mirai.databace.Database
 import com.xiaoyv404.mirai.model.mincraftServer.MinecraftServerPlayerQQMapping
 import com.xiaoyv404.mirai.model.mincraftServer.MinecraftServerPlayerQQMappings
 import org.ktorm.dsl.eq
-import org.ktorm.entity.add
-import org.ktorm.entity.find
-import org.ktorm.entity.sequenceOf
-import org.ktorm.entity.update
+import org.ktorm.entity.*
 
 private val org.ktorm.database.Database.minecraftServerPlayerQQMapping
     get() = this.sequenceOf(
@@ -31,4 +28,8 @@ fun MinecraftServerPlayerQQMapping.save(): Boolean {
 
 fun MinecraftServerPlayerQQMapping.findByQQId(): MinecraftServerPlayerQQMapping? {
     return Database.db.minecraftServerPlayerQQMapping.find { it.qq eq this.qq }
+}
+
+fun MinecraftServerPlayerQQMapping.findByPlayerName(): List<MinecraftServerPlayerQQMapping> {
+    return Database.db.minecraftServerPlayerQQMapping.filter { it.playerName eq this.playerName }.toList()
 }
