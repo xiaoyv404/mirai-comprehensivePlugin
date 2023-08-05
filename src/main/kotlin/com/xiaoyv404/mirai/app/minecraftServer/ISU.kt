@@ -8,6 +8,7 @@ import com.xiaoyv404.mirai.core.gid
 import com.xiaoyv404.mirai.core.uid
 import com.xiaoyv404.mirai.dao.findByName
 import com.xiaoyv404.mirai.dao.findByNameAndServer
+import com.xiaoyv404.mirai.dao.findByPlayerName
 import com.xiaoyv404.mirai.dao.save
 import com.xiaoyv404.mirai.model.mincraftServer.MinecraftServerPlayer
 import com.xiaoyv404.mirai.model.mincraftServer.MinecraftServerPlayerQQMapping
@@ -63,12 +64,25 @@ class ISU : NfApp(), IFshApp {
                 msg.reply("无数据")
             return false
         }
-
         if (args.getOrNull(1) == null)
             MinecraftServerPlayerQQMapping {
-                this.qq = msg.uid()
                 this.playerName = name
-            }.save()
+            }.findByPlayerName().any {
+                it.lock
+            }.let {
+                if (it) {
+                    msg.reply("敲，有人在假冒$name")
+                    return true
+                }
+
+                MinecraftServerPlayerQQMapping {
+                    this.qq = msg.uid()
+                    this.playerName = name
+                }.save()
+            }
+
+
+
 
         msg.reply(
             """
