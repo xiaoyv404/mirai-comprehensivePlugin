@@ -33,7 +33,8 @@ CREATE TABLE "MinecraftServerPlayers" (
 drop table if exists "MinecraftServerPlayer_qq_mapping";
 CREATE TABLE "MinecraftServerPlayer_qq_mapping" (
                                                     "qq" int8 NOT NULL,
-                                                    "playerName" varchar(255) COLLATE "pg_catalog"."default"
+                                                    "playerName" varchar(255) NOT NULL COLLATE "pg_catalog"."default",
+                                                    "lock" bool NOT NULL
 );
 
 insert into "Groups" ("id", "notice", "permission", "salutatory", "type")
@@ -42,5 +43,13 @@ values (1147939635, null, null, null, 'MCG'),
         '{"MinecraftServerPlayerPermission":{"all":true,"black":[],"white":[],"controller":{"white":[],"groupAdmin":true}},"DebuMe": {"all": true, "black": [], "white": [], "controller": {"white": [], "groupAdmin": true}}, "NetworkEro": {"all": true, "black": [], "white": [], "controller": {"white": [], "groupAdmin": true}}, "LocalGallery": {"all": true, "black": [], "white": [], "controller": {"white": [], "groupAdmin": true}}, "ThesaurusAdd": {"all": true, "black": [], "white": [], "controller": {"white": [], "groupAdmin": true}}, "SauceNaoSearch": {"all": true, "black": [], "white": [], "controller": {"white": [], "groupAdmin": true}}, "BiliBiliParsing": {"all": true, "black": [], "white": [], "controller": {"white": [], "groupAdmin": true}}, "ThesaurusResponse": {"all": true, "black": [], "white": [], "controller": {"white": [], "groupAdmin": true}}}'
        , null, 'MCG');
 
+INSERT INTO "Users"("id", "admin", "bot", "warning_times")
+values (123, true, false, 0);
+
 INSERT INTO "MinecraftServerPlayers"("id", "name", "lastLoginTime", "lastLoginServer", "permissions")
-values ('test', 'Test', '2006-04-16 06:58:39.810', 'Test', 'Default')
+values ('test', 'Test', '2006-04-16 06:58:39.810', 'Test', 'Default'),
+    ('test2', 'Test2', '2006-04-16 06:58:39.810', 'Test', 'Default');
+
+INSERT INTO "MinecraftServerPlayer_qq_mapping"("qq", "playerName", "lock")
+values (2023, 'test2', true),
+       (2021, 'Test', true)

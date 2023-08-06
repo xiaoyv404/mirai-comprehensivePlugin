@@ -14,18 +14,22 @@ internal class ISUTest : BaseTest() {
     @Test
     fun testPlayerStatusCommand() = runTest {
         runAndReceiveEventBroadcast {
-            val mockMember = bot.addGroup(2020, "testGroup")
-                .addMember(simpleMemberInfo(2021, "test", permission = MemberPermission.MEMBER))
-            mockMember.says {
-                +"404 玩家状态 test1"
+            val mockGroup = bot.addGroup(2020, "testGroup")
+            mockGroup.addMember(simpleMemberInfo(2021, "test", permission = MemberPermission.MEMBER)).apply {
+                says {
+                    +"404 玩家状态 test1"
+                }
+                says {
+                    +"404 玩家状态"
+                }
+                says {
+                    +"404 玩家状态 tEsT"
+                }
             }
-            mockMember.says {
+            mockGroup.addMember(simpleMemberInfo(2050, "Test2", permission = MemberPermission.MEMBER)).says {
                 +"404 玩家状态"
             }
-            mockMember.says {
-                +"404 玩家状态 tEsT"
-            }
-        }.runIFsApp { args, msg -> ISU().executeRsh(args, msg) }
+        }.runIFsApp(ISU())
             .filterIsInstance<GroupMessagePostSendEvent>().let { msg ->
                 assertEquals(
                     "无数据",
@@ -52,6 +56,10 @@ internal class ISUTest : BaseTest() {
                         身份: 毛玉
                     """.trimIndent(),
                     msg.getOrNull(2)?.message?.contentToString()
+                )
+                assertEquals(
+                    "敲，有人在假冒Test2",
+                    msg.getOrNull(3)?.message?.contentToString()
                 )
             }
     }

@@ -26,9 +26,8 @@ internal class UserAlertTest : BaseTest() {
                 +At(1008611)
                 +At(464)
             }
-        }.runNfAppMessageHandlerApp {
-            UserAlert().handleMessage(this)
-        }.filterIsInstance<GroupMessagePostSendEvent>().let { msg ->
+        }.runNfAppMessageHandlerApp(UserAlert())
+            .filterIsInstance<GroupMessagePostSendEvent>().let { msg ->
             assertEquals("已警告@1111，本次为第1次警告", msg[0].message.contentToString())
             assertEquals(
                 """
