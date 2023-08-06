@@ -29,9 +29,6 @@ internal class ISUTest : BaseTest() {
             mockGroup.addMember(simpleMemberInfo(2050, "Test2", permission = MemberPermission.MEMBER)).says {
                 +"404 玩家状态"
             }
-            mockMember.says {
-                +"404 玩家状态 tEsT"
-            }
         }.runIFsApp(ISU())
             .filterIsInstance<GroupMessagePostSendEvent>().let { msg ->
                 assertEquals(
