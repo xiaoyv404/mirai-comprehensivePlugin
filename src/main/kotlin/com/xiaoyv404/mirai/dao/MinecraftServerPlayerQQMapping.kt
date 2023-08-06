@@ -31,5 +31,5 @@ fun MinecraftServerPlayerQQMapping.findByQQId(): MinecraftServerPlayerQQMapping?
 }
 
 fun MinecraftServerPlayerQQMapping.findByPlayerName(): List<MinecraftServerPlayerQQMapping> {
-    return Database.db.minecraftServerPlayerQQMapping.filter { it.playerName eq this.playerName }.toList()
+    return Database.db.minecraftServerPlayerQQMapping.toList().filter { it.playerName.lowercase() == this.playerName.lowercase() }
 }

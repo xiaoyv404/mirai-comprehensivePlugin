@@ -66,18 +66,18 @@ class ISU : NfApp(), IFshApp {
         }
         if (args.getOrNull(1) == null)
             MinecraftServerPlayerQQMapping {
-                this.playerName = name
-            }.findByPlayerName().any {
+                this.playerName = player.name
+            }.findByPlayerName().find {
                 it.lock
-            }.let {
-                if (it) {
-                    msg.reply("敲，有人在假冒$name")
+            }?.let {
+                if (it.lock && msg.uid() != it.qq) {
+                    msg.reply("敲，有人在假冒${player.name}")
                     return true
                 }
 
                 MinecraftServerPlayerQQMapping {
                     this.qq = msg.uid()
-                    this.playerName = name
+                    this.playerName = player.name
                 }.save()
             }
 
