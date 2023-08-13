@@ -43,7 +43,7 @@ internal abstract class BaseTest : TestBase() {
 
     @BeforeTest
     open fun init() {
-        mockWebServer.start(80);
+        mockWebServer.start();
         com.xiaoyv404.mirai.databace.Database.apply {
             db =
                 Database.connect(
