@@ -148,8 +148,6 @@ class ISU : NfApp(), IFshApp {
         val lastLoginTime = data.lastSeen.toLocalDateTime()
         val registerTime = data.registered.toLocalDateTime()
 
-        println("test")
-
         return """
                 名字: ${player.name}    ${isUserOnline(lastLoginTime)}
                 最后在线时间: $lastLoginTime
