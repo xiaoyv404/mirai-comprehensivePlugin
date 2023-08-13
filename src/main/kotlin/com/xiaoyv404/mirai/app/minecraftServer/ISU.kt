@@ -78,7 +78,7 @@ class ISU : NfApp(), IFshApp {
         }
 
         if (more && (MinecraftServerPlayerQQMapping { qq = msg.uid() }.getPermissionByQQ()
-                ?: Permissions.Default) >= Permissions.Basic
+                ?: Permissions.Default) < Permissions.Basic
         ) {
             msg.reply("需要权限至少为妖怪", true)
             return false
@@ -141,15 +141,17 @@ class ISU : NfApp(), IFshApp {
                 ), PlanPlayer::class.java
             )
         } catch (e: Exception) {
+            e.printStackTrace()
             null
         } ?: return null
 
         val lastLoginTime = data.lastSeen.toLocalDateTime()
         val registerTime = data.registered.toLocalDateTime()
 
+        println("test")
+
         return """
-                名字: ${player.name}
-                ${isUserOnline(lastLoginTime)}
+                名字: ${player.name}    ${isUserOnline(lastLoginTime)}
                 最后在线时间: $lastLoginTime
                 注册时间: $registerTime
                 退出计数: ${data.kick_count}    死亡计数: ${data.death_count}
