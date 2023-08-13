@@ -3,7 +3,9 @@ package com.xiaoyv404.mirai.dao
 import com.xiaoyv404.mirai.databace.Database
 import com.xiaoyv404.mirai.model.mincraftServer.MinecraftServerPlayerQQMapping
 import com.xiaoyv404.mirai.model.mincraftServer.MinecraftServerPlayerQQMappings
-import org.ktorm.dsl.eq
+import com.xiaoyv404.mirai.model.mincraftServer.MinecraftServerPlayers
+import com.xiaoyv404.mirai.model.mincraftServer.Permissions
+import org.ktorm.dsl.*
 import org.ktorm.entity.*
 
 private val org.ktorm.database.Database.minecraftServerPlayerQQMapping
@@ -11,6 +13,24 @@ private val org.ktorm.database.Database.minecraftServerPlayerQQMapping
         MinecraftServerPlayerQQMappings
     )
 
+
+fun MinecraftServerPlayerQQMapping.getPermissionByQQ(): Permissions? {
+    return Database.db
+        .from(MinecraftServerPlayerQQMappings)
+        .innerJoin(
+            MinecraftServerPlayers,
+            on = MinecraftServerPlayerQQMappings.playerName eq MinecraftServerPlayers.name
+        )
+        .select(
+            MinecraftServerPlayerQQMappings.qq,
+            MinecraftServerPlayerQQMappings.lock,
+            MinecraftServerPlayers.permissions
+        )
+        .where { MinecraftServerPlayerQQMappings.qq eq this.qq and MinecraftServerPlayerQQMappings.lock eq true }
+        .map{
+            it[MinecraftServerPlayers.permissions]
+        }.first()
+}
 
 /**
  * @return false 新增
@@ -31,5 +51,6 @@ fun MinecraftServerPlayerQQMapping.findByQQId(): MinecraftServerPlayerQQMapping?
 }
 
 fun MinecraftServerPlayerQQMapping.findByPlayerName(): List<MinecraftServerPlayerQQMapping> {
-    return Database.db.minecraftServerPlayerQQMapping.toList().filter { it.playerName.lowercase() == this.playerName.lowercase() }
+    return Database.db.minecraftServerPlayerQQMapping.toList()
+        .filter { it.playerName.lowercase() == this.playerName.lowercase() }
 }
