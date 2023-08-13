@@ -62,9 +62,9 @@ dependencies {
     testImplementation("org.testcontainers:postgresql:1.18.3")
     testImplementation("net.mamoe:mirai-core-mock:2.15.0-RC")
     testImplementation("org.mockito:mockito-core:5.4.0")
+    testImplementation("com.squareup.okhttp3:mockwebserver:4.9.3")
     testApi(kotlin("test-junit5"))
     testApi("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.2")
-
 }
 tasks.test {
     useJUnitPlatform()
