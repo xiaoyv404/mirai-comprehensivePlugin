@@ -37,7 +37,7 @@ class MinecraftServerList : NfApp(), IFshApp {
         val tps = try {
             Gson().fromJson(
                 ClientUtils.get<String>(
-                    PluginConfig.etc.planPerformanceApiUrl
+                    "${PluginConfig.etc.planApiUrl}/v1/performanceOverview?server=Minecraft幻想乡"
                 ), Performance::class.java
             ).tps.takeLast(720)
         } catch (e: Exception) {
