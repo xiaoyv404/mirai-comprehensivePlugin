@@ -12,6 +12,7 @@ import net.mamoe.mirai.event.events.MessageEvent
 import net.mamoe.mirai.mock.MockBotFactory
 import net.mamoe.mirai.mock.utils.MockActionsScope
 import net.mamoe.mirai.mock.utils.broadcastMockEvents
+import okhttp3.mockwebserver.MockWebServer
 import org.junit.jupiter.api.AfterEach
 import org.ktorm.database.Database
 import org.ktorm.logging.ConsoleLogger
@@ -38,8 +39,11 @@ internal abstract class BaseTest : TestBase() {
         .nick("404")
         .create()
 
+    internal val mockWebServer = MockWebServer()
+
     @BeforeTest
     open fun init() {
+        mockWebServer.start(80);
         com.xiaoyv404.mirai.databace.Database.apply {
             db =
                 Database.connect(
@@ -58,7 +62,6 @@ internal abstract class BaseTest : TestBase() {
             execSqlScript("init-data.sql")
         }
     }
-
 
     @OptIn(ExperimentalContracts::class)
     internal suspend fun runAndReceiveEventBroadcast(
@@ -111,6 +114,7 @@ internal abstract class BaseTest : TestBase() {
 
     @AfterEach
     internal fun `$$bot dispose`() {
+        mockWebServer.shutdown()
         bot.close()
     }
 }
