@@ -14,7 +14,7 @@ internal class ISUTest : BaseTest() {
     @OptIn(LowLevelApi::class)
     @Test
     fun testPlayerStatusCommand() = runTest {
-        PluginConfig.etc.planApiUrl = "http://127.0.0.1"
+        PluginConfig.etc.planApiUrl = "http://127.0.0.1:${mockWebServer.port}/"
         mockWebServer.enqueue(
             MockResponse()
                 .addHeader("Content-Type", "application/json; charset=utf-8")
