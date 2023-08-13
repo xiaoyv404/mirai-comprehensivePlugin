@@ -29,7 +29,7 @@ fun MinecraftServerPlayerQQMapping.getPermissionByQQ(): Permissions? {
         .where { MinecraftServerPlayerQQMappings.qq eq this.qq and MinecraftServerPlayerQQMappings.lock eq true }
         .map{
             it[MinecraftServerPlayers.permissions]
-        }.first()
+        }.firstOrNull()
 }
 
 /**
