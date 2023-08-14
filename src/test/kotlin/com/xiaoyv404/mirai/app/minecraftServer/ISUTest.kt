@@ -8,6 +8,8 @@ import net.mamoe.mirai.event.events.GroupMessagePostSendEvent
 import net.mamoe.mirai.mock.utils.simpleMemberInfo
 import okhttp3.mockwebserver.MockResponse
 import org.junit.jupiter.api.Test
+import java.time.Instant
+import java.time.ZoneId
 import kotlin.test.assertEquals
 
 internal class ISUTest : BaseTest() {
@@ -45,6 +47,11 @@ internal class ISUTest : BaseTest() {
                     +"404 玩家状态 404 -m"
                 }
             }
+            mockGroup.addMember(simpleMemberInfo(2050, "Test", permission = MemberPermission.MEMBER)).apply {
+                says {
+                    +"404 玩家状态"
+                }
+            }
         }.runIFsApp(ISU())
             .filterIsInstance<GroupMessagePostSendEvent>().let { msg ->
                 assertEquals(
@@ -73,11 +80,14 @@ internal class ISUTest : BaseTest() {
                     """.trimIndent(),
                     msg.getOrNull(2)?.message?.contentToString()
                 )
+                fun Long.toLocalDateTime() = Instant.ofEpochMilli(this).run {
+                    atZone(ZoneId.systemDefault()).toLocalDateTime()
+                }
                 assertEquals(
                     """
                         名字: 404    不在线
-                        最后在线时间: 2023-08-06T01:33:22.046
-                        注册时间: 2021-02-08T16:13:52.858
+                        最后在线时间: ${1691256802046.toLocalDateTime()}
+                        注册时间: ${1612772032858.toLocalDateTime()}
                         退出计数: 26    死亡计数: 4573
                         击杀玩家: 178    击杀怪物: 87419
                         OP: true    Baned: false
@@ -88,14 +98,49 @@ internal class ISUTest : BaseTest() {
                     msg.getOrNull(3)?.message?.contentToString()
                 )
                 assertEquals(
-                    "敲，有人在假冒Test2",
+                    """
+                        名字: Test2
+                        不在线
+                        最后在线时间: 2006-04-16T06:58:39.810
+                        服务器: Test
+                        UUID: test2
+                        身份: 毛玉
+                    """.trimIndent(),
                     msg.getOrNull(4)?.message?.contentToString()
                 )
                 assertEquals(
                     "需要权限至少为妖怪",
                     msg.getOrNull(5)?.message?.contentToString()
                 )
-
+                assertEquals(
+                    "敲，有人在假冒Test",
+                    msg.getOrNull(6)?.message?.contentToString()
+                )
             }
+    }
+
+    @OptIn(LowLevelApi::class)
+    @Test
+    fun testPeachCommand() = runTest {
+        runAndReceiveEventBroadcast {
+            val mockGroup = bot.addGroup(2020, "testGroup")
+            mockGroup.addMember(simpleMemberInfo(2021, "test", permission = MemberPermission.MEMBER)).apply {
+                says {
+                    +"404 桃呢"
+                }
+            }
+        }.runIFsApp(ISU()).filterIsInstance<GroupMessagePostSendEvent>().let { msg ->
+            assertEquals(
+                """
+                        名字: 2429334909
+                        不在线
+                        最后在线时间: 2006-04-16T06:58:39.810
+                        服务器: Test
+                        UUID: 2429334909
+                        身份: 毛玉
+                    """.trimIndent(),
+                msg.getOrNull(0)?.message?.contentToString()
+            )
+        }
     }
 }

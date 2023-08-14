@@ -49,8 +49,8 @@ values (123, true, false, 0);
 INSERT INTO "MinecraftServerPlayers"("id", "name", "lastLoginTime", "lastLoginServer", "permissions")
 values ('test', 'Test', '2006-04-16 06:58:39.810', 'Test', 'Basic'),
     ('test2', 'Test2', '2006-04-16 06:58:39.810', 'Test', 'Default'),
-    ('404', '404', '2006-04-16 06:58:39.810', 'Test', 'Default');
+    ('404', '404', '2006-04-16 06:58:39.810', 'Test', 'Default'),
+    ('2429334909', '2429334909', '2006-04-16 06:58:39.810', 'Test', 'Default');
 
 INSERT INTO "MinecraftServerPlayer_qq_mapping"("qq", "playerName", "lock")
-values (2023, 'test2', true),
-       (2021, 'Test', true)
+values (2021, 'Test', true)
