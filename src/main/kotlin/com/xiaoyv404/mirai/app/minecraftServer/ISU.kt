@@ -72,7 +72,7 @@ class ISU : NfApp(), IFshApp {
             return false
         }
 
-        if (args.getOrNull(1) == null && !personCheckAndSave(player, msg.uid())) {
+        if (args.getOrNull(1) == null && args[0] != "-桃呢" && !personCheckAndSave(player, msg.uid())) {
             msg.reply("敲，有人在假冒${player.name}")
             return true
         }
