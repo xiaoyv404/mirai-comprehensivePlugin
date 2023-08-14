@@ -8,6 +8,8 @@ import net.mamoe.mirai.event.events.GroupMessagePostSendEvent
 import net.mamoe.mirai.mock.utils.simpleMemberInfo
 import okhttp3.mockwebserver.MockResponse
 import org.junit.jupiter.api.Test
+import java.time.Instant
+import java.time.ZoneId
 import kotlin.test.assertEquals
 
 internal class ISUTest : BaseTest() {
@@ -73,11 +75,14 @@ internal class ISUTest : BaseTest() {
                     """.trimIndent(),
                     msg.getOrNull(2)?.message?.contentToString()
                 )
+                fun Long.toLocalDateTime() = Instant.ofEpochMilli(this).run {
+                    atZone(ZoneId.systemDefault()).toLocalDateTime()
+                }
                 assertEquals(
                     """
                         名字: 404    不在线
-                        最后在线时间: 2023-08-06T01:33:22.046
-                        注册时间: 2021-02-08T16:13:52.858
+                        最后在线时间: ${1691256802046.toLocalDateTime()}
+                        注册时间: ${1612772032858.toLocalDateTime()}
                         退出计数: 26    死亡计数: 4573
                         击杀玩家: 178    击杀怪物: 87419
                         OP: true    Baned: false
