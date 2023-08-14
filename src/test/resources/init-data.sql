@@ -52,5 +52,4 @@ values ('test', 'Test', '2006-04-16 06:58:39.810', 'Test', 'Basic'),
     ('404', '404', '2006-04-16 06:58:39.810', 'Test', 'Default');
 
 INSERT INTO "MinecraftServerPlayer_qq_mapping"("qq", "playerName", "lock")
-values (2023, 'test2', true),
-       (2021, 'Test', true)
+values (2021, 'Test', true)

@@ -47,6 +47,11 @@ internal class ISUTest : BaseTest() {
                     +"404 玩家状态 404 -m"
                 }
             }
+            mockGroup.addMember(simpleMemberInfo(2050, "Test", permission = MemberPermission.MEMBER)).apply {
+                says {
+                    +"404 玩家状态"
+                }
+            }
         }.runIFsApp(ISU())
             .filterIsInstance<GroupMessagePostSendEvent>().let { msg ->
                 assertEquals(
@@ -93,14 +98,24 @@ internal class ISUTest : BaseTest() {
                     msg.getOrNull(3)?.message?.contentToString()
                 )
                 assertEquals(
-                    "敲，有人在假冒Test2",
+                    """
+                        名字: Test2
+                        不在线
+                        最后在线时间: 2006-04-16T06:58:39.810
+                        服务器: Test
+                        UUID: test2
+                        身份: 毛玉
+                    """.trimIndent(),
                     msg.getOrNull(4)?.message?.contentToString()
                 )
                 assertEquals(
                     "需要权限至少为妖怪",
                     msg.getOrNull(5)?.message?.contentToString()
                 )
-
+                assertEquals(
+                    "敲，有人在假冒Test",
+                    msg.getOrNull(6)?.message?.contentToString()
+                )
             }
     }
 }

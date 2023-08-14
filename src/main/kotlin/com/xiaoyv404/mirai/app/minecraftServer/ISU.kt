@@ -99,15 +99,20 @@ class ISU : NfApp(), IFshApp {
     }
 
     private fun personCheckAndSave(player: MinecraftServerPlayer, uid: Long): Boolean {
-        MinecraftServerPlayerQQMapping {
+        val mapping = MinecraftServerPlayerQQMapping {
             this.playerName = player.name
         }.findByPlayerName().find {
-            it.lock && uid == it.qq
-        } ?: return false
+            it.lock
+        }
+
+        if (mapping != null)
+            return uid == mapping.qq
+
 
         MinecraftServerPlayerQQMapping {
             this.qq = uid
             this.playerName = player.name
+            this.lock = false
         }.save()
         return true
     }
