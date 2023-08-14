@@ -118,4 +118,29 @@ internal class ISUTest : BaseTest() {
                 )
             }
     }
+
+    @OptIn(LowLevelApi::class)
+    @Test
+    fun testPeachCommand() = runTest {
+        runAndReceiveEventBroadcast {
+            val mockGroup = bot.addGroup(2020, "testGroup")
+            mockGroup.addMember(simpleMemberInfo(2021, "test", permission = MemberPermission.MEMBER)).apply {
+                says {
+                    +"404 桃呢"
+                }
+            }
+        }.runIFsApp(ISU()).filterIsInstance<GroupMessagePostSendEvent>().let { msg ->
+            assertEquals(
+                """
+                        名字: 2429334909
+                        不在线
+                        最后在线时间: 2006-04-16T06:58:39.810
+                        服务器: Test
+                        UUID: 2429334909
+                        身份: 毛玉
+                    """.trimIndent(),
+                msg.getOrNull(0)?.message?.contentToString()
+            )
+        }
+    }
 }
