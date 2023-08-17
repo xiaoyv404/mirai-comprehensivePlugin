@@ -1,7 +1,7 @@
 package com.xiaoyv404.mirai.dao
 
 import com.xiaoyv404.mirai.core.uid
-import com.xiaoyv404.mirai.databace.Database
+import com.xiaoyv404.mirai.database.Database
 import com.xiaoyv404.mirai.model.User
 import com.xiaoyv404.mirai.model.Users
 import net.mamoe.mirai.event.events.MessageEvent

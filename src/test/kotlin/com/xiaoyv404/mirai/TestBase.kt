@@ -13,7 +13,7 @@ internal open class TestBase {
         block(value)
     }
     internal fun execSqlScript(filename: String) {
-        com.xiaoyv404.mirai.databace.Database.db.useConnection { conn ->
+        com.xiaoyv404.mirai.database.Database.db.useConnection { conn ->
             conn.createStatement().use { statement ->
                 javaClass.classLoader
                     ?.getResourceAsStream(filename)

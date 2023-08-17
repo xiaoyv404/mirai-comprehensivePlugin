@@ -2,7 +2,7 @@ package com.xiaoyv404.mirai.dao
 
 import com.xiaoyv404.mirai.core.gid
 import com.xiaoyv404.mirai.core.uid
-import com.xiaoyv404.mirai.databace.Database
+import com.xiaoyv404.mirai.database.Database
 import com.xiaoyv404.mirai.extension.asJson
 import com.xiaoyv404.mirai.extension.findOrNot
 import com.xiaoyv404.mirai.extension.get

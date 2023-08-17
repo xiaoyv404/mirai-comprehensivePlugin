@@ -1,6 +1,6 @@
 package com.xiaoyv404.mirai.dao
 
-import com.xiaoyv404.mirai.databace.Database
+import com.xiaoyv404.mirai.database.Database
 import com.xiaoyv404.mirai.model.mincraftServer.MinecraftServerPlayerQQMapping
 import com.xiaoyv404.mirai.model.mincraftServer.MinecraftServerPlayerQQMappings
 import com.xiaoyv404.mirai.model.mincraftServer.MinecraftServerPlayers
