@@ -2,7 +2,7 @@ package com.xiaoyv404.mirai.dao
 
 import com.xiaoyv404.mirai.app.minecraftServer.Player
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
-import com.xiaoyv404.mirai.databace.Database
+import com.xiaoyv404.mirai.database.Database
 import com.xiaoyv404.mirai.model.mincraftServer.MinecraftServer
 import com.xiaoyv404.mirai.model.mincraftServer.MinecraftServerPlayer
 import com.xiaoyv404.mirai.model.mincraftServer.MinecraftServerPlayers

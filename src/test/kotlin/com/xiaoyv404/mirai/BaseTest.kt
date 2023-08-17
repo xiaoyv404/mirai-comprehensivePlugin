@@ -44,7 +44,7 @@ internal abstract class BaseTest : TestBase() {
     @BeforeTest
     open fun init() {
         mockWebServer.start();
-        com.xiaoyv404.mirai.databace.Database.apply {
+        com.xiaoyv404.mirai.database.Database.apply {
             db =
                 Database.connect(
                     HikariDataSource(HikariConfig().apply {

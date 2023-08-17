@@ -3,7 +3,7 @@ package com.xiaoyv404.mirai.app.fmp
 import com.xiaoyv404.mirai.core.App
 import com.xiaoyv404.mirai.core.NfAppMessageRecallHandler
 import com.xiaoyv404.mirai.core.rgwMsgIdentity
-import com.xiaoyv404.mirai.databace.Database
+import com.xiaoyv404.mirai.database.Database
 import kotlinx.coroutines.*
 import net.mamoe.mirai.contact.recallMessage
 import net.mamoe.mirai.event.events.MessageRecallEvent

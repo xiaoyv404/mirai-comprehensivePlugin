@@ -1,17 +1,21 @@
-package com.xiaoyv404.mirai.databace
+package com.xiaoyv404.mirai.database
 
-import com.xiaoyv404.mirai.*
-import com.xiaoyv404.mirai.extension.*
-import com.zaxxer.hikari.*
-import io.lettuce.core.*
-import io.lettuce.core.api.async.*
-import net.mamoe.mirai.console.util.*
+import com.xiaoyv404.mirai.PluginConfig
+import com.xiaoyv404.mirai.PluginMain
+import com.xiaoyv404.mirai.extension.MyPostgreSqlDialect
+import com.zaxxer.hikari.HikariConfig
+import com.zaxxer.hikari.HikariDataSource
+import io.lettuce.core.RedisClient
+import io.lettuce.core.RedisURI
+import io.lettuce.core.api.async.RedisAsyncCommands
+import net.mamoe.mirai.console.util.ConsoleExperimentalApi
 import net.mamoe.mirai.utils.info
 import net.mamoe.mirai.utils.warning
 import org.ktorm.database.Database
-import org.ktorm.logging.*
-import java.time.*
-import java.time.temporal.*
+import org.ktorm.logging.ConsoleLogger
+import org.ktorm.logging.LogLevel
+import java.time.Duration
+import java.time.temporal.ChronoUnit
 
 object Database {
     sealed class ConnectionStatus {
