@@ -12,6 +12,7 @@ import net.mamoe.mirai.message.data.toMessageChain
 import org.ktorm.dsl.and
 import org.ktorm.dsl.between
 import org.ktorm.dsl.eq
+import org.ktorm.dsl.notEq
 import org.ktorm.entity.*
 import java.time.LocalDateTime
 
@@ -46,14 +47,15 @@ fun MinecraftServerPlayer.findById(): MinecraftServerPlayer? {
 fun MinecraftServerPlayer.findByNameAndServer(): MinecraftServerPlayer? {
     return Database.db.minecraftServerPlayer.filter { (MinecraftServerPlayers.lastLoginServer eq this.lastLoginServer) }
         .toList().find {
-        it.name.lowercase() == this.name.lowercase()
-    }
+            it.name.lowercase() == this.name.lowercase()
+        }
 }
 
-fun MinecraftServerPlayer.findByName(): MinecraftServerPlayer? {
-    return Database.db.minecraftServerPlayer.toList().find {
-        it.name.lowercase() == this.name.lowercase()
-    }
+fun MinecraftServerPlayer.findByNameAndNotEqServer(): MinecraftServerPlayer? {
+    return Database.db.minecraftServerPlayer.filter { (MinecraftServerPlayers.lastLoginServer notEq this.lastLoginServer) }
+        .toList().find {
+            it.name.lowercase() == this.name.lowercase()
+        }
 }
 
 
