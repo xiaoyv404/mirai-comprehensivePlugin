@@ -58,6 +58,13 @@ fun MinecraftServerPlayer.findByNameAndNotEqServer(): MinecraftServerPlayer? {
         }
 }
 
+fun MinecraftServerPlayer.findByName(): List<MinecraftServerPlayer> {
+    return Database.db.minecraftServerPlayer
+        .toList().filter {
+            it.name.lowercase() == this.name.lowercase()
+        }
+}
+
 
 fun MinecraftServerPlayer.save(): Boolean {
     return if (this.findById() == null) {
