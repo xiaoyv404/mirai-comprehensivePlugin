@@ -27,9 +27,8 @@ fun MinecraftServerPlayerQQMapping.getPermissionByQQ(): Permissions? {
             MinecraftServerPlayers.permissions,
             MinecraftServerPlayers.lastLoginServer
         )
-        .where { MinecraftServerPlayers.lastLoginServer notEq "gtnh" }
-        .where { MinecraftServerPlayerQQMappings.qq eq this.qq and MinecraftServerPlayerQQMappings.lock eq true }
-        .map{
+        .where { MinecraftServerPlayerQQMappings.qq eq this.qq and MinecraftServerPlayerQQMappings.lock eq true and (MinecraftServerPlayers.lastLoginServer notEq "gtnh") }
+        .map {
             it[MinecraftServerPlayers.permissions]
         }.firstOrNull()
 }
