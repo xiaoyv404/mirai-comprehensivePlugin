@@ -65,7 +65,8 @@ class ISU : NfApp(), IFshApp {
         else
             MinecraftServerPlayer {
                 this.name = name
-            }.findByName()
+                this.lastLoginServer = "gtnh"
+            }.findByNameAndNotEqServer()
 
         if (player == null) {
             msg.reply("无数据")
