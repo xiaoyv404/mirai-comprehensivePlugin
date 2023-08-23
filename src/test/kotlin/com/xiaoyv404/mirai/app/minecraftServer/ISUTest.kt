@@ -88,7 +88,7 @@ internal class ISUTest : BaseTest() {
                         名字: 404    不在线
                         最后在线时间: ${1691256802046.toLocalDateTime()}
                         注册时间: ${1612772032858.toLocalDateTime()}
-                        退出计数: 26    死亡计数: 4573
+                        kick计数: 26    死亡计数: 4573
                         击杀玩家: 178    击杀怪物: 87419
                         OP: true    Baned: false
                         服务器: Test
