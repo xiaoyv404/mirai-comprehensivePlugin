@@ -1,9 +1,10 @@
 package com.xiaoyv404.mirai.app.webAPI.router.mincreaftServer
 
-import com.xiaoyv404.mirai.app.webAPI.*
-import com.xiaoyv404.mirai.app.webAPI.controller.*
-import com.xiaoyv404.mirai.dao.*
-import com.xiaoyv404.mirai.model.mincraftServer.*
+import com.xiaoyv404.mirai.app.webAPI.WebApi
+import com.xiaoyv404.mirai.app.webAPI.controller.NfResult
+import com.xiaoyv404.mirai.dao.findById
+import com.xiaoyv404.mirai.dao.findByName
+import com.xiaoyv404.mirai.model.mincraftServer.MinecraftServerPlayer
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -21,7 +22,7 @@ fun Route.player() {
         val name = call.request.queryParameters["name"]?: error(WebApi.requestError)
         val data = MinecraftServerPlayer{
             this.name = name
-        }.findByName()?: error(WebApi.requestError)
+        }.findByName()
         call.respond(NfResult.success(data))
     }
 }
