@@ -59,8 +59,8 @@ class MinecraftPlayerPermission : NfApp(), IFshApp {
             示例: xiaoyv_404 123
         """.trimIndent()
         )
-        val players = Regex("[A-z,\\d]+ \\d+").findAll(msg.nextMessage().contentToString()).map {
-            it.value.splitToSequence(" ").let {
+        val players = Regex("[A-z,\\d]+ \\d+").findAll(msg.nextMessage().contentToString()).map { match ->
+            match.value.splitToSequence(" ").let {
                 it.first() to it.last().toLong()
             }
         }.toMap()
