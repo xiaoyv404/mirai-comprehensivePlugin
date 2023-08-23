@@ -104,7 +104,8 @@ class MinecraftPlayerPermission : NfApp(), IFshApp {
         players.forEach {
             val player = MinecraftServerPlayer {
                 this.name = it.value
-            }.findByName()
+                this.lastLoginServer = "gtnh"
+            }.findByNameAndNotEqServer()
 
             if (player == null) {
                 notfoundPlayers.add(it.value)
