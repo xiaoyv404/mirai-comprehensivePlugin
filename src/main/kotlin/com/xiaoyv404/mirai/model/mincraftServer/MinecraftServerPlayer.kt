@@ -1,6 +1,6 @@
 package com.xiaoyv404.mirai.model.mincraftServer
 
-import com.xiaoyv404.mirai.databace.Database
+import com.xiaoyv404.mirai.database.Database
 import org.ktorm.dsl.between
 import org.ktorm.entity.Entity
 import org.ktorm.entity.filter

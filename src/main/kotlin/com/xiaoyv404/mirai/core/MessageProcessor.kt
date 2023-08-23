@@ -1,6 +1,6 @@
 package com.xiaoyv404.mirai.core
 
-import com.xiaoyv404.mirai.databace.Database
+import com.xiaoyv404.mirai.database.Database
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Contact.Companion.sendImage
 import net.mamoe.mirai.contact.Group
