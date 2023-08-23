@@ -158,7 +158,7 @@ class ISU : NfApp(), IFshApp {
                 名字: ${player.name}    ${isUserOnline(lastLoginTime)}
                 最后在线时间: $lastLoginTime
                 注册时间: $registerTime
-                退出计数: ${data.kick_count}    死亡计数: ${data.death_count}
+                kick计数: ${data.kick_count}    死亡计数: ${data.death_count}
                 击杀玩家: ${data.player_kill_count}    击杀怪物: ${data.mob_kill_count}
                 OP: ${data.operator}    Baned: ${data.banned}
                 服务器: ${player.lastLoginServer}
