@@ -8,10 +8,12 @@ import org.ktorm.schema.long
 import java.time.LocalDateTime
 
 interface UserAlertLog : Entity<UserAlertLog> {
-    val target: Long
-    val executor: Long
-    val time: LocalDateTime
-    val type: UserAlertType
+    companion object : Entity.Factory<UserAlertLog>()
+
+    var target: Long
+    var executor: Long
+    var time: LocalDateTime
+    var type: UserAlertType
 }
 
 enum class UserAlertType {
