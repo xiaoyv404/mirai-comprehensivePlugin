@@ -3,12 +3,12 @@ package com.xiaoyv404.mirai.app
 import com.xiaoyv404.mirai.core.App
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
 import com.xiaoyv404.mirai.core.NfAppMessageHandler
-import com.xiaoyv404.mirai.dao.findById
-import com.xiaoyv404.mirai.dao.groupType
-import com.xiaoyv404.mirai.dao.isNotAdmin
-import com.xiaoyv404.mirai.dao.save
+import com.xiaoyv404.mirai.core.uid
+import com.xiaoyv404.mirai.dao.*
 import com.xiaoyv404.mirai.model.GroupType
 import com.xiaoyv404.mirai.model.User
+import com.xiaoyv404.mirai.model.UserAlertLog
+import com.xiaoyv404.mirai.model.UserAlertType
 import net.mamoe.mirai.contact.Member
 import net.mamoe.mirai.contact.isOperator
 import net.mamoe.mirai.event.events.MessageEvent
@@ -16,6 +16,7 @@ import net.mamoe.mirai.message.data.At
 import net.mamoe.mirai.message.data.MessageChainBuilder
 import net.mamoe.mirai.message.data.PlainText
 import net.mamoe.mirai.message.data.buildMessageChain
+import java.time.LocalDateTime
 
 @App
 class UserAlert : NfAppMessageHandler() {
@@ -37,6 +38,12 @@ class UserAlert : NfAppMessageHandler() {
 
         val str = MessageChainBuilder()
         ats.forEachIndexed { k, v ->
+            UserAlertLog{
+                this.target = v.target
+                this.executor = msg.uid()
+                this.time = LocalDateTime.now()
+                this.type = UserAlertType.Increase
+            }.add()
             val user = User {
                 this.id = v.target
             }.findById() ?: User {
