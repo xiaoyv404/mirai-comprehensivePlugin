@@ -37,6 +37,14 @@ CREATE TABLE "MinecraftServerPlayer_qq_mapping" (
                                                     "lock" bool NOT NULL
 );
 
+drop table if exists "UserAlertLogs";
+create  table "UserAlertLogs"(
+    "target"    int8 not null ,
+    "executor"  int8 not null ,
+    "time"      timestamp(6),
+    "type"      varchar(255)
+);
+
 insert into "Groups" ("id", "notice", "permission", "salutatory", "type")
 values (1147939635, null, null, null, 'MCG'),
        (2020, null,
