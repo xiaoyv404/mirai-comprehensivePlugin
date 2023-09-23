@@ -12,13 +12,7 @@ import net.mamoe.mirai.console.plugin.jvm.KotlinPlugin
 import net.mamoe.mirai.console.plugin.version
 import net.mamoe.mirai.utils.info
 
-object PluginMain : KotlinPlugin(
-    JvmPluginDescription(
-        id = "com.xiaoyv404.ComprehensivePlugin",
-        name = "ComprehensivePlugin",
-        version = "1.0.1"
-    )
-) {
+object PluginMain : KotlinPlugin(JvmPluginDescription.loadFromResource()) {
     @OptIn(DelicateCoroutinesApi::class)
     override fun onEnable() {
         PluginData.reload()

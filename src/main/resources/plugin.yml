@@ -1,6 +1,6 @@
 name: "ComprehensivePlugin"
 author: "xiaoyv404"
-version: "1.0.0-alpha"
+version: "1.0.2"
 main: "com.xiaoyv404.ComprehensivePlugin"
 info: "A Comprehensive Plugin!"
 depends: [ ]
