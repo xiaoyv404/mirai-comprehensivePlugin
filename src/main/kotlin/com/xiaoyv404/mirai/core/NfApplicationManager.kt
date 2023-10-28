@@ -1,11 +1,15 @@
 package com.xiaoyv404.mirai.core
 
-import com.xiaoyv404.mirai.*
-import com.xiaoyv404.mirai.app.fsh.*
-import com.xiaoyv404.mirai.app.groupHelper.*
-import kotlinx.coroutines.*
-import net.mamoe.mirai.event.*
-import net.mamoe.mirai.event.events.*
+import com.xiaoyv404.mirai.PluginMain
+import com.xiaoyv404.mirai.app.fsh.IFshApp
+import com.xiaoyv404.mirai.app.groupHelper.NfAppMemberJoinRequestHandler
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import net.mamoe.mirai.event.GlobalEventChannel
+import net.mamoe.mirai.event.events.MemberJoinRequestEvent
+import net.mamoe.mirai.event.events.MessageEvent
+import net.mamoe.mirai.event.events.MessageRecallEvent
 
 object NfApplicationManager {
     private val log = PluginMain.logger
@@ -51,12 +55,11 @@ object NfApplicationManager {
                 }
                 log.info("注册加入事件处理器${app.getAppName()}")
             }
-
-            is IFshApp -> {
-                for (command in app.getCommands()) {
-                    fshCommands[command] = app
-                    log.info("注册fsh命令$command")
-                }
+        }
+        if (app is IFshApp){
+            for (command in app.getCommands()) {
+                fshCommands[command] = app
+                log.info("注册fsh命令$command")
             }
         }
     }
