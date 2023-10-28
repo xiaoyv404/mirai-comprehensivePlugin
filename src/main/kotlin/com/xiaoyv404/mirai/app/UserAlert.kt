@@ -21,7 +21,7 @@ class UserAlert : NfAppMessageHandler(), IFshApp {
     override fun getAppName() = "UserAlert"
     override fun getVersion() = "1.0.1"
     override fun getAppDescription() = "用户警告相关"
-    override fun getCommands() = arrayOf("-警告查询", "-alerttop")
+    override fun getCommands() = arrayOf("-警告查询", "-alerttop", "-警告次数")
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
         if (msg.groupType() != GroupType.MCG) return false
         val sender = msg.sender as Member
@@ -38,6 +38,15 @@ class UserAlert : NfAppMessageHandler(), IFshApp {
 
             "-alerttop" -> {
                 alertTop(msg)
+            }
+
+            "-警告次数" -> {
+                val items = args.getOrNull(1)?.toIntOrNull()
+                if (items == null) {
+                    msg.reply("请输入次数", true)
+                    return false
+                }
+                alertGetByTimes(items, msg)
             }
 
             else -> false
@@ -62,6 +71,13 @@ class UserAlert : NfAppMessageHandler(), IFshApp {
             return false
         }
         msg.reply("${user.id}共收到${user.warningTimes}次警告")
+        return true
+    }
+
+    private suspend fun alertGetByTimes(times: Int, msg: MessageEvent): Boolean {
+        Users.getByWarningTimes(times).joinToString("\n") { "${it.id}" }.let {
+            msg.reply(it)
+        }
         return true
     }
 
