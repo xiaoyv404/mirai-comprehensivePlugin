@@ -31,7 +31,7 @@ class UserAlert : NfAppMessageHandler(), IFshApp {
         val sender = msg.sender as Member
         if (msg.isNotAdmin() && !sender.permission.isOperator())
             return false
-        val id = args[1].toLongOrNull()
+        val id = args.getOrNull(1)?.toLongOrNull()
         if (id == null) {
             msg.reply("参数错误", true)
             return false
