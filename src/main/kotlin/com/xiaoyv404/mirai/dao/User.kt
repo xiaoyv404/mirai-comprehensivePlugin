@@ -28,6 +28,10 @@ fun Users.getAll(): List<User> {
     return Database.db.users.toList()
 }
 
+fun Users.getByWarningTimes(times: Int): List<User> {
+    return Database.db.users.filter { it.warningTimes eq times }.toList()
+}
+
 fun User.update() {
     Database.db.users.update(this)
 }
