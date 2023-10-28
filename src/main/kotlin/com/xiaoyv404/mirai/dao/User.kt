@@ -6,10 +6,7 @@ import com.xiaoyv404.mirai.model.User
 import com.xiaoyv404.mirai.model.Users
 import net.mamoe.mirai.event.events.MessageEvent
 import org.ktorm.dsl.eq
-import org.ktorm.entity.add
-import org.ktorm.entity.find
-import org.ktorm.entity.sequenceOf
-import org.ktorm.entity.update
+import org.ktorm.entity.*
 
 private val org.ktorm.database.Database.users get() = this.sequenceOf(Users)
 
@@ -25,6 +22,10 @@ fun User.save(): Boolean {
         this.update()
         true
     }
+}
+
+fun Users.getAll(): List<User> {
+    return Database.db.users.toList()
 }
 
 fun User.update() {
