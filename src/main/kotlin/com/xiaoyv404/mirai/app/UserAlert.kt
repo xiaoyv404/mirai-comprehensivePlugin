@@ -47,7 +47,7 @@ class UserAlert : NfAppMessageHandler(), IFshApp {
     private suspend fun alertTop(msg: MessageEvent): Boolean {
         val reply = Users.getAll()
             .filter { it.warningTimes > 0 }
-            .sortedBy { it.warningTimes }
+            .sortedByDescending { it.warningTimes }
             .joinToString("\n") { "${it.id}共收到${it.warningTimes}次警告" }
         msg.reply(reply)
         return true
