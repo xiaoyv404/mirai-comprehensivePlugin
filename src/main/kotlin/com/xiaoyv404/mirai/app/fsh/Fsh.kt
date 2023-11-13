@@ -47,6 +47,7 @@ class Fsh : NfAppMessageHandler() {
                     if (fshApp.executeRsh(argsList.toTypedArray(), msg)) {
                         // 调用成功进行限制计次
                         fshApp.submitCallLimiter(uid, gid)
+                        CommandHistory.add(argsList[0], msg)
                     }
                 } catch (_: UnrecognizedOptionException) {
                     msg.reply("未知参数")
