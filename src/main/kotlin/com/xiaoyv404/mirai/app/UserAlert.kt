@@ -75,9 +75,14 @@ class UserAlert : NfAppMessageHandler(), IFshApp {
     }
 
     private suspend fun alertGetByTimes(times: Int, msg: MessageEvent): Boolean {
-        Users.getByWarningTimes(times).joinToString("\n") { "${it.id}" }.let {
-            msg.reply(it)
-        }
+        Users.getByWarningTimes(times)
+            .joinToString("\n") { "${it.id}" }
+            .let {
+                if (it == "")
+                    msg.reply("盯~没有人诶")
+                else
+                    msg.reply(it)
+            }
         return true
     }
 
