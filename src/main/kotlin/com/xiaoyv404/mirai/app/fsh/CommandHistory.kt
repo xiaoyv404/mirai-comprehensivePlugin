@@ -12,7 +12,7 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZoneOffset
 
-@App
+
 object CommandHistory {
     fun add(command: String, msg: MessageEvent) {
         HistoryRecord {
