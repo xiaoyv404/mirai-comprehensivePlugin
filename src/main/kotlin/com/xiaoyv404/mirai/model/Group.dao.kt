@@ -39,6 +39,7 @@ data class Notice(
 
 @Suppress("PropertyName")
 data class Permissions(
+    val Dice: Permission,
     val DebuMe: Permission,
     val NetworkEro: Permission,
     val LocalGallery: Permission,
