@@ -4,6 +4,7 @@ import com.xiaoyv404.mirai.app.fsh.IFshApp
 import com.xiaoyv404.mirai.core.App
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
 import com.xiaoyv404.mirai.core.NfApp
+import com.xiaoyv404.mirai.dao.authorityIdentification
 import net.mamoe.mirai.event.events.MessageEvent
 
 @App
@@ -12,8 +13,13 @@ class Dice : NfApp(), IFshApp {
     override fun getVersion() = "1.0.1"
     override fun getAppDescription() = "骰子"
     override fun getCommands() = arrayOf(".r")
+    override fun getLimitCount() = 1
+    override fun getLimitExpiresTime() = 180L
+    override fun getLimitHint() = false
 
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
+        if (msg.authorityIdentification(getAppName()))
+            return false
         val rd = args.getOrNull(1)?.let { Regex("^((\\d+)((\\((\\d+)\\))|(:(\\d+)))?)\$").find(it) }?.groups
 
         val start = rd?.get(2)?.value?.toLong() ?: 1L
