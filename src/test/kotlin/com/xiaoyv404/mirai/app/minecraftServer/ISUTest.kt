@@ -65,7 +65,7 @@ internal class ISUTest : BaseTest() {
                         最后在线时间: 2006-04-16T06:58:39.810
                         服务器: Test
                         UUID: test
-                        身份: 妖怪
+                        身份: 妖怪贤者
                     """.trimIndent(),
                     msg.getOrNull(1)?.message?.contentToString()
                 )
@@ -76,7 +76,7 @@ internal class ISUTest : BaseTest() {
                         最后在线时间: 2006-04-16T06:58:39.810
                         服务器: Test
                         UUID: test
-                        身份: 妖怪
+                        身份: 妖怪贤者
                     """.trimIndent(),
                     msg.getOrNull(2)?.message?.contentToString()
                 )
@@ -109,7 +109,7 @@ internal class ISUTest : BaseTest() {
                     msg.getOrNull(4)?.message?.contentToString()
                 )
                 assertEquals(
-                    "需要权限至少为妖怪",
+                    "需要权限至少为妖怪贤者",
                     msg.getOrNull(5)?.message?.contentToString()
                 )
                 assertEquals(
