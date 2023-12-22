@@ -79,9 +79,9 @@ class ISU : NfApp(), IFshApp {
         }
 
         if (more && (MinecraftServerPlayerQQMapping { qq = msg.uid() }.getPermissionByQQ()
-                ?: Permissions.Default) < Permissions.Basic
+                ?: Permissions.Default) < Permissions.OP
         ) {
-            msg.reply("需要权限至少为妖怪", true)
+            msg.reply("需要权限至少为${Permissions.OP}", true)
             return false
         }
 
@@ -171,7 +171,7 @@ class ISU : NfApp(), IFshApp {
     private suspend fun findOP(msg: MessageEvent): Boolean {
         val op = MinecraftServerPlayer().getAllOnlinePlayers().toMutableList()
         op.removeIf {
-            it.permissions.code == null
+            it.permissions == Permissions.Default
         }
         if (op.isEmpty())
             msg.reply("没有呢 :(")
