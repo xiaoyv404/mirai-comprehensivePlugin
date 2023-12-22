@@ -171,7 +171,7 @@ class ISU : NfApp(), IFshApp {
     private suspend fun findOP(msg: MessageEvent): Boolean {
         val op = MinecraftServerPlayer().getAllOnlinePlayers().toMutableList()
         op.removeIf {
-            it.permissions.code == null
+            it.permissions == Permissions.Default
         }
         if (op.isEmpty())
             msg.reply("没有呢 :(")
