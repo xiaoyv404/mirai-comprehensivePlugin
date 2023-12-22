@@ -1,9 +1,14 @@
 package com.xiaoyv404.mirai
 
-import kotlinx.serialization.*
-import net.mamoe.mirai.console.data.*
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import net.mamoe.mirai.console.data.AbstractPluginData
+import net.mamoe.mirai.console.data.ValueDescription
+import net.mamoe.mirai.console.data.value
+import net.mamoe.mirai.console.util.ConsoleExperimentalApi
 
 object PluginData : AbstractPluginData() {
+    @ConsoleExperimentalApi
     override val saveName: String = "404DataBase"
 
     @ValueDescription("事件记录")
