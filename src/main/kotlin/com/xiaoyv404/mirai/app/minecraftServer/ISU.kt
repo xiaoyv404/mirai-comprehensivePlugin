@@ -79,9 +79,9 @@ class ISU : NfApp(), IFshApp {
         }
 
         if (more && (MinecraftServerPlayerQQMapping { qq = msg.uid() }.getPermissionByQQ()
-                ?: Permissions.Default) < Permissions.Basic
+                ?: Permissions.Default) < Permissions.OP
         ) {
-            msg.reply("需要权限至少为妖怪", true)
+            msg.reply("需要权限至少为${Permissions.OP}", true)
             return false
         }
 
