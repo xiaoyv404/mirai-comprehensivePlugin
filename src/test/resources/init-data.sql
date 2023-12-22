@@ -55,7 +55,7 @@ INSERT INTO "Users"("id", "admin", "bot", "warning_times")
 values (123, true, false, 0);
 
 INSERT INTO "MinecraftServerPlayers"("id", "name", "lastLoginTime", "lastLoginServer", "permissions")
-values ('test', 'Test', '2006-04-16 06:58:39.810', 'Test', 'Basic'),
+values ('test', 'Test', '2006-04-16 06:58:39.810', 'Test', 'OP'),
     ('test2', 'Test2', '2006-04-16 06:58:39.810', 'Test', 'Default'),
     ('404', '404', '2006-04-16 06:58:39.810', 'Test', 'Default'),
     ('2429334909', '2429334909', '2006-04-16 06:58:39.810', 'Test', 'Default');
