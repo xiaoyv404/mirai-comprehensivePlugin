@@ -1,7 +1,9 @@
 package com.xiaoyv404.mirai.extension
 
-import net.mamoe.mirai.*
-import net.mamoe.mirai.contact.*
+import net.mamoe.mirai.Bot
+import net.mamoe.mirai.contact.Group
+import net.mamoe.mirai.contact.Member
+import net.mamoe.mirai.contact.getMember
 
 var bot: Bot? = null
 

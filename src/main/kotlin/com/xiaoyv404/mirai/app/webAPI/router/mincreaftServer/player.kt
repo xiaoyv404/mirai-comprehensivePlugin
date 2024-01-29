@@ -25,4 +25,8 @@ fun Route.player() {
         }.findByName()
         call.respond(NfResult.success(data))
     }
+    get("/players/online"){
+       val data = MinecraftServerPlayer().getAllOnlinePlayers()
+        call.respond(NfResult.success(data))
+    }
 }

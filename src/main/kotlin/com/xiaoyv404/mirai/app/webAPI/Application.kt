@@ -1,15 +1,18 @@
 package com.xiaoyv404.mirai.app.webAPI
 
-import com.xiaoyv404.mirai.app.webAPI.router.*
-import com.xiaoyv404.mirai.app.webAPI.router.admin.*
-import com.xiaoyv404.mirai.app.webAPI.router.admin.action.*
-import com.xiaoyv404.mirai.app.webAPI.router.admin.conversation.*
-import com.xiaoyv404.mirai.app.webAPI.router.admin.conversation.group.member.*
-import com.xiaoyv404.mirai.app.webAPI.router.admin.conversation.group.member.permission.*
-import com.xiaoyv404.mirai.app.webAPI.router.admin.core.*
-import com.xiaoyv404.mirai.app.webAPI.router.admin.event.*
-import com.xiaoyv404.mirai.app.webAPI.router.admin.thesaurus.*
-import com.xiaoyv404.mirai.app.webAPI.router.mincreaftServer.*
+import com.xiaoyv404.mirai.app.webAPI.router.admin.action.sendMsg
+import com.xiaoyv404.mirai.app.webAPI.router.admin.adminIndex
+import com.xiaoyv404.mirai.app.webAPI.router.admin.conversation.getConversationsInfoList
+import com.xiaoyv404.mirai.app.webAPI.router.admin.conversation.group.member.getGroupMemberList
+import com.xiaoyv404.mirai.app.webAPI.router.admin.conversation.group.member.permission.getGroupMemberPermission
+import com.xiaoyv404.mirai.app.webAPI.router.admin.core.coreRouter
+import com.xiaoyv404.mirai.app.webAPI.router.admin.event.getVerificationMessage
+import com.xiaoyv404.mirai.app.webAPI.router.admin.thesaurus.thesaurusRouter
+import com.xiaoyv404.mirai.app.webAPI.router.getUserAlertTimes
+import com.xiaoyv404.mirai.app.webAPI.router.index
+import com.xiaoyv404.mirai.app.webAPI.router.login
+import com.xiaoyv404.mirai.app.webAPI.router.mincreaftServer.minecraftSeverRouter
+import com.xiaoyv404.mirai.app.webAPI.router.qBind
 import io.ktor.http.*
 import io.ktor.serialization.gson.*
 import io.ktor.server.application.*
@@ -90,6 +93,7 @@ fun Application.module() {
                     getVerificationMessage()
                     getGroupMemberList()
                     getGroupMemberPermission()
+                    getUserAlertTimes()
                     thesaurusRouter()
                     coreRouter()
                 }
