@@ -69,7 +69,6 @@ dependencies {
     testImplementation(libs.ktor.server.test.host)
 
     testApi(libs.kotlin.test.junit5)
-    testApi(libs.kotlinx.coroutines.test)
 }
 tasks.test {
     useJUnitPlatform()

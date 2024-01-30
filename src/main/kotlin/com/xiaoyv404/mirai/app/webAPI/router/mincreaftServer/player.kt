@@ -2,6 +2,7 @@ package com.xiaoyv404.mirai.app.webAPI.router.mincreaftServer
 
 import com.xiaoyv404.mirai.app.webAPI.WebApi
 import com.xiaoyv404.mirai.app.webAPI.controller.NfResult
+import com.xiaoyv404.mirai.app.webAPI.model.MinecraftPlayerApiModel
 import com.xiaoyv404.mirai.dao.findById
 import com.xiaoyv404.mirai.dao.findByName
 import com.xiaoyv404.mirai.model.mincraftServer.MinecraftServerPlayer
@@ -19,14 +20,22 @@ fun Route.player() {
     }
 
     get("/players/search") {
-        val name = call.request.queryParameters["name"]?: error(WebApi.requestError)
-        val data = MinecraftServerPlayer{
+        val name = call.request.queryParameters["name"] ?: error(WebApi.requestError)
+        val data = MinecraftServerPlayer {
             this.name = name
         }.findByName()
         call.respond(NfResult.success(data))
     }
-    get("/players/online"){
-       val data = MinecraftServerPlayer().getAllOnlinePlayers()
+    get("/players/online") {
+        val data = MinecraftServerPlayer().getAllOnlinePlayers().map {
+            MinecraftPlayerApiModel(
+                it.name,
+                it.id,
+                it.lastLoginTime.toString(),
+                it.lastLoginServer,
+                it.permissions
+            )
+        }
         call.respond(NfResult.success(data))
     }
 }
