@@ -20,7 +20,7 @@ internal class PlayerKtTest : DatabaseTest() {
         NfClock.mockTime(clock)
         client.get("/lab/minecraftSever/players/online").apply {
             assertEquals(HttpStatusCode.OK, status)
-            assertEquals("{\"code\":2001,\"msg\":\"接口调用成功\",\"data\":[{\"id\":\"Test\",\"name\":\"test\",\"lastLoginTime\":\"2006-04-16T06:58:39.810\",\"lastLoginServer\":\"Test\",\"permissions\":\"OP\"},{\"id\":\"Test2\",\"name\":\"test2\",\"lastLoginTime\":\"2006-04-16T06:58:39.810\",\"lastLoginServer\":\"Test\",\"permissions\":\"Default\"},{\"id\":\"2429334909\",\"name\":\"2429334909\",\"lastLoginTime\":\"2006-04-16T06:58:39.810\",\"lastLoginServer\":\"Test\",\"permissions\":\"Default\"}]}", bodyAsText())
+            assertEquals("{\"code\":2001,\"msg\":\"接口调用成功\",\"data\":[{\"id\":\"Test\",\"uuid\":\"test\",\"lastLoginTime\":\"2006-04-16T06:58:39.810\",\"lastLoginServer\":\"Test\",\"permissions\":\"OP\"},{\"id\":\"Test2\",\"uuid\":\"test2\",\"lastLoginTime\":\"2006-04-16T06:58:39.810\",\"lastLoginServer\":\"Test\",\"permissions\":\"Default\"},{\"id\":\"2429334909\",\"uuid\":\"2429334909\",\"lastLoginTime\":\"2006-04-16T06:58:39.810\",\"lastLoginServer\":\"Test\",\"permissions\":\"Default\"}]}", bodyAsText())
         }
     }
 }
