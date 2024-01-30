@@ -1,9 +1,10 @@
+//for temp, wait for gradle 8.1+
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    val kotlinVersion = "1.8.10"
-    kotlin("jvm") version kotlinVersion
-    kotlin("plugin.serialization") version kotlinVersion
+    kotlin("jvm") version libs.versions.kotlin
+    kotlin("plugin.serialization") version libs.versions.kotlin
 
-    id("net.mamoe.mirai-console") version "2.16.0-RC"
+    alias(libs.plugins.mirai.console)
 }
 
 group = "com.xiaoyv404"
@@ -30,41 +31,44 @@ repositories {
     maven("https://plugins.gradle.org/m2")
 }
 dependencies {
-    implementation("com.google.code.gson:gson:2.10.1")
-    implementation("io.ktor:ktor-serialization-gson:2.1.3")
+    implementation(libs.gson)
 
-    implementation("io.ktor:ktor-server-status-pages:2.1.3")
-    implementation("io.ktor:ktor-server-content-negotiation:2.1.3")
-    implementation("io.ktor:ktor-server-netty-jvm:2.1.3")
-    implementation("io.ktor:ktor-server-auth-jvm:2.1.1")
-    implementation("io.ktor:ktor-server-auth-jwt-jvm:2.1.1")
-    implementation("io.ktor:ktor-server-websockets-jvm:2.1.3")
-    implementation("io.ktor:ktor-server-sessions-jvm:2.1.3")
-    implementation("io.ktor:ktor-server-cors:2.1.3")
-    implementation("de.svenkubiak:jBCrypt:0.4.3")
+    //webServer
+    implementation(libs.ktor.serialization.gson)
+    implementation(libs.ktor.server.status.pages)
+    implementation(libs.ktor.server.content.negotiation)
+    implementation(libs.ktor.server.netty.jvm)
+    implementation(libs.ktor.server.auth.jvm)
+    implementation(libs.ktor.server.auth.jwt.jvm)
+    implementation(libs.ktor.server.sessions.jvm)
+    implementation(libs.ktor.server.cors)
+    implementation(libs.ktor.client.okhttp.jvm)
+    implementation(libs.jbCrypt)
 
-    implementation("io.ktor:ktor-client-okhttp-jvm:2.1.3")
-    compileOnly("net.mamoe.yamlkt:yamlkt-jvm:0.10.2")
+    //config
+    compileOnly(libs.yamlkt.jvm)
 
-    implementation("org.ktorm:ktorm-support-postgresql:3.6.0")
+    //database
+    implementation(libs.ktorm.core)
+    implementation(libs.ktorm.support.postgresql)
+    implementation(libs.postgresql)
+    implementation(libs.hikariCP)
+    implementation(libs.lettuce.core)
 
-    implementation("org.postgresql:postgresql:42.5.4")
-    implementation("org.ktorm:ktorm-core:3.6.0")
-    implementation("com.zaxxer:HikariCP:5.0.1")
-    implementation("io.lettuce:lettuce-core:6.2.3.RELEASE")
+    //commons
+    implementation(libs.apache.commons)
+    implementation(libs.commons.cli)
+    implementation(libs.apache.tika.core)
 
-    implementation("org.apache.commons:commons-lang3:3.12.0")
-    implementation("commons-cli:commons-cli:1.5.0")
+    testImplementation(libs.testcontainers.testcontainers)
+    testImplementation(libs.testcontainers.junit.jupiter)
+    testImplementation(libs.testcontainers.postgresql)
+    testImplementation(libs.mirai.core.mork)
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockwebserver)
+    testImplementation(libs.ktor.server.test.host)
 
-    implementation("org.apache.tika:tika-core:2.7.0")
-    testImplementation("org.testcontainers:testcontainers:1.18.3")
-    testImplementation("org.testcontainers:junit-jupiter:1.18.3")
-    testImplementation("org.testcontainers:postgresql:1.18.3")
-    testImplementation("net.mamoe:mirai-core-mock:2.15.0-RC")
-    testImplementation("org.mockito:mockito-core:5.4.0")
-    testImplementation("com.squareup.okhttp3:mockwebserver:4.9.3")
-    testApi(kotlin("test-junit5"))
-    testApi("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.2")
+    testApi(libs.kotlin.test.junit5)
 }
 tasks.test {
     useJUnitPlatform()

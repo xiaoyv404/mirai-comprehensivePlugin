@@ -1,5 +1,6 @@
 package com.xiaoyv404.mirai.model.mincraftServer
 
+import com.xiaoyv404.mirai.core.NfClock
 import com.xiaoyv404.mirai.database.Database
 import org.ktorm.dsl.between
 import org.ktorm.entity.Entity
@@ -22,10 +23,11 @@ interface MinecraftServerPlayer : Entity<MinecraftServerPlayer> {
     var lastLoginServer: String
     var permissions: Permissions
     fun getAllOnlinePlayers(): List<MinecraftServerPlayer> {
+        val now = NfClock.now()
         val players =
             Database.db.minecraftServerPlayer.filter {
-                MinecraftServerPlayers.lastLoginTime between (LocalDateTime.now()
-                    .plusMinutes(-4))..(LocalDateTime.now())
+                MinecraftServerPlayers.lastLoginTime between now
+                    .plusMinutes(-4)..now
             }.toList()
         return players
     }

@@ -1,0 +1,60 @@
+[versions]
+kotlin = "1.8.10"
+kotlinx = "1.7.3"
+gson = "2.10.1"
+ktor = "2.3.7"
+ktorm = "3.6.0"
+testcontainers = "1.18.3"
+mirai = "2.16.0"
+jBCrypt = "0.4.3"
+yamlkt = "0.10.2"
+postgresql = "42.5.4"
+hikariCP = "5.0.1"
+lettuce = "6.2.3.RELEASE"
+apache-commons = "3.12.0"
+commons-cli = "1.5.0"
+apache-tika-core = "2.7.0"
+mockito = "5.4.0"
+mockwebserver = "4.10.0"
+[libraries]
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+
+ktor-serialization-gson = { module = "io.ktor:ktor-serialization-gson", version.ref = "ktor" }
+ktor-server-status-pages = { module = "io.ktor:ktor-server-status-pages", version.ref = "ktor" }
+ktor-server-content-negotiation = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktor" }
+ktor-server-netty-jvm = { module = "io.ktor:ktor-server-netty-jvm", version.ref = "ktor" }
+ktor-server-auth-jvm = { module = "io.ktor:ktor-server-auth-jvm", version.ref = "ktor" }
+ktor-server-auth-jwt-jvm = { module = "io.ktor:ktor-server-auth-jwt-jvm", version.ref = "ktor" }
+tor-server-websockets-jvm = { module = "io.ktor:tor-server-websockets-jvm", version.ref = "ktor" }
+ktor-server-sessions-jvm = { module = "io.ktor:ktor-server-sessions-jvm", version.ref = "ktor" }
+ktor-server-cors = { module = "io.ktor:ktor-server-cors", version.ref = "ktor" }
+ktor-client-okhttp-jvm = { module = "io.ktor:ktor-client-okhttp-jvm", version.ref = "ktor" }
+ktor-server-test-host = { module = "io.ktor:ktor-server-test-host", version.ref = "ktor" }
+
+jBCrypt = { module = "de.svenkubiak:jBCrypt", version.ref = "jBCrypt" }
+
+
+yamlkt-jvm = { module = "net.mamoe.yamlkt:yamlkt-jvm", version.ref = "yamlkt" }
+
+
+ktorm-core = { module = "org.ktorm:ktorm-core", version.ref = "ktorm" }
+ktorm-support-postgresql = { module = "org.ktorm:ktorm-support-postgresql", version.ref = "ktorm" }
+postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresql" }
+hikariCP = { module = "com.zaxxer:HikariCP", version.ref = "hikariCP" }
+lettuce-core = { module = "io.lettuce:lettuce-core", version.ref = "lettuce" }
+
+apache-commons = { module = "org.apache.commons:commons-lang3", version.ref = "apache-commons" }
+commons-cli = { module = "commons-cli:commons-cli", version.ref = "commons-cli" }
+apache-tika-core = { module = "org.apache.tika:tika-core", version.ref = "apache-tika-core" }
+
+testcontainers-testcontainers = { module = "org.testcontainers:testcontainers", version.ref = "testcontainers" }
+testcontainers-junit-jupiter = { module = "org.testcontainers:junit-jupiter", version.ref = "testcontainers" }
+testcontainers-postgresql = { module = "org.testcontainers:postgresql", version.ref = "testcontainers" }
+mirai-core-mork = { module = "net.mamoe:mirai-core-mock", version.ref = "mirai" }
+mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito" }
+mockwebserver = { module = "com.squareup.okhttp3:mockwebserver", version.ref = "mockwebserver" }
+kotlin-test-junit5 = { module = "org.jetbrains.kotlin:kotlin-test-junit5", version.ref = "kotlin" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx" }
+
+[plugins]
+mirai-console = { id = "net.mamoe.mirai-console", version.ref = "mirai" }
