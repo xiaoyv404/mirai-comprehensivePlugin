@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class MinecraftPlayerApiModel(
     val id: String,
-    val name: String,
+    val uuid: String,
     val lastLoginTime: String,
     val lastLoginServer: String,
     val permissions: Permissions,
