@@ -70,7 +70,19 @@ class UserAlert : NfAppMessageHandler(), IFshApp {
             msg.reply("无记录")
             return false
         }
-        msg.reply("${user.id}共收到${user.warningTimes}次警告")
+        val logs = UserAlertLog {
+            this.target = id
+        }.findByID()
+
+        val reply = buildMessageChain {
+            +"${user.id}共收到${user.warningTimes}次警告"
+            logs.forEach {
+                +"\n${it.executor} ${it.type.name}"
+            }
+        }
+        println(reply)
+
+        msg.reply(reply)
         return true
     }
 
