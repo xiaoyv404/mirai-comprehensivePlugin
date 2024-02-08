@@ -29,7 +29,7 @@ class ISU : NfApp(), IFshApp {
 
     override fun getAppDescription() = "我的世界玩家状态监控"
 
-    override fun getCommands() = arrayOf("-玩家状态", "-有妖怪在线吗", "-桃呢", "-有无妖怪")
+    override fun getCommands() = arrayOf("-玩家状态", "-有妖怪在线吗", "-桃呢", "-有无妖怪", "-有妖怪在线吗")
 
     override fun getOptions() = NfOptions().apply {
         addOption("m", "more", false, "获取更多信息")
@@ -40,7 +40,7 @@ class ISU : NfApp(), IFshApp {
 
         return when (args[0]) {
             "-玩家状态", "-桃呢" -> playerStatus(args, msg, cmdLine.hasOption("more"))
-            "-有妖怪在线吗", "-有无妖怪" -> findOP(msg)
+            "-有妖怪在线吗", "-有无妖怪", "-有妖怪在吗" -> findOP(msg)
             else -> false
         }
     }
