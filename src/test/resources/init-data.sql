@@ -48,6 +48,18 @@ create table "UserAlertLogs"
     "type"     varchar(255)
 );
 
+drop table if exists "MinecraftServer";
+create table "MinecraftServer"
+(
+    "id"           int8 not null,
+    "host"         varchar(255),
+    "port"         int8,
+    "status"       int8,
+    "name"         varchar(255),
+    "playerNum"    int8,
+    "playerMaxNum" int8
+);
+
 insert into "Groups" ("id", "notice", "permission", "salutatory", "type")
 values (1147939635, null, null, null, 'MCG'),
        (2020, null,
@@ -142,4 +154,7 @@ values (2021, 'Test', true);
 
 INSERT INTO "UserAlertLogs"("target", "executor", "time", "type")
 values (1, 2, '2006-04-16 06:58:39.810', 'Increase'),
-       (1, 2, '2006-04-16 06:58:39.810', 'Increase')
+       (1, 2, '2006-04-16 06:58:39.810', 'Increase');
+
+INSERT INTO "MinecraftServer"("id", "host", "port", "status", "name", "playerNum", "playerMaxNum")
+values (1, 'test', 1, 1, 'mcg', 10, 80);
