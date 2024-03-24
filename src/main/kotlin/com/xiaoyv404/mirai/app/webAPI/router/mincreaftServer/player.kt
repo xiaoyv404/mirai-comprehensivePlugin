@@ -16,14 +16,31 @@ fun Route.player() {
         val data = MinecraftServerPlayer {
             this.id = id
         }.findById() ?: error(WebApi.requestError)
-        call.respond(NfResult.success(data))
+        val apiModel = data.let {
+            MinecraftPlayerApiModel(
+                it.name,
+                it.id,
+                it.lastLoginTime.toString(),
+                it.lastLoginServer,
+                it.permissions
+            )
+        }
+        call.respond(NfResult.success(apiModel))
     }
 
     get("/players/search") {
         val name = call.request.queryParameters["name"] ?: error(WebApi.requestError)
         val data = MinecraftServerPlayer {
             this.name = name
-        }.findByName()
+        }.findByName().map {
+            MinecraftPlayerApiModel(
+                it.name,
+                it.id,
+                it.lastLoginTime.toString(),
+                it.lastLoginServer,
+                it.permissions
+            )
+        }
         call.respond(NfResult.success(data))
     }
     get("/players/online") {
