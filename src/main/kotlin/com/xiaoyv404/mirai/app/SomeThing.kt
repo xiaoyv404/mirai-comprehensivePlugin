@@ -1,15 +1,21 @@
 package com.xiaoyv404.mirai.app
 
-import com.xiaoyv404.mirai.*
-import com.xiaoyv404.mirai.app.fsh.*
-import com.xiaoyv404.mirai.core.*
+import com.xiaoyv404.mirai.PluginData
+import com.xiaoyv404.mirai.app.fsh.IFshApp
+import com.xiaoyv404.mirai.core.App
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
-import com.xiaoyv404.mirai.extension.*
-import net.mamoe.mirai.event.*
-import net.mamoe.mirai.event.events.*
-import net.mamoe.mirai.message.code.*
-import net.mamoe.mirai.message.data.*
-import kotlin.coroutines.*
+import com.xiaoyv404.mirai.core.NfApp
+import com.xiaoyv404.mirai.extension.getFriend
+import net.mamoe.mirai.event.GlobalEventChannel
+import net.mamoe.mirai.event.events.BotInvitedJoinGroupRequestEvent
+import net.mamoe.mirai.event.events.MessageEvent
+import net.mamoe.mirai.event.events.NewFriendRequestEvent
+import net.mamoe.mirai.event.subscribeGroupMessages
+import net.mamoe.mirai.message.code.MiraiCode
+import net.mamoe.mirai.message.data.PlainText
+import net.mamoe.mirai.message.data.buildMessageChain
+import kotlin.collections.set
+import kotlin.coroutines.EmptyCoroutineContext
 
 @App
 class SomeThing : NfApp(), IFshApp {
@@ -38,7 +44,7 @@ class SomeThing : NfApp(), IFshApp {
     }
 
     private suspend fun help(msg: MessageEvent) {
-        msg.reply("https://www.xiaoyv404.top/archives/404.html")
+        msg.reply("https://www.xiaoyv404.top/404/")
     }
 
     override fun init() {

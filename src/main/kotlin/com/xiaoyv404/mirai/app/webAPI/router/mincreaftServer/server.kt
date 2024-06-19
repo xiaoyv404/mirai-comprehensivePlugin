@@ -15,14 +15,14 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
 fun Route.server() {
-    get("/server/{n}") {
-        val n = call.parameters["n"] ?: error(WebApi.requestError)
-        if (n == "all") {
+    get("/server/{id}") {
+        val id = call.parameters["id"] ?: error(WebApi.requestError)
+        if (id == "all") {
             val map = getAll().map { it.apiModel() }
             call.respond(NfResult.success(map))
             return@get
         }
-        val serverID = n.toIntOrNull() ?: error(WebApi.requestError)
+        val serverID = id.toIntOrNull() ?: error(WebApi.requestError)
 
         val data = MinecraftServer {
             this.id = serverID
@@ -30,13 +30,13 @@ fun Route.server() {
 
         call.respond(NfResult.success(data))
     }
-    patch("/server/{n}") {
+    patch("/server/{id}") {
         val principal = call.principal<UserIdPrincipal>() ?: error(WebApi.noPrincipal)
-        val n = call.parameters["n"]?.toIntOrNull() ?: error(WebApi.requestError)
+        val id = call.parameters["id"]?.toIntOrNull() ?: error(WebApi.requestError)
         principal.name.permissionRequiredAdmin()
 
         val data = call.receive<MinecraftServer>()
-        data.id = n
+        data.id = id
         val changeLine = data.update()
         if (changeLine == 0)
             WebApi.requestError
