@@ -1,7 +1,11 @@
 package com.xiaoyv404.mirai.app.minecraftServer
 
+import com.google.gson.Gson
+import com.xiaoyv404.mirai.PluginConfig
 import com.xiaoyv404.mirai.PluginMain
 import com.xiaoyv404.mirai.model.mincraftServer.MinecraftServer
+import com.xiaoyv404.mirai.model.mincraftServer.MinecraftServerStatus
+import com.xiaoyv404.mirai.tool.ClientUtils
 import java.awt.Color
 import java.awt.Font
 import java.awt.Graphics2D
@@ -12,7 +16,7 @@ import java.io.ByteArrayOutputStream
 import java.util.*
 import javax.imageio.ImageIO
 
-class MinecraftServerListGenerator() {
+class MinecraftServerListGenerator {
     private val roundX = 10
     private val red = Color.decode("#FF3D38")
     private val green = Color.decode("#76FFA1")
@@ -27,7 +31,7 @@ class MinecraftServerListGenerator() {
         PluginMain.resolveDataFile("resources/Minecraft/Minecraft AE.ttf"),
     ).deriveFont(Font.PLAIN, 22f)
 
-    fun drawList(list: List<MinecraftServer>, low: List<Long>, average: List<Long>): ByteArrayInputStream {
+    suspend fun drawList(list: List<MinecraftServer>): ByteArrayInputStream {
         val imgWidth = 800
         val imgHeight = 150 * list.size + 10
         val img = BufferedImage(imgWidth, imgHeight, BufferedImage.TYPE_INT_RGB)
@@ -57,7 +61,7 @@ class MinecraftServerListGenerator() {
             val status = v.status
             val roundY = 10 + k * 150
             drawInfo(g2d, status, roundY, name, "%03d".format(v.playerNum), "%03d".format(v.playerMaxNum))
-            drawBar(g2d, roundY, status, name, average, low)
+            drawBar(g2d, roundY, status, name)
         }
         g2d.dispose()
 
@@ -68,13 +72,13 @@ class MinecraftServerListGenerator() {
 
     private fun drawInfo(
         g2d: Graphics2D,
-        status: Int,
+        status: MinecraftServerStatus,
         roundY: Int,
         name: String,
         playerNum: String,
         playerMaxNum: String
     ) {
-        g2d.color = if (status == 1)
+        g2d.color = if (status == MinecraftServerStatus.Online)
             green
         else
             red
@@ -98,35 +102,34 @@ class MinecraftServerListGenerator() {
 
     }
 
-    private fun drawBar(
+    private suspend fun drawBar(
         g2d: Graphics2D,
         roundY: Int,
-        status: Int,
+        status: MinecraftServerStatus,
         name: String,
-        averages: List<Long>,
-        lows: List<Long>
     ) {
-        if (name != "MCG") {
-            g2d.color = if (status == 1)
-                green
-            else
-                red
-
-            for (i in 0..11)
+        if (name == "MCG" && status == MinecraftServerStatus.Online) {
+            getMCGTps()
+            for (i in 0..11) {
+                (average.getOrNull(i) ?: 0).let {
+                    g2d.color = setColorByTPS(it)
+                }
                 drawBarPart(g2d, roundY, i)
-            return
+                (low.getOrNull(i) ?: 0).let {
+                    g2d.color = setColorByTPS(it)
+                }
+                drawBarLowTpsPart(g2d, roundY, i)
+            }
         }
 
-        for (i in 0..11) {
-            (averages.getOrNull(i) ?: 0).let {
-                g2d.color = setColorByTPS(it)
-            }
+        g2d.color = if (status == MinecraftServerStatus.Online)
+            green
+        else
+            red
+
+        for (i in 0..11)
             drawBarPart(g2d, roundY, i)
-            (lows.getOrNull(i) ?: 0).let {
-                g2d.color = setColorByTPS(it)
-            }
-            drawBarLowTpsPart(g2d, roundY, i)
-        }
+        return
     }
 
     private fun drawBarPart(g2d: Graphics2D, roundY: Int, i: Int) {
@@ -161,6 +164,38 @@ class MinecraftServerListGenerator() {
             in 17..100 -> green
             in 10.rangeUntil(17) -> yellow
             else -> red
+        }
+    }
+
+    private val low = mutableListOf<Long>()
+    private val average = mutableListOf<Long>()
+
+    private suspend fun getMCGTps(){
+        val tps = try {
+            Gson().fromJson(
+                ClientUtils.get<String>(
+                    "${PluginConfig.etc.planApiUrl}/v1/graph?server=Minecraft幻想乡&type=performance"
+                ), Performance::class.java
+            ).tps.takeLast(720)
+        } catch (e: Exception) {
+            null
+        }
+
+        var lowi: Long = 20
+        var averagei: Long = 0
+        var k = 1
+        tps?.forEach {
+            if (k == 60) {
+                low.add(lowi)
+                average.add(averagei / 60)
+                lowi = 20
+                averagei = 0
+                k = 0
+            }
+            if (lowi > it[1])
+                lowi = it[1].toLong()
+            k++
+            averagei += it[1].toLong()
         }
     }
 }

@@ -1,10 +1,11 @@
 package com.xiaoyv404.mirai.app.minecraftServer
 
-import kotlinx.serialization.*
+import com.xiaoyv404.mirai.model.mincraftServer.MinecraftServerStatus
+import kotlinx.serialization.Serializable
 
 data class ServerInformationFormatAndStatus(
     var serverInformationFormat: ServerInformationFormat? = null,
-    var status: Int = 1
+    var status: MinecraftServerStatus = MinecraftServerStatus.Online
 )
 
 @Serializable

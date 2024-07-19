@@ -1,7 +1,5 @@
 package com.xiaoyv404.mirai.app.minecraftServer
 
-import com.google.gson.Gson
-import com.xiaoyv404.mirai.PluginConfig
 import com.xiaoyv404.mirai.app.fsh.IFshApp
 import com.xiaoyv404.mirai.core.App
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
@@ -10,7 +8,6 @@ import com.xiaoyv404.mirai.dao.send
 import com.xiaoyv404.mirai.dao.toList
 import com.xiaoyv404.mirai.model.mincraftServer.MinecraftServer
 import com.xiaoyv404.mirai.model.mincraftServer.MinecraftServerPlayer
-import com.xiaoyv404.mirai.tool.ClientUtils
 import net.mamoe.mirai.contact.Contact.Companion.uploadImage
 import net.mamoe.mirai.event.events.MessageEvent
 import net.mamoe.mirai.message.data.toMessageChain
@@ -34,39 +31,10 @@ class MinecraftServerList : NfApp(), IFshApp {
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
         val cmdLine = IFshApp.cmdLine(options, args)
 
-        val tps = try {
-            Gson().fromJson(
-                ClientUtils.get<String>(
-                    "${PluginConfig.etc.planApiUrl}/v1/graph?server=Minecraft幻想乡&type=performance"
-                ), Performance::class.java
-            ).tps.takeLast(720)
-        } catch (e: Exception) {
-            null
-        }
-
-        val low = mutableListOf<Long>()
-        val average = mutableListOf<Long>()
-
-        var lowi: Long = 20
-        var averagei: Long = 0
-        var k = 1
-        tps?.forEach {
-            if (k == 60) {
-                low.add(lowi)
-                average.add(averagei / 60)
-                lowi = 20
-                averagei = 0
-                k = 0
-            }
-            if (lowi > it[1])
-                lowi = it[1].toLong()
-            k++
-            averagei += it[1].toLong()
-        }
-
-        val list = MinecraftServer().toList()
-        val img = MinecraftServerListGenerator().drawList(list, low, average)
+        val list = MinecraftServer().toList().filter { !it.hilde }
+        val img = MinecraftServerListGenerator().drawList(list)
         msg.reply(msg.subject.uploadImage(img).toMessageChain())
+
 
         if (!cmdLine.hasOption("player"))
             return true
