@@ -57,7 +57,9 @@ create table "MinecraftServer"
     "status"       int8,
     "name"         varchar(255),
     "playerNum"    int8,
-    "playerMaxNum" int8
+    "playerMaxNum" int8,
+    "hilde"        boolean,
+    "mock"         boolean
 );
 
 insert into "Groups" ("id", "notice", "permission", "salutatory", "type")
@@ -156,5 +158,5 @@ INSERT INTO "UserAlertLogs"("target", "executor", "time", "type")
 values (1, 2, '2006-04-16 06:58:39.810', 'Increase'),
        (1, 2, '2006-04-16 06:58:39.810', 'Increase');
 
-INSERT INTO "MinecraftServer"("id", "host", "port", "status", "name", "playerNum", "playerMaxNum")
-values (1, 'test', 1, 1, 'mcg', 10, 80);
+INSERT INTO "MinecraftServer"("id", "host", "port", "status", "name", "playerNum", "playerMaxNum", "hilde", "mock")
+values (1, 'test', 1, 1, 'mcg', 10, 80, false, false);

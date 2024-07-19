@@ -11,10 +11,10 @@ import com.xiaoyv404.mirai.core.gid
 import com.xiaoyv404.mirai.dao.*
 import com.xiaoyv404.mirai.model.mincraftServer.MinecraftServer
 import com.xiaoyv404.mirai.model.mincraftServer.MinecraftServerMap
+import com.xiaoyv404.mirai.model.mincraftServer.MinecraftServerStatus
 import com.xiaoyv404.mirai.tool.ClientUtils
 import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.Contact
@@ -52,14 +52,14 @@ class MinecraftServerStats : NfApp(), IFshApp {
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
         val cmdLine = IFshApp.cmdLine(getOptions(), args)
 
-        val severName = when {
+        val server = when {
             cmdLine.hasOption("server") -> cmdLine.getOptionValue("server")
             msg.gid() == 113594190L -> "gtnh"
             else -> "MCG"
         }.findByName() ?: return false
 
         sendInfo(
-            msg, severName,
+            msg, server,
             cmdLine.hasOption("player")
         )
         return true
@@ -92,17 +92,19 @@ class MinecraftServerStats : NfApp(), IFshApp {
         val players = info.serverInformationFormat?.players
 
         //判断当前服务器状态
-        val statusT = if (info.status != 1)
-            -1
+        val statusT = if (info.status != MinecraftServerStatus.Online)
+            MinecraftServerStatus.Offline
         else
-            1
+            MinecraftServerStatus.Online
 
         //通过状态生成提示语
-        val data = server.msgMaker(statusT, players, msg.subject)
-
+        val data = if (server.mock)
+            server.msgMaker(MinecraftServerStatus.Offline, players, msg.subject)
+        else
+            server.msgMaker(statusT, players, msg.subject)
 
         //获取服务器关联群，并发送提示
-        if (statusT != server.status) {
+        if (statusT != server.status && !server.mock) {
             MinecraftServerMap {
                 serverID = server.id
             }.findByServerId().forEach {
@@ -120,7 +122,7 @@ class MinecraftServerStats : NfApp(), IFshApp {
 
         //如果有需求并且服务器在线，发送玩家列表
         //并更新在线玩家列表
-        if (statusT == 1 && playerList)
+        if (statusT == MinecraftServerStatus.Online && playerList && !server.mock)
             getPlayerList(server.host, server.port, players!!).let {
                 it.save(server.name)
                 server.getOnlinePlayers().send(msg)
@@ -136,13 +138,13 @@ class MinecraftServerStats : NfApp(), IFshApp {
         val players = information.serverInformationFormat?.players
 
         //判断服务器现在是什么状态
-        val statusT = if (statusD != 1)
-            if (info.status == 1)
-                0
+        val statusT = if (statusD != MinecraftServerStatus.Online)
+            if (info.status == MinecraftServerStatus.Online)
+                MinecraftServerStatus.Uncertain
             else
-                -1
+                MinecraftServerStatus.Offline
         else
-            1
+            MinecraftServerStatus.Online
 
         //更新在线玩家列表
         players?.players?.save(info.name)
@@ -156,14 +158,18 @@ class MinecraftServerStats : NfApp(), IFshApp {
         }.update()
 
         //发送log并获取服务器的关联群
-        if (!((statusT == -1 && info.status != -1) || (statusT == 1 && info.status == -1)))
+        if (!((statusT == MinecraftServerStatus.Offline && info.status != MinecraftServerStatus.Offline) || (statusT == MinecraftServerStatus.Online && info.status == MinecraftServerStatus.Offline)))
             return
 
 
-        if (statusT == 1)
+        if (statusT == MinecraftServerStatus.Online)
             log.info("服务器 ${info.name} 上线")
         else
             log.info("服务器 ${info.name} 离线")
+
+        // 如果在隐藏状态就不发送消息
+        if (info.mock)
+            return
 
         MinecraftServerMap { serverID = info.id }.findByServerId().forEach {
             groups.add(bot.getGroup(it.groupID) ?: return@forEach)
@@ -176,8 +182,12 @@ class MinecraftServerStats : NfApp(), IFshApp {
         }
     }
 
-    private suspend fun MinecraftServer.msgMaker(status: Int, playerList: Players?, subject: Contact): CodableMessage {
-        return if (status == 1)
+    private suspend fun MinecraftServer.msgMaker(
+        status: MinecraftServerStatus,
+        playerList: Players?,
+        subject: Contact
+    ): CodableMessage {
+        return if (status == MinecraftServerStatus.Online)
             subject.uploadImage(
                 MinecraftDataImgGenerator.getImg(
                     playerList!!.players,
@@ -210,7 +220,7 @@ class MinecraftServerStats : NfApp(), IFshApp {
             pJ
         } catch (e: Exception) {
             PluginMain.logger.debug(e.message)
-            pJ.status = 0
+            pJ.status = MinecraftServerStatus.Offline
             pJ
         }
     }

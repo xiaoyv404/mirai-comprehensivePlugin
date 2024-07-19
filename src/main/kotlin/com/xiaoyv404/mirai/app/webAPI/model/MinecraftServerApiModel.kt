@@ -1,6 +1,7 @@
 package com.xiaoyv404.mirai.app.webAPI.model
 
 import com.xiaoyv404.mirai.model.mincraftServer.MinecraftServer
+import com.xiaoyv404.mirai.model.mincraftServer.MinecraftServerStatus
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -18,7 +19,11 @@ fun MinecraftServer.apiModel(): MinecraftServerApiModel {
         this.name,
         this.host,
         this.port,
-        this.status,
+        when (this.status) {
+            MinecraftServerStatus.Online -> 1
+            MinecraftServerStatus.Offline -> -1
+            MinecraftServerStatus.Uncertain -> 1
+        },
         this.playerNum,
         this.playerMaxNum
     )
