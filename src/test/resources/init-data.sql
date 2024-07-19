@@ -54,7 +54,7 @@ create table "MinecraftServer"
     "id"           int8 not null,
     "host"         varchar(255),
     "port"         int8,
-    "status"       int8,
+    "status"       varchar(9),
     "name"         varchar(255),
     "playerNum"    int8,
     "playerMaxNum" int8,
@@ -159,4 +159,4 @@ values (1, 2, '2006-04-16 06:58:39.810', 'Increase'),
        (1, 2, '2006-04-16 06:58:39.810', 'Increase');
 
 INSERT INTO "MinecraftServer"("id", "host", "port", "status", "name", "playerNum", "playerMaxNum", "hilde", "mock")
-values (1, 'test', 1, 1, 'mcg', 10, 80, false, false);
+values (1, 'test', 1, 'Online', 'mcg', 10, 80, false, false);
