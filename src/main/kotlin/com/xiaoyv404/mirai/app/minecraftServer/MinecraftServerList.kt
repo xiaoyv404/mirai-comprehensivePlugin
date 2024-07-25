@@ -1,6 +1,7 @@
 package com.xiaoyv404.mirai.app.minecraftServer
 
 import com.xiaoyv404.mirai.app.fsh.IFshApp
+import com.xiaoyv404.mirai.app.fsh.NfOptions
 import com.xiaoyv404.mirai.core.App
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
 import com.xiaoyv404.mirai.core.NfApp
@@ -24,12 +25,12 @@ class MinecraftServerList : NfApp(), IFshApp {
             "-服务器列表"
         )
 
-    private val options = Options().apply {
+    override fun getOptions(): Options = NfOptions().apply {
         addOption("p", "player", false, "获取玩家列表")
     }
 
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
-        val cmdLine = IFshApp.cmdLine(options, args)
+        val cmdLine = IFshApp.cmdLine(getOptions(), args)
 
         val list = MinecraftServer().toList().filter { !it.hilde }
         val img = MinecraftServerListGenerator().drawList(list)
