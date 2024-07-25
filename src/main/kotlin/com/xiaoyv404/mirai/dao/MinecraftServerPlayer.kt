@@ -100,3 +100,11 @@ fun MinecraftServer.getOnlinePlayers(): List<MinecraftServerPlayer> {
     return players
 }
 
+fun MinecraftServerPlayer.getAllOnlinePlayers(): List<MinecraftServerPlayer> {
+    val players =
+        Database.db.minecraftServerPlayer.filter {
+            MinecraftServerPlayers.lastLoginTime between (LocalDateTime.now()
+                .plusMinutes(-4))..(LocalDateTime.now())
+        }.toList()
+    return players
+}

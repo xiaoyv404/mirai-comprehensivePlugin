@@ -5,6 +5,7 @@ import com.xiaoyv404.mirai.app.fsh.NfOptions
 import com.xiaoyv404.mirai.core.App
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
 import com.xiaoyv404.mirai.core.NfApp
+import com.xiaoyv404.mirai.dao.getAllOnlinePlayers
 import com.xiaoyv404.mirai.dao.send
 import com.xiaoyv404.mirai.dao.toList
 import com.xiaoyv404.mirai.model.mincraftServer.MinecraftServer
@@ -39,7 +40,7 @@ class MinecraftServerList : NfApp(), IFshApp {
 
         if (!cmdLine.hasOption("player"))
             return true
-        MinecraftServerPlayer().getAllOnlinePlayers().send(msg)
+        MinecraftServerPlayer{}.getAllOnlinePlayers().send(msg)
         return true
     }
 
