@@ -24,12 +24,10 @@ interface MinecraftServerPlayer : Entity<MinecraftServerPlayer> {
     var permissions: Permissions
     fun getAllOnlinePlayers(): List<MinecraftServerPlayer> {
         val now = NfClock.now()
-        println(now)
-        println(LocalDateTime.now())
         val players =
             Database.db.minecraftServerPlayer.filter {
-                MinecraftServerPlayers.lastLoginTime between now
-                    .plusMinutes(-4)..now
+                MinecraftServerPlayers.lastLoginTime between (now
+                    .plusMinutes(-4))..(now)
             }.toList()
         return players
     }
