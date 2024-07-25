@@ -2,6 +2,7 @@ package com.xiaoyv404.mirai.dao
 
 import com.xiaoyv404.mirai.app.minecraftServer.Player
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
+import com.xiaoyv404.mirai.core.NfClock
 import com.xiaoyv404.mirai.database.Database
 import com.xiaoyv404.mirai.model.mincraftServer.MinecraftServer
 import com.xiaoyv404.mirai.model.mincraftServer.MinecraftServerPlayer
@@ -103,8 +104,8 @@ fun MinecraftServer.getOnlinePlayers(): List<MinecraftServerPlayer> {
 fun MinecraftServerPlayer.getAllOnlinePlayers(): List<MinecraftServerPlayer> {
     val players =
         Database.db.minecraftServerPlayer.filter {
-            MinecraftServerPlayers.lastLoginTime between (LocalDateTime.now()
-                .plusMinutes(-4))..(LocalDateTime.now())
+            MinecraftServerPlayers.lastLoginTime between (NfClock.now()
+                .plusMinutes(-4))..(NfClock.now())
         }.toList()
     return players
 }
