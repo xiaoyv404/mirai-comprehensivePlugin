@@ -5,6 +5,7 @@ import com.xiaoyv404.mirai.app.webAPI.controller.NfResult
 import com.xiaoyv404.mirai.app.webAPI.model.MinecraftPlayerApiModel
 import com.xiaoyv404.mirai.dao.findById
 import com.xiaoyv404.mirai.dao.findByName
+import com.xiaoyv404.mirai.dao.getAllOnlinePlayers
 import com.xiaoyv404.mirai.model.mincraftServer.MinecraftServerPlayer
 import io.ktor.server.application.*
 import io.ktor.server.response.*
@@ -44,7 +45,7 @@ fun Route.player() {
         call.respond(NfResult.success(data))
     }
     get("/players/online") {
-        val data = MinecraftServerPlayer().getAllOnlinePlayers().map {
+        val data = MinecraftServerPlayer{}.getAllOnlinePlayers().map {
             MinecraftPlayerApiModel(
                 it.name,
                 it.id,

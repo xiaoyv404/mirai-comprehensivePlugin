@@ -1,12 +1,6 @@
 package com.xiaoyv404.mirai.model.mincraftServer
 
-import com.xiaoyv404.mirai.core.NfClock
-import com.xiaoyv404.mirai.database.Database
-import org.ktorm.dsl.between
 import org.ktorm.entity.Entity
-import org.ktorm.entity.filter
-import org.ktorm.entity.sequenceOf
-import org.ktorm.entity.toList
 import org.ktorm.schema.Table
 import org.ktorm.schema.datetime
 import org.ktorm.schema.enum
@@ -22,17 +16,6 @@ interface MinecraftServerPlayer : Entity<MinecraftServerPlayer> {
     var lastLoginTime: LocalDateTime
     var lastLoginServer: String
     var permissions: Permissions
-    fun getAllOnlinePlayers(): List<MinecraftServerPlayer> {
-        val now = NfClock.now()
-        val players =
-            Database.db.minecraftServerPlayer.filter {
-                MinecraftServerPlayers.lastLoginTime between (now
-                    .plusMinutes(-4))..(now)
-            }.toList()
-        return players
-    }
-
-    private val org.ktorm.database.Database.minecraftServerPlayer get() = this.sequenceOf(MinecraftServerPlayers)
 }
 
 object MinecraftServerPlayers : Table<MinecraftServerPlayer>("MinecraftServerPlayers") {
