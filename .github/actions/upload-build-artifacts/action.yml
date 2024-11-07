@@ -12,7 +12,7 @@ runs:
         --exclude-task test
         --exclude-task check
     - name: Upload mirai-comprehensivePlugin
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: mirai-comprehensivePlugin
         path: build/mirai
