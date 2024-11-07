@@ -26,7 +26,7 @@ jobs:
         run: ./gradlew assemble
 
       - name: All Tests
-        run: |
+        run: >
             ./gradlew 
             check
             -Dmirai.network.show.all.components=true
