@@ -20,17 +20,14 @@ jobs:
           distribution: 'temurin'
 
       - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/actions/setup-gradle@v4
 
       - name: Build all
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: assemble
+        run: ./gradlew assemble
 
       - name: All Tests
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: |
+        run: |
+            ./gradlew 
             check
             -Dmirai.network.show.all.components=true
             -Dkotlinx.coroutines.debug=on
