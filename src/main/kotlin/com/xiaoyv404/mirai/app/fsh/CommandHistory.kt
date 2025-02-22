@@ -1,6 +1,5 @@
 package com.xiaoyv404.mirai.app.fsh
 
-import com.xiaoyv404.mirai.core.App
 import com.xiaoyv404.mirai.core.gid
 import com.xiaoyv404.mirai.core.uid
 import com.xiaoyv404.mirai.dao.save
@@ -12,7 +11,6 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZoneOffset
 
-@App
 object CommandHistory {
     fun add(command: String, msg: MessageEvent) {
         HistoryRecord {
