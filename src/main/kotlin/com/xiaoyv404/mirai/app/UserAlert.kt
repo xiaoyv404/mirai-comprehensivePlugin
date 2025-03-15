@@ -15,6 +15,7 @@ import net.mamoe.mirai.message.data.MessageChainBuilder
 import net.mamoe.mirai.message.data.PlainText
 import net.mamoe.mirai.message.data.buildMessageChain
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @App
 class UserAlert : NfAppMessageHandler(), IFshApp {
@@ -62,6 +63,7 @@ class UserAlert : NfAppMessageHandler(), IFshApp {
         return true
     }
 
+    private val timeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
     private suspend fun alertGet(id: Long, msg: MessageEvent): Boolean {
         val user = User {
             this.id = id
@@ -77,7 +79,7 @@ class UserAlert : NfAppMessageHandler(), IFshApp {
         val reply = buildMessageChain {
             +"${user.id}共收到${user.warningTimes}次警告"
             logs.forEach {
-                +"\n${it.executor} ${it.type.name} ${it.time} ${it.reason}"
+                +"\n${it.executor} ${it.type.displayName} ${timeFormatter.format(it.time)} ${it.reason}"
             }
         }
         println(reply)
@@ -107,9 +109,9 @@ class UserAlert : NfAppMessageHandler(), IFshApp {
         val ats = msg.message.filterIsInstance<At>()
         if (ats.isEmpty()) return
 
-        val reason = msg.message.filterIsInstance<PlainText>().last().content
+        val reason = msg.message.filterIsInstance<PlainText>().last().content.replace(" ", "")
         val str = MessageChainBuilder()
-        ats.forEachIndexed { k, v ->
+        ats.forEachIndexed { _, v ->
             UserAlertLog {
                 this.target = v.target
                 this.executor = msg.uid()
@@ -132,7 +134,7 @@ class UserAlert : NfAppMessageHandler(), IFshApp {
                 +"\n"
             })
         }
-        str.append(PlainText("原因为：${if (reason!="") reason else "无原因"}"))
+        str.append(PlainText("原因为：${if (reason != "") reason else "无原因"}"))
 
         msg.reply(str.build())
 

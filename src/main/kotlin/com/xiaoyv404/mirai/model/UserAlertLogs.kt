@@ -14,10 +14,10 @@ interface UserAlertLog : Entity<UserAlertLog> {
     var reason: String
 }
 
-enum class UserAlertType {
-    Rest,
-    Decrease,
-    Increase
+enum class UserAlertType(val displayName: String) {
+    Rest("重置"),
+    Decrease("减少"),
+    Increase("增加")
 }
 
 object UserAlertLogs : Table<UserAlertLog>("UserAlertLogs") {
