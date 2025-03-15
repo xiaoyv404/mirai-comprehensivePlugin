@@ -25,8 +25,8 @@ internal class UserAlertTest : BaseTest() {
                 assertEquals(
                     """
                     1共收到2次警告
-                    2 Increase 2006-04-16T06:58:39.810
-                    2 Increase 2006-04-16T06:58:39.810
+                    2 Increase 2006-04-16T06:58:39.810 
+                    2 Increase 2006-04-16T06:58:39.810 警告原因
                 """.trimIndent(),
                     msg[0].message.contentToString()
                 )

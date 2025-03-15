@@ -77,7 +77,7 @@ class UserAlert : NfAppMessageHandler(), IFshApp {
         val reply = buildMessageChain {
             +"${user.id}共收到${user.warningTimes}次警告"
             logs.forEach {
-                +"\n${it.executor} ${it.type.name} ${it.time}"
+                +"\n${it.executor} ${it.type.name} ${it.time} ${it.reason}"
             }
         }
         println(reply)

@@ -45,7 +45,9 @@ create table "UserAlertLogs"
     "target"   int8 not null,
     "executor" int8 not null,
     "time"     timestamp(6),
-    "type"     varchar(255)
+    "type"     varchar(255),
+    "reason"   varchar(255),
+
 );
 
 drop table if exists "MinecraftServer";
@@ -154,9 +156,9 @@ values ('test', 'Test', '2006-04-16 06:58:39.810', 'Test', 'OP'),
 INSERT INTO "MinecraftServerPlayer_qq_mapping"("qq", "playerName", "lock")
 values (2021, 'Test', true);
 
-INSERT INTO "UserAlertLogs"("target", "executor", "time", "type")
-values (1, 2, '2006-04-16 06:58:39.810', 'Increase'),
-       (1, 2, '2006-04-16 06:58:39.810', 'Increase');
+INSERT INTO "UserAlertLogs"("target", "executor", "time", "type", "reason")
+values (1, 2, '2006-04-16 06:58:39.810', 'Increase', ''),
+       (1, 2, '2006-04-16 06:58:39.810', 'Increase', '警告原因');
 
 INSERT INTO "MinecraftServer"("id", "host", "port", "status", "name", "playerNum", "playerMaxNum", "hilde", "mock")
 values (1, 'test', 1, 'Online', 'mcg', 10, 80, false, false);
