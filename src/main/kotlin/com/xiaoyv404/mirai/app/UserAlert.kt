@@ -107,6 +107,7 @@ class UserAlert : NfAppMessageHandler(), IFshApp {
         val ats = msg.message.filterIsInstance<At>()
         if (ats.isEmpty()) return
 
+        val reason = msg.message.filterIsInstance<PlainText>().last().content
         val str = MessageChainBuilder()
         ats.forEachIndexed { k, v ->
             UserAlertLog {
@@ -114,6 +115,7 @@ class UserAlert : NfAppMessageHandler(), IFshApp {
                 this.executor = msg.uid()
                 this.time = LocalDateTime.now()
                 this.type = UserAlertType.Increase
+                this.reason = reason
             }.add()
             val user = User {
                 this.id = v.target
@@ -127,9 +129,10 @@ class UserAlert : NfAppMessageHandler(), IFshApp {
                 +"已警告"
                 +v
                 +"，本次为第${user.warningTimes}次警告"
-                if (k != ats.size - 1) +PlainText("\n")
+                +"\n"
             })
         }
+        str.append(PlainText("原因为：${if (reason!="") reason else "无原因"}"))
 
         msg.reply(str.build())
 

@@ -1,10 +1,7 @@
 package com.xiaoyv404.mirai.model
 
 import org.ktorm.entity.Entity
-import org.ktorm.schema.Table
-import org.ktorm.schema.datetime
-import org.ktorm.schema.enum
-import org.ktorm.schema.long
+import org.ktorm.schema.*
 import java.time.LocalDateTime
 
 interface UserAlertLog : Entity<UserAlertLog> {
@@ -14,6 +11,7 @@ interface UserAlertLog : Entity<UserAlertLog> {
     var executor: Long
     var time: LocalDateTime
     var type: UserAlertType
+    var reason: String
 }
 
 enum class UserAlertType {
@@ -27,4 +25,5 @@ object UserAlertLogs : Table<UserAlertLog>("UserAlertLogs") {
     val executor = long("executor").bindTo { it.executor }
     val time = datetime("time").bindTo { it.time }
     val type = enum<UserAlertType>("type").bindTo { it.type }
+    val reason = varchar("reason").bindTo { it.reason }
 }

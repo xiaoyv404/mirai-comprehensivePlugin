@@ -48,15 +48,20 @@ internal class UserAlertTest : BaseTest() {
                 +At(1111)
                 +At(1008611)
                 +At(464)
+                +"警告原因"
             }
         }.runNfAppMessageHandlerApp(UserAlert())
             .filterIsInstance<GroupMessagePostSendEvent>().let { msg ->
-                assertEquals("已警告@1111，本次为第1次警告", msg[0].message.contentToString())
+                assertEquals("""
+                    已警告@1111，本次为第1次警告
+                    原因为：无原因
+                    """.trimIndent(), msg[0].message.contentToString())
                 assertEquals(
                     """
                 已警告@1111，本次为第2次警告
                 已警告@1008611，本次为第1次警告
                 已警告@464，本次为第1次警告
+                原因为：警告原因
             """.trimIndent(), msg[1].message.contentToString()
                 )
             }
