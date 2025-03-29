@@ -109,7 +109,16 @@ class UserAlert : NfAppMessageHandler(), IFshApp {
         val ats = msg.message.filterIsInstance<At>()
         if (ats.isEmpty()) return
 
-        val reason = msg.message.filterIsInstance<PlainText>().last().content.replace(" ", "")
+        val texts = msg.message.filterIsInstance<PlainText>()
+        val reason = if (texts.size == 1)
+            ""
+        else
+            texts.last().content.replace(" ", "")
+        if (reason.length > 255) {
+            msg.reply("原因过长，请重新输入")
+            return
+        }
+
         val str = MessageChainBuilder()
         ats.forEachIndexed { _, v ->
             UserAlertLog {
