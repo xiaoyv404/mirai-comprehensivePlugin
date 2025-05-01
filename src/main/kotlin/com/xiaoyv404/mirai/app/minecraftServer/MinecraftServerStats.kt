@@ -132,7 +132,7 @@ class MinecraftServerStats : NfApp(), IFshApp {
     suspend fun check(info: MinecraftServer) {
         val information = getServerInfo(info.host, info.port)
         val groups = mutableListOf<Contact>()
-        val bot = Bot.instances.firstOrNull() ?: return
+        val bot = Bot.instances.firstOrNull()
 
         val statusD = information.status
         val players = information.serverInformationFormat?.players
@@ -168,7 +168,7 @@ class MinecraftServerStats : NfApp(), IFshApp {
             log.info("服务器 ${info.name} 离线")
 
         // 如果在隐藏状态就不发送消息
-        if (info.mock)
+        if (info.mock || bot == null)
             return
 
         MinecraftServerMap { serverID = info.id }.findByServerId().forEach {
