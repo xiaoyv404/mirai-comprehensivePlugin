@@ -132,7 +132,7 @@ class MinecraftServerStats : NfApp(), IFshApp {
     suspend fun check(info: MinecraftServer) {
         val information = getServerInfo(info.host, info.port)
         val groups = mutableListOf<Contact>()
-        val bot = Bot.getInstanceOrNull(2079373402) ?: return
+        val bot = Bot.instances.firstOrNull() ?: return
 
         val statusD = information.status
         val players = information.serverInformationFormat?.players
