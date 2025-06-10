@@ -4,25 +4,25 @@ import com.xiaoyv404.mirai.app.fsh.IFshApp
 import com.xiaoyv404.mirai.core.App
 import com.xiaoyv404.mirai.core.MessageProcessor.reply
 import com.xiaoyv404.mirai.core.NfAppMessageHandler
+import com.xiaoyv404.mirai.core.NfClock
 import com.xiaoyv404.mirai.core.uid
 import com.xiaoyv404.mirai.dao.*
 import com.xiaoyv404.mirai.model.*
 import net.mamoe.mirai.contact.Member
 import net.mamoe.mirai.contact.isOperator
 import net.mamoe.mirai.event.events.MessageEvent
-import net.mamoe.mirai.message.data.At
-import net.mamoe.mirai.message.data.MessageChainBuilder
-import net.mamoe.mirai.message.data.PlainText
-import net.mamoe.mirai.message.data.buildMessageChain
+import net.mamoe.mirai.message.data.*
+import java.time.Instant
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.*
 
 @App
 class UserAlert : NfAppMessageHandler(), IFshApp {
     override fun getAppName() = "UserAlert"
     override fun getVersion() = "1.0.1"
     override fun getAppDescription() = "用户警告相关"
-    override fun getCommands() = arrayOf("-警告查询", "-alerttop", "-警告次数")
+    override fun getCommands() = arrayOf("-警告查询", "-alerttop", "-警告次数", "-补警告")
     override suspend fun executeRsh(args: Array<String>, msg: MessageEvent): Boolean {
         if (msg.groupType() != GroupType.MCG) return false
         val sender = msg.sender as Member
@@ -48,6 +48,37 @@ class UserAlert : NfAppMessageHandler(), IFshApp {
                     return false
                 }
                 alertGetByTimes(items, msg)
+            }
+
+            "-补警告" -> {
+                if (!msg.message.contains(QuoteReply))
+                    return false
+                val sourceMsg = msg.message[QuoteReply]?.source ?: return false
+
+                val id = args.getOrNull(1)?.toLongOrNull() ?: return false
+                val reason = args.getOrNull(2) ?: return false
+
+                val time = LocalDateTime.ofInstant(
+                    Instant.ofEpochSecond(sourceMsg.time.toLong()),
+                    TimeZone.getTimeZone("UTC+8").toZoneId()
+                )
+                val warner = sourceMsg.fromId
+                msg.reply(
+                    """
+                    已补警告
+                    执行者: $warner
+                    警告时间: $time
+                    被警告人: $id
+                    原因: $reason
+                """.trimIndent()
+                )
+                addUserAlert(
+                    id,
+                    warner,
+                    time,
+                    reason
+                )
+                true
             }
 
             else -> false
@@ -121,25 +152,11 @@ class UserAlert : NfAppMessageHandler(), IFshApp {
 
         val str = MessageChainBuilder()
         ats.forEachIndexed { _, v ->
-            UserAlertLog {
-                this.target = v.target
-                this.executor = msg.uid()
-                this.time = LocalDateTime.now()
-                this.type = UserAlertType.Increase
-                this.reason = reason
-            }.add()
-            val user = User {
-                this.id = v.target
-            }.findById() ?: User {
-                this.id = v.target
-            }
-            user.warningTimes++
-
-            user.save()
+            val warningTimes = addUserAlert(v.target, msg.uid(), NfClock.now(), reason)
             str.append(buildMessageChain {
                 +"已警告"
                 +v
-                +"，本次为第${user.warningTimes}次警告"
+                +"，本次为第 $warningTimes 次警告"
                 +"\n"
             })
         }
@@ -148,5 +165,28 @@ class UserAlert : NfAppMessageHandler(), IFshApp {
         msg.reply(str.build())
 
         return
+    }
+
+    /**
+     * @return 警告次数
+     */
+    fun addUserAlert(target: Long, executor: Long, time: LocalDateTime, reason: String = ""): Int {
+        UserAlertLog {
+            this.target = target
+            this.executor = executor
+            this.time = time
+            this.type = UserAlertType.Increase
+            this.reason = reason
+        }.add()
+        val user = User {
+            this.id = target
+        }.findById() ?: User {
+            this.id = target
+        }
+        user.warningTimes++
+
+        user.save()
+
+        return user.warningTimes
     }
 }
