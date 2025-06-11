@@ -171,6 +171,9 @@ class MinecraftServerStats : NfApp(), IFshApp {
         if (info.mock || bot == null)
             return
 
+        if (!info.autoDetectMessage)
+            return
+
         MinecraftServerMap { serverID = info.id }.findByServerId().forEach {
             groups.add(bot.getGroup(it.groupID) ?: return@forEach)
         }
