@@ -95,10 +95,8 @@ class GroupFile : NfApp(), IFshApp {
                 val extension = it.extension.lowercase(Locale.getDefault())
                 val folderName = extensionMap[extension] ?: return@collect //todo: 如果此文件没匹配到，发送消息至主人
                 log.info("文件名: $name  拓展名: $extension  文件夹: $folderName")
-                try {
-                    val folder = root.createFolder(folderName)
-                    it.moveTo(folder)
-                }catch (_: PermissionDeniedException){}
+                val folder = root.createFolder(folderName)
+                it.moveTo(folder)
                 val changeQuantity = changeQuantities.getOrDefault(folderName, 0)
                 changeQuantities[folderName] = changeQuantity + 1
                 log.info("已将$name 移动至$folderName")
