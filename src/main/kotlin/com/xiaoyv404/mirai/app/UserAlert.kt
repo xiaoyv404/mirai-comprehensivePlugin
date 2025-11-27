@@ -80,7 +80,6 @@ class UserAlert : NfAppMessageHandler(), IFshApp {
                 +"\n${it.executor} ${it.type.name} ${it.time}"
             }
         }
-        println(reply)
 
         msg.reply(reply)
         return true
