@@ -50,7 +50,7 @@ class ISU : NfApp(), IFshApp {
     private suspend fun playerStatus(args: Array<String>, msg: MessageEvent, more: Boolean): Boolean {
         val name = when {
             args[0] == "-桃呢" -> "2429334909"
-            args.getOrNull(1) != null -> args[1]
+            (args.getOrNull(1) ?: "-m") != "-m" -> args[1]
             else -> regex.find(msg.senderName)?.value
         }
         if (name == null) {
@@ -86,7 +86,7 @@ class ISU : NfApp(), IFshApp {
         }
 
 
-        val replay = if (more)
+        val reply = if (more)
             isOnlineAndMoreInfo(player) ?: run {
                 msg.reply("API错误", true)
                 return false
@@ -94,7 +94,7 @@ class ISU : NfApp(), IFshApp {
         else
             isOnline(player)
 
-        msg.reply(replay)
+        msg.reply(reply)
 
         return true
     }
