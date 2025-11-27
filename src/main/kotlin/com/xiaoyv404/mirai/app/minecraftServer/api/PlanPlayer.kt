@@ -1,16 +1,39 @@
 package com.xiaoyv404.mirai.app.minecraftServer.api
 
+import com.google.gson.annotations.SerializedName
+
 data class PlanPlayer(
+    @SerializedName("banned")
     val banned: Boolean,
-    val death_count: Int,
-    val geo_info: List<GeoInfo>,
-    val kick_count: Int,
+
+    @SerializedName("death_count")
+    val deathCount: Int,
+
+    @SerializedName("geo_info")
+    val geoInfo: List<GeoInfo>,
+
+    @SerializedName("kick_count")
+    val kickCount: Int,
+
+    @SerializedName("lastSeen")
     val lastSeen: Long,
-    val mob_kill_count: Int,
+
+    @SerializedName("mob_kill_count")
+    val mobKillCount: Int,
+
+    @SerializedName("name")
     val name: String,
-    val `operator`: Boolean,
-    val player_kill_count: Int,
+
+    @SerializedName("operator")
+    val op: Boolean,
+
+    @SerializedName("player_kill_count")
+    val playerKillCount: Int,
+
+    @SerializedName("registered")
     val registered: Long,
+
+    @SerializedName("uuid")
     val uuid: String
 )
 
